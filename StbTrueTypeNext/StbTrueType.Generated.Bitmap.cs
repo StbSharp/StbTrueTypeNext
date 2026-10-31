@@ -7,8 +7,7 @@ namespace StbTrueTypeNext
 {
 	unsafe partial class StbTrueType
 	{
-		public static void stbtt__fill_active_edges_new(float* scanline, float* scanline_fill, int len,
-			stbtt__active_edge* e, float y_top)
+		private static void stbtt__fill_active_edges_new(FakePtr<float> scanline, FakePtr<float> scanline_fill, int len, stbtt__active_edge* e, float y_top)
 		{
 			var y_bottom = y_top + 1;
 			while (e != null)
@@ -182,7 +181,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static void stbtt__handle_clipped_edge(float* scanline, int x, stbtt__active_edge* e, float x0, float y0,
+		private static void stbtt__handle_clipped_edge(FakePtr<float> scanline, int x, stbtt__active_edge* e, float x0, float y0,
 			float x1, float y1)
 		{
 			if (y0 == y1)
@@ -275,7 +274,8 @@ namespace StbTrueTypeNext
 			if (!useOldRasterizer)
 			{
 				stbtt__rasterize_sorted_edges(result, e, n, vsubsample, off_x, off_y, userdata);
-			} else
+			}
+			else
 			{
 				stbtt__rasterize_sorted_edges_old_rasterizer(result, e, n, vsubsample, off_x, off_y, userdata);
 			}
@@ -293,14 +293,18 @@ namespace StbTrueTypeNext
 			var y = 0;
 			var j = 0;
 			var i = 0;
-			var scanline_data = stackalloc float[129];
-			float* scanline;
-			float* scanline2;
+
+			FakePtr<float> scanline;
 			if (result->w > 64)
-				scanline = (float*)CRuntime.malloc((ulong)((result->w * 2 + 1) * sizeof(float)));
+			{
+				scanline = new FakePtr<float>(result->w * 2 + 1);
+			}
 			else
-				scanline = scanline_data;
-			scanline2 = scanline + result->w;
+			{
+				scanline = new FakePtr<float>(129);
+			}
+
+			var scanline2 = scanline + result->w;
 			y = off_y;
 			e[n].y0 = (float)(off_y + result->h) + 1;
 			while (j < result->h)
@@ -308,8 +312,9 @@ namespace StbTrueTypeNext
 				var scan_y_top = y + 0.0f;
 				var scan_y_bottom = y + 1.0f;
 				var step = &active;
-				CRuntime.memset(scanline, 0, (ulong)(result->w * sizeof(float)));
-				CRuntime.memset(scanline2, 0, (ulong)((result->w + 1) * sizeof(float)));
+
+				scanline.Set(0, result->w);
+				scanline2.Set(0, result->w + 1);
 				while (*step != null)
 				{
 					var z = *step;
@@ -375,8 +380,6 @@ namespace StbTrueTypeNext
 			}
 
 			stbtt__hheap_cleanup(&hh, userdata);
-			if (scanline != scanline_data)
-				CRuntime.free(scanline);
 		}
 
 		public static void stbtt__sort_edges(stbtt__edge* p, int n)
