@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <Authors>StbTrueTypeNextTeam</Authors>
+    <Product>StbTrueTypeNext</Product>
+    <PackageLicenseExpression>Unlicense OR MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/StbSharp/StbTrueTypeNext</PackageProjectUrl>
+    <Version>1.26.13</Version>
+  </PropertyGroup>
+</Project>
