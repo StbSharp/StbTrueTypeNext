@@ -1138,7 +1138,7 @@ namespace StbTrueTypeNext
 			CRuntime.free(v);
 		}
 
-		public static byte* stbtt_GetCodepointBitmap(stbtt_fontinfo info, float scale_x, float scale_y, int codepoint,
+		public static byte[] stbtt_GetCodepointBitmap(stbtt_fontinfo info, float scale_x, float scale_y, int codepoint,
 			int* width, int* height, int* xoff, int* yoff)
 		{
 			return stbtt_GetCodepointBitmapSubpixel(info, scale_x, scale_y, 0.0f, 0.0f, codepoint, width, height, xoff,
@@ -1158,7 +1158,7 @@ namespace StbTrueTypeNext
 				shift_y, ix0, iy0, ix1, iy1);
 		}
 
-		public static byte* stbtt_GetCodepointBitmapSubpixel(stbtt_fontinfo info, float scale_x, float scale_y,
+		public static byte[] stbtt_GetCodepointBitmapSubpixel(stbtt_fontinfo info, float scale_x, float scale_y,
 			float shift_x, float shift_y, int codepoint, int* width, int* height, int* xoff, int* yoff)
 		{
 			return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y, shift_x, shift_y,
@@ -1260,7 +1260,7 @@ namespace StbTrueTypeNext
 			return 1;
 		}
 
-		public static byte* stbtt_GetGlyphBitmap(stbtt_fontinfo info, float scale_x, float scale_y, int glyph,
+		public static byte[] stbtt_GetGlyphBitmap(stbtt_fontinfo info, float scale_x, float scale_y, int glyph,
 			int* width, int* height, int* xoff, int* yoff)
 		{
 			return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y, 0.0f, 0.0f, glyph, width, height, xoff, yoff);
@@ -1303,7 +1303,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static byte* stbtt_GetGlyphBitmapSubpixel(stbtt_fontinfo info, float scale_x, float scale_y,
+		public static byte[] stbtt_GetGlyphBitmapSubpixel(stbtt_fontinfo info, float scale_x, float scale_y,
 			float shift_x, float shift_y, int glyph, int* width, int* height, int* xoff, int* yoff)
 		{
 			var ix0 = 0;
@@ -1329,7 +1329,7 @@ namespace StbTrueTypeNext
 			stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y, &ix0, &iy0, &ix1, &iy1);
 			gbm.w = ix1 - ix0;
 			gbm.h = iy1 - iy0;
-			gbm.pixels = null;
+			gbm.pixels = FakePtr<byte>.Null;
 			if (width != null)
 				*width = gbm.w;
 			if (height != null)
@@ -1340,17 +1340,14 @@ namespace StbTrueTypeNext
 				*yoff = iy0;
 			if (gbm.w != 0 && gbm.h != 0)
 			{
-				gbm.pixels = (byte*)CRuntime.malloc((ulong)(gbm.w * gbm.h));
-				if (gbm.pixels != null)
-				{
-					gbm.stride = gbm.w;
-					stbtt_Rasterize(gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1,
-						info.userdata, info.useOldRasterizer);
-				}
+				gbm.pixels = new FakePtr<byte>(gbm.w * gbm.h);
+				gbm.stride = gbm.w;
+				stbtt_Rasterize(gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1,
+					info.userdata, info.useOldRasterizer);
 			}
 
 			CRuntime.free(vertices);
-			return gbm.pixels;
+			return gbm.pixels.Data;
 		}
 
 		public static int stbtt_GetGlyphBox(stbtt_fontinfo info, int glyph_index, int* x0, int* y0, int* x1, int* y1)
@@ -1813,21 +1810,21 @@ namespace StbTrueTypeNext
 			return numberOfContours == 0 ? 1 : 0;
 		}
 
-		public static void stbtt_MakeCodepointBitmap(stbtt_fontinfo info, byte* output, int out_w, int out_h,
+		public static void stbtt_MakeCodepointBitmap(stbtt_fontinfo info, byte[] output, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, int codepoint)
 		{
 			stbtt_MakeCodepointBitmapSubpixel(info, output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f,
 				codepoint);
 		}
 
-		public static void stbtt_MakeCodepointBitmapSubpixel(stbtt_fontinfo info, byte* output, int out_w, int out_h,
+		public static void stbtt_MakeCodepointBitmapSubpixel(stbtt_fontinfo info, byte[] output, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int codepoint)
 		{
-			stbtt_MakeGlyphBitmapSubpixel(info, output, out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y,
+			stbtt_MakeGlyphBitmapSubpixel(info, new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y,
 				stbtt_FindGlyphIndex(info, codepoint));
 		}
 
-		public static void stbtt_MakeCodepointBitmapSubpixelPrefilter(stbtt_fontinfo info, byte* output, int out_w,
+		public static void stbtt_MakeCodepointBitmapSubpixelPrefilter(stbtt_fontinfo info, byte[] output, int out_w,
 			int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int oversample_x,
 			int oversample_y, float* sub_x, float* sub_y, int codepoint)
 		{
@@ -1835,13 +1832,25 @@ namespace StbTrueTypeNext
 				shift_y, oversample_x, oversample_y, sub_x, sub_y, stbtt_FindGlyphIndex(info, codepoint));
 		}
 
-		public static void stbtt_MakeGlyphBitmap(stbtt_fontinfo info, byte* output, int out_w, int out_h,
+		public static void stbtt_MakeGlyphBitmap(stbtt_fontinfo info, byte[] output, int out_w, int out_h,
+			int out_stride, float scale_x, float scale_y, int glyph)
+		{
+			stbtt_MakeGlyphBitmap(info, new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, glyph);
+		}
+
+		public static void stbtt_MakeGlyphBitmap(stbtt_fontinfo info, FakePtr<byte> output, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, int glyph)
 		{
 			stbtt_MakeGlyphBitmapSubpixel(info, output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, glyph);
 		}
 
-		public static void stbtt_MakeGlyphBitmapSubpixel(stbtt_fontinfo info, byte* output, int out_w, int out_h,
+		public static void stbtt_MakeGlyphBitmapSubpixel(stbtt_fontinfo info, byte[] output, int out_w, int out_h,
+			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int glyph)
+		{
+			stbtt_MakeGlyphBitmapSubpixel(info, new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, glyph);
+		}
+
+		public static void stbtt_MakeGlyphBitmapSubpixel(stbtt_fontinfo info, FakePtr<byte> output, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int glyph)
 		{
 			var ix0 = 0;
@@ -1860,7 +1869,7 @@ namespace StbTrueTypeNext
 			CRuntime.free(vertices);
 		}
 
-		public static void stbtt_MakeGlyphBitmapSubpixelPrefilter(stbtt_fontinfo info, byte* output, int out_w,
+		public static void stbtt_MakeGlyphBitmapSubpixelPrefilter(stbtt_fontinfo info, byte[] output, int out_w,
 			int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int prefilter_x,
 			int prefilter_y, float* sub_x, float* sub_y, int glyph)
 		{

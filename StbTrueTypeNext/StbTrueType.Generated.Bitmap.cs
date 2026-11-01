@@ -509,7 +509,7 @@ namespace StbTrueTypeNext
 			public int w;
 			public int h;
 			public int stride;
-			public byte* pixels;
+			public FakePtr<byte> pixels;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]

@@ -77,22 +77,16 @@ namespace StbTrueTypeNext
 		}
 
 		public static bool stbtt_BakeFontBitmap(byte[] ttf, int offset, float pixel_height, byte[] pixels, int pw,
-			int ph,
-			int first_char, int num_chars, stbtt_bakedchar[] chardata)
+			int ph, int first_char, int num_chars, stbtt_bakedchar[] chardata)
 		{
 			fixed (byte* ttfPtr = ttf)
+			fixed (stbtt_bakedchar* chardataPtr = chardata)
 			{
-				fixed (byte* pixelsPtr = pixels)
-				{
-					fixed (stbtt_bakedchar* chardataPtr = chardata)
-					{
-						var result = stbtt_BakeFontBitmap(ttfPtr, offset, pixel_height, pixelsPtr, pw, ph, first_char,
-							num_chars,
-							chardataPtr);
+				var result = stbtt_BakeFontBitmap(ttfPtr, offset, pixel_height, pixels, pw, ph, first_char,
+				num_chars,
+				chardataPtr);
 
-						return result != 0;
-					}
-				}
+				return result != 0;
 			}
 		}
 

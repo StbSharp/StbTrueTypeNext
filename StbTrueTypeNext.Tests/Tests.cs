@@ -113,10 +113,7 @@ namespace StbTrueTypeNext.Tests
 				Assert.NotEqual(0, height);
 				var data = new byte[width * height];
 
-				fixed (byte* ptr = data)
-				{
-					stbtt_MakeGlyphBitmap(fontInfo, ptr, width, height, width, scale, scale, glyphId);
-				}
+				stbtt_MakeGlyphBitmap(fontInfo, data, width, height, width, scale, scale, glyphId);
 			}
 		}
 

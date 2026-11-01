@@ -40,7 +40,7 @@ namespace StbTrueTypeNext
 			for (; i < num_rects; ++i) rects[i].was_packed = 0;
 		}
 
-		public static int stbtt_PackBegin(stbtt_pack_context spc, byte* pixels, int pw, int ph, int stride_in_bytes,
+		public static int stbtt_PackBegin(stbtt_pack_context spc, byte[] pixels, int pw, int ph, int stride_in_bytes,
 			int padding, void* alloc_context)
 		{
 			var context = (stbrp_context*)CRuntime.malloc((ulong)sizeof(stbrp_context));
@@ -67,8 +67,8 @@ namespace StbTrueTypeNext
 			spc.v_oversample = 1;
 			spc.skip_missing = 0;
 			stbrp_init_target(context, pw - padding, ph - padding, nodes, num_nodes);
-			if (pixels != null)
-				CRuntime.memset(pixels, 0, (ulong)(pw * ph));
+
+			pixels.Set((byte)0, pw * ph);
 			return 1;
 		}
 
@@ -218,14 +218,14 @@ namespace StbTrueTypeNext
 						stbtt_GetGlyphHMetrics(info, glyph, &advance, &lsb);
 						stbtt_GetGlyphBitmapBox(info, glyph, scale * spc.h_oversample, scale * spc.v_oversample, &x0,
 							&y0, &x1, &y1);
-						stbtt_MakeGlyphBitmapSubpixel(info, spc.pixels + r->x + r->y * spc.stride_in_bytes,
+						stbtt_MakeGlyphBitmapSubpixel(info, new FakePtr<byte>(spc.pixels, r->x + r->y * spc.stride_in_bytes),
 							(int)(r->w - spc.h_oversample + 1), (int)(r->h - spc.v_oversample + 1),
 							spc.stride_in_bytes, scale * spc.h_oversample, scale * spc.v_oversample, 0, 0, glyph);
 						if (spc.h_oversample > 1)
-							stbtt__h_prefilter(spc.pixels + r->x + r->y * spc.stride_in_bytes, r->w, r->h,
+							stbtt__h_prefilter(new FakePtr<byte>(spc.pixels, r->x + r->y * spc.stride_in_bytes), r->w, r->h,
 								spc.stride_in_bytes, spc.h_oversample);
 						if (spc.v_oversample > 1)
-							stbtt__v_prefilter(spc.pixels + r->x + r->y * spc.stride_in_bytes, r->w, r->h,
+							stbtt__v_prefilter(new FakePtr<byte>(spc.pixels, r->x + r->y * spc.stride_in_bytes), r->w, r->h,
 								spc.stride_in_bytes, spc.v_oversample);
 						bc->x0 = (ushort)(short)r->x;
 						bc->y0 = (ushort)(short)r->y;
@@ -308,7 +308,7 @@ namespace StbTrueTypeNext
 			public void* nodes;
 			public void* pack_info;
 			public int padding;
-			public byte* pixels;
+			public byte[] pixels;
 			public int skip_missing;
 			public int stride_in_bytes;
 			public void* user_allocator_context;

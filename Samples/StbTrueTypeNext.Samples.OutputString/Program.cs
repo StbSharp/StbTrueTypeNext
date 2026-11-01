@@ -67,21 +67,17 @@ unsafe class Program
 				posY = 0;
 			}
 
-			fixed (byte* ptr = buffer)
-			{
-				var ptr2 = ptr + (posX + posY * bufferSize);
-
-				stbtt_MakeGlyphBitmap(
-					info,
-					ptr2,
-					x1 - x0,
-					y1 - y0,
-					bufferSize,
-					scale,
-					scale,
-					glyphId
-				);
-			}
+			var ptr = new FakePtr<byte>(buffer, posX + posY * bufferSize);
+			stbtt_MakeGlyphBitmap(
+				info,
+				ptr,
+				x1 - x0,
+				y1 - y0,
+				bufferSize,
+				scale,
+				scale,
+				glyphId
+			);
 
 			posX += advance;
 		}

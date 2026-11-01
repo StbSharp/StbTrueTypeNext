@@ -2,7 +2,7 @@
 
 namespace StbTrueTypeNext
 {
-	internal struct FakePtr<T> where T : unmanaged
+	public struct FakePtr<T> where T : unmanaged
 	{
 		public static readonly FakePtr<T> Null = new FakePtr<T>();
 
@@ -87,6 +87,8 @@ namespace StbTrueTypeNext
 		{
 			Array.Copy(source, sourceOffset, _data, _offset + offset, size);
 		}
+
+		public void Copy(T[] source, long size) => Copy(0, source, 0, size);
 
 		public FakePtr<T> Expand(long newSize)
 		{

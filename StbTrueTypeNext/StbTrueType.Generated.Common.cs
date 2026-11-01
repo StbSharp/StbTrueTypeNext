@@ -225,7 +225,12 @@ namespace StbTrueTypeNext
 			return (float)CRuntime.pow(x, 1.0f / 3.0f);
 		}
 
-		public static void stbtt__h_prefilter(byte* pixels, int w, int h, int stride_in_bytes, uint kernel_width)
+		public static void stbtt__h_prefilter(byte[] pixels, int w, int h, int stride_in_bytes, uint kernel_width)
+		{
+			stbtt__h_prefilter(new FakePtr<byte>(pixels), w, h, stride_in_bytes, kernel_width);
+		}
+
+		public static void stbtt__h_prefilter(FakePtr<byte> pixels, int w, int h, int stride_in_bytes, uint kernel_width)
 		{
 			var buffer = stackalloc byte[8];
 			var safe_w = (int)(w - kernel_width);
@@ -587,7 +592,12 @@ namespace StbTrueTypeNext
 			return 1;
 		}
 
-		public static void stbtt__v_prefilter(byte* pixels, int w, int h, int stride_in_bytes, uint kernel_width)
+		public static void stbtt__v_prefilter(byte[] pixels, int w, int h, int stride_in_bytes, uint kernel_width)
+		{
+			stbtt__v_prefilter(new FakePtr<byte>(pixels), w, h, stride_in_bytes, kernel_width);
+		}
+
+		public static void stbtt__v_prefilter(FakePtr<byte> pixels, int w, int h, int stride_in_bytes, uint kernel_width)
 		{
 			var buffer = stackalloc byte[8];
 			var safe_h = (int)(h - kernel_width);
@@ -658,14 +668,14 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static int stbtt_BakeFontBitmap(byte* data, int offset, float pixel_height, byte* pixels, int pw, int ph,
+		public static int stbtt_BakeFontBitmap(byte* data, int offset, float pixel_height, byte[] pixels, int pw, int ph,
 			int first_char, int num_chars, stbtt_bakedchar* chardata)
 		{
 			return stbtt_BakeFontBitmap_internal(data, offset, pixel_height, pixels, pw, ph, first_char, num_chars,
 				chardata);
 		}
 
-		public static int stbtt_BakeFontBitmap_internal(byte* data, int offset, float pixel_height, byte* pixels,
+		public static int stbtt_BakeFontBitmap_internal(byte* data, int offset, float pixel_height, byte[] pixels,
 			int pw, int ph, int first_char, int num_chars, stbtt_bakedchar* chardata)
 		{
 			float scale = 0;
@@ -677,7 +687,7 @@ namespace StbTrueTypeNext
 			f.userdata = null;
 			if (stbtt_InitFont(f, data, offset) == 0)
 				return -1;
-			CRuntime.memset(pixels, 0, (ulong)(pw * ph));
+			pixels.Set((byte)0, pw * ph);
 			x = y = 1;
 			bottom_y = 1;
 			scale = stbtt_ScaleForPixelHeight(f, pixel_height);
@@ -704,7 +714,7 @@ namespace StbTrueTypeNext
 
 				if (y + gh + 1 >= ph)
 					return -i;
-				stbtt_MakeGlyphBitmap(f, pixels + x + y * pw, gw, gh, pw, scale, scale, g);
+				stbtt_MakeGlyphBitmap(f, new FakePtr<byte>(pixels, x + y * pw), gw, gh, pw, scale, scale, g);
 				chardata[i].x0 = (ushort)(short)x;
 				chardata[i].y0 = (ushort)(short)y;
 				chardata[i].x1 = (ushort)(short)(x + gw);

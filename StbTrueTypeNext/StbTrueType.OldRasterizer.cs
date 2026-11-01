@@ -24,7 +24,7 @@ namespace StbTrueTypeNext
 			return z;
 		}
 
-		public static void stbtt__fill_active_edges_old_rasterizer(byte* scanline, int len, stbtt__active_edge_old_rasterizer* e, int max_weight)
+		public static void stbtt__fill_active_edges_old_rasterizer(byte[] scanline, int len, stbtt__active_edge_old_rasterizer* e, int max_weight)
 		{
 			int x0 = 0; 
 			int w = 0;
@@ -81,18 +81,23 @@ namespace StbTrueTypeNext
 			int y = 0; int j = 0;
 			int max_weight = (255 / vsubsample);
 			int s = 0;
-			byte* scanline_data = stackalloc byte[512];
-			byte* scanline;
+			var scanline_data = new byte[512];
+			byte[] scanline;
 
 			if ((result.w) > (512))
-				scanline = (byte*)(CRuntime.malloc((ulong)(result.w)));
+			{
+				scanline = new byte[result.w];
+			}
 			else
+			{
 				scanline = scanline_data;
-			y = (int)(off_y * vsubsample);
-			e[n].y0 = (float)((off_y + result.h) * (float)(vsubsample) + 1);
+			}
+			
+			y = off_y * vsubsample;
+			e[n].y0 = (off_y + result.h) * (float)(vsubsample) + 1;
 			while ((j) < (result.h))
 			{
-				CRuntime.memset(scanline, (int)(0), (ulong)(result.w));
+				scanline.Set((byte)0, result.w);
 				for (s = (int)(0); (s) < (vsubsample); ++s)
 				{
 					float scan_y = y + 0.5f;
@@ -167,18 +172,20 @@ namespace StbTrueTypeNext
 						++e;
 					}
 
-					if ((active) != null)
+					if (active != null)
+					{
 						stbtt__fill_active_edges_old_rasterizer(scanline, (int)(result.w), active, (int)(max_weight));
+					}
 					++y;
 				}
 
-				CRuntime.memcpy(result.pixels + j * result.stride, scanline, (ulong)(result.w));
+				var pixelsPtr = result.pixels + j * result.stride;
+				pixelsPtr.Copy(scanline, result.w);
+
 				++j;
 			}
 
 			stbtt__hheap_cleanup(&hh, userdata);
-			if (scanline != scanline_data)
-				CRuntime.free(scanline);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
