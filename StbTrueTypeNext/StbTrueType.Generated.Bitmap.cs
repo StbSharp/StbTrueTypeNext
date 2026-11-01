@@ -215,7 +215,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static void stbtt__rasterize(stbtt__bitmap* result, stbtt__point* pts, int* wcount, int windings,
+		public static void stbtt__rasterize(stbtt__bitmap result, stbtt__point* pts, int* wcount, int windings,
 			float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert,
 			void* userdata, bool useOldRasterizer)
 		{
@@ -230,7 +230,7 @@ namespace StbTrueTypeNext
 			var vsubsample = 1;
 			if (useOldRasterizer)
 			{
-				vsubsample = (result->h) < (8) ? 15 : 5;
+				vsubsample = (result.h) < (8) ? 15 : 5;
 			}
 
 			n = 0;
@@ -283,7 +283,7 @@ namespace StbTrueTypeNext
 			CRuntime.free(e);
 		}
 
-		public static void stbtt__rasterize_sorted_edges(stbtt__bitmap* result, stbtt__edge* e, int n, int vsubsample,
+		public static void stbtt__rasterize_sorted_edges(stbtt__bitmap result, stbtt__edge* e, int n, int vsubsample,
 			int off_x, int off_y, void* userdata)
 		{
 			usedOldRasterizer = false;
@@ -295,26 +295,26 @@ namespace StbTrueTypeNext
 			var i = 0;
 
 			FakePtr<float> scanline;
-			if (result->w > 64)
+			if (result.w > 64)
 			{
-				scanline = new FakePtr<float>(result->w * 2 + 1);
+				scanline = new FakePtr<float>(result.w * 2 + 1);
 			}
 			else
 			{
 				scanline = new FakePtr<float>(129);
 			}
 
-			var scanline2 = scanline + result->w;
+			var scanline2 = scanline + result.w;
 			y = off_y;
-			e[n].y0 = (float)(off_y + result->h) + 1;
-			while (j < result->h)
+			e[n].y0 = (float)(off_y + result.h) + 1;
+			while (j < result.h)
 			{
 				var scan_y_top = y + 0.0f;
 				var scan_y_bottom = y + 1.0f;
 				var step = &active;
 
-				scanline.Set(0, result->w);
-				scanline2.Set(0, result->w + 1);
+				scanline.Set(0, result.w);
+				scanline2.Set(0, result.w + 1);
 				while (*step != null)
 				{
 					var z = *step;
@@ -350,10 +350,10 @@ namespace StbTrueTypeNext
 				}
 
 				if (active != null)
-					stbtt__fill_active_edges_new(scanline, scanline2 + 1, result->w, active, scan_y_top);
+					stbtt__fill_active_edges_new(scanline, scanline2 + 1, result.w, active, scan_y_top);
 				{
 					float sum = 0;
-					for (i = 0; i < result->w; ++i)
+					for (i = 0; i < result.w; ++i)
 					{
 						float k = 0;
 						var m = 0;
@@ -363,7 +363,7 @@ namespace StbTrueTypeNext
 						m = (int)k;
 						if (m > 255)
 							m = 255;
-						result->pixels[j * result->stride + i] = (byte)m;
+						result.pixels[j * result.stride + i] = (byte)m;
 					}
 				}
 
@@ -474,7 +474,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static void stbtt_Rasterize(stbtt__bitmap* result, float flatness_in_pixels, stbtt_vertex* vertices,
+		public static void stbtt_Rasterize(stbtt__bitmap result, float flatness_in_pixels, stbtt_vertex* vertices,
 			int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert,
 			void* userdata, bool useOldRasterizer)
 		{
@@ -504,8 +504,7 @@ namespace StbTrueTypeNext
 			public float ey;
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
-		public struct stbtt__bitmap
+		public class stbtt__bitmap
 		{
 			public int w;
 			public int h;

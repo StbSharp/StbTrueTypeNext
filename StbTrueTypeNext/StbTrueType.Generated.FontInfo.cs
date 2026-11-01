@@ -1344,7 +1344,7 @@ namespace StbTrueTypeNext
 				if (gbm.pixels != null)
 				{
 					gbm.stride = gbm.w;
-					stbtt_Rasterize(&gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1,
+					stbtt_Rasterize(gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1,
 						info.userdata, info.useOldRasterizer);
 				}
 			}
@@ -1855,7 +1855,7 @@ namespace StbTrueTypeNext
 			gbm.h = out_h;
 			gbm.stride = out_stride;
 			if (gbm.w != 0 && gbm.h != 0)
-				stbtt_Rasterize(&gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1,
+				stbtt_Rasterize(gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1,
 					info.userdata, info.useOldRasterizer);
 			CRuntime.free(vertices);
 		}

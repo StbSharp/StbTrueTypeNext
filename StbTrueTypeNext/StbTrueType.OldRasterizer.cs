@@ -72,7 +72,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static void stbtt__rasterize_sorted_edges_old_rasterizer(stbtt__bitmap* result, stbtt__edge* e, int n, int vsubsample, int off_x, int off_y, void* userdata)
+		public static void stbtt__rasterize_sorted_edges_old_rasterizer(stbtt__bitmap result, stbtt__edge* e, int n, int vsubsample, int off_x, int off_y, void* userdata)
 		{
 			usedOldRasterizer = true;
 
@@ -84,15 +84,15 @@ namespace StbTrueTypeNext
 			byte* scanline_data = stackalloc byte[512];
 			byte* scanline;
 
-			if ((result->w) > (512))
-				scanline = (byte*)(CRuntime.malloc((ulong)(result->w)));
+			if ((result.w) > (512))
+				scanline = (byte*)(CRuntime.malloc((ulong)(result.w)));
 			else
 				scanline = scanline_data;
 			y = (int)(off_y * vsubsample);
-			e[n].y0 = (float)((off_y + result->h) * (float)(vsubsample) + 1);
-			while ((j) < (result->h))
+			e[n].y0 = (float)((off_y + result.h) * (float)(vsubsample) + 1);
+			while ((j) < (result.h))
 			{
-				CRuntime.memset(scanline, (int)(0), (ulong)(result->w));
+				CRuntime.memset(scanline, (int)(0), (ulong)(result.w));
 				for (s = (int)(0); (s) < (vsubsample); ++s)
 				{
 					float scan_y = y + 0.5f;
@@ -168,11 +168,11 @@ namespace StbTrueTypeNext
 					}
 
 					if ((active) != null)
-						stbtt__fill_active_edges_old_rasterizer(scanline, (int)(result->w), active, (int)(max_weight));
+						stbtt__fill_active_edges_old_rasterizer(scanline, (int)(result.w), active, (int)(max_weight));
 					++y;
 				}
 
-				CRuntime.memcpy(result->pixels + j * result->stride, scanline, (ulong)(result->w));
+				CRuntime.memcpy(result.pixels + j * result.stride, scanline, (ulong)(result.w));
 				++j;
 			}
 
