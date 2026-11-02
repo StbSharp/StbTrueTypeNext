@@ -24,10 +24,7 @@ unsafe class Program
 
 		var info = new stbtt_fontinfo();
 
-		fixed (byte* ptr = bytes)
-		{
-			var res = stbtt_InitFont(info, ptr, 0);
-		}
+		var res = stbtt_InitFont(info, bytes, 0);
 
 		int ascent, descent, lineGap;
 		stbtt_GetFontVMetrics(info, &ascent, &descent, &lineGap);

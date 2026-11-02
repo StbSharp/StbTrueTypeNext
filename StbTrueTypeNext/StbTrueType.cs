@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using StbTrueTypeNext.Hebron.Runtime;
 
 namespace StbTrueTypeNext
@@ -15,11 +14,11 @@ namespace StbTrueTypeNext
 
 		public static int NativeAllocations => MemoryStats.Allocations;
 
-		public class stbtt_fontinfo : IDisposable
+		public class stbtt_fontinfo
 		{
 			public stbtt__buf cff;
 			public stbtt__buf charstrings;
-			public byte* data = null;
+			public byte[] data = null;
 			public stbtt__buf fdselect;
 			public stbtt__buf fontdicts;
 			public int fontstart;
@@ -39,28 +38,9 @@ namespace StbTrueTypeNext
 			public int svg;
 			public void* userdata;
 			public bool useOldRasterizer;
-
-			public void Dispose()
-			{
-				Dispose(true);
-			}
-
-			~stbtt_fontinfo()
-			{
-				Dispose(false);
-			}
-
-			protected virtual void Dispose(bool disposing)
-			{
-				if (isDataCopy && data != null)
-				{
-					CRuntime.free(data);
-					data = null;
-				}
-			}
 		}
 
-		public static uint stbtt__find_table(byte* data, uint fontstart, string tag)
+		public static uint stbtt__find_table(FakePtr<byte> data, uint fontstart, string tag)
 		{
 			int num_tables = ttUSHORT(data + fontstart + 4);
 			var tabledir = fontstart + 12;
@@ -79,12 +59,9 @@ namespace StbTrueTypeNext
 		public static bool stbtt_BakeFontBitmap(byte[] ttf, int offset, float pixel_height, byte[] pixels, int pw,
 			int ph, int first_char, int num_chars, stbtt_bakedchar[] chardata)
 		{
-			fixed (byte* ttfPtr = ttf)
 			fixed (stbtt_bakedchar* chardataPtr = chardata)
 			{
-				var result = stbtt_BakeFontBitmap(ttfPtr, offset, pixel_height, pixels, pw, ph, first_char,
-				num_chars,
-				chardataPtr);
+				var result = stbtt_BakeFontBitmap(ttf, offset, pixel_height, pixels, pw, ph, first_char, num_chars, chardataPtr);
 
 				return result != 0;
 			}
@@ -98,8 +75,8 @@ namespace StbTrueTypeNext
 		/// <returns>null if the data was invalid</returns>
 		public static stbtt_fontinfo CreateFont(byte[] data, int offset)
 		{
-			var dataCopy = (byte*)CRuntime.malloc(data.Length);
-			Marshal.Copy(data, 0, new IntPtr(dataCopy), data.Length);
+			var dataCopy = new byte[data.Length];
+			Array.Copy(data, dataCopy, data.Length);
 
 			var info = new stbtt_fontinfo
 			{
@@ -108,7 +85,6 @@ namespace StbTrueTypeNext
 
 			if (stbtt_InitFont_internal(info, dataCopy, offset) == 0)
 			{
-				info.Dispose();
 				return null;
 			}
 

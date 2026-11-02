@@ -31,7 +31,7 @@ namespace StbTrueTypeNext
 
 		public static stbtt__buf stbtt__buf_range(stbtt__buf* b, int o, int s)
 		{
-			var r = stbtt__new_buf(null, 0);
+			var r = stbtt__buf.Null;
 			if (o < 0 || s < 0 || o > b->size || s > b->size - o)
 				return r;
 			r.data = b->data + o;
@@ -161,7 +161,7 @@ namespace StbTrueTypeNext
 				bias = 1131;
 			n += bias;
 			if (n < 0 || n >= count)
-				return stbtt__new_buf(null, 0);
+				return stbtt__buf.Null;
 			return stbtt__cff_index_get(idx, n);
 		}
 
@@ -172,19 +172,19 @@ namespace StbTrueTypeNext
 			var pdict = new stbtt__buf();
 			stbtt__dict_get_ints(&fontdict, 18, 2, private_loc);
 			if (private_loc[1] == 0 || private_loc[0] == 0)
-				return stbtt__new_buf(null, 0);
+				return stbtt__buf.Null;
 			pdict = stbtt__buf_range(&cff, (int)private_loc[1], (int)private_loc[0]);
 			stbtt__dict_get_ints(&pdict, 19, 1, &subrsoff);
 			if (subrsoff == 0)
-				return stbtt__new_buf(null, 0);
+				return stbtt__buf.Null;
 			stbtt__buf_seek(&cff, (int)(private_loc[1] + subrsoff));
 			return stbtt__cff_get_index(&cff);
 		}
 
-		public static stbtt__buf stbtt__new_buf(void* p, ulong size)
+		public static stbtt__buf stbtt__new_buf(FakePtr<byte> p, ulong size)
 		{
 			var r = new stbtt__buf();
-			r.data = (byte*)p;
+			r.data = p;
 			r.size = (int)size;
 			r.cursor = 0;
 			return r;
@@ -193,7 +193,9 @@ namespace StbTrueTypeNext
 		[StructLayout(LayoutKind.Sequential)]
 		public struct stbtt__buf
 		{
-			public byte* data;
+			public static readonly stbtt__buf Null = new stbtt__buf();
+
+			public FakePtr<byte> data;
 			public int cursor;
 			public int size;
 		}

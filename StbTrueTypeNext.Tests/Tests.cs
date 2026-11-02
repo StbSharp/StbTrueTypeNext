@@ -34,8 +34,6 @@ namespace StbTrueTypeNext.Tests
 			var fontInfo = CreateFont(ttfData, 0);
 			Assert.NotNull(fontInfo);
 			Assert.True(fontInfo.isDataCopy);
-			fontInfo.Dispose();
-			Assert.True(fontInfo.data == null);
 		}
 
 		[Fact]
@@ -60,15 +58,12 @@ namespace StbTrueTypeNext.Tests
 			FontsList fonts;
 			int numberOfFonts;
 
-			fixed (byte* ttcPtr = ttcContent)
+			numberOfFonts = stbtt_GetNumberOfFonts(ttcContent);
+			fonts = new FontsList(numberOfFonts);
+			for (int i = 0; i < numberOfFonts; i++)
 			{
-				numberOfFonts = stbtt_GetNumberOfFonts(ttcPtr);
-				fonts = new FontsList(numberOfFonts);
-				for (int i = 0; i < numberOfFonts; i++)
-				{
-					int offset = stbtt_GetFontOffsetForIndex(ttcPtr, i);
-					fonts.Add(CreateFont(ttcContent, offset));
-				}
+				int offset = stbtt_GetFontOffsetForIndex(ttcContent, i);
+				fonts.Add(CreateFont(ttcContent, offset));
 			}
 
 			Assert.Equal(numberOfFonts, fonts.Count);
@@ -128,9 +123,6 @@ namespace StbTrueTypeNext.Tests
 			TestRasterize(fontInfo, "Hello, World!", 32.0f);
 
 			Assert.False(usedOldRasterizer);
-
-			fontInfo.Dispose();
-			Assert.True(fontInfo.data == null);
 		}
 
 		[Fact]
@@ -146,9 +138,6 @@ namespace StbTrueTypeNext.Tests
 			TestRasterize(fontInfo, "Hello, World!", 32.0f);
 
 			Assert.True(usedOldRasterizer);
-
-			fontInfo.Dispose();
-			Assert.True(fontInfo.data == null);
 		}
 	}
 }

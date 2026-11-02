@@ -72,7 +72,7 @@ namespace StbTrueTypeNext
 			points[n].y = y;
 		}
 
-		public static int stbtt__CompareUTF8toUTF16_bigendian_prefix(byte* s1, int len1, byte* s2, int len2)
+		public static int stbtt__CompareUTF8toUTF16_bigendian_prefix(byte* s1, int len1, FakePtr<byte> s2, int len2)
 		{
 			var i = 0;
 			while (len2 != 0)
@@ -301,7 +301,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static int stbtt__isfont(byte* font)
+		public static int stbtt__isfont(FakePtr<byte> font)
 		{
 			if (font[0] == 49 && font[1] == 0 && font[2] == 0 && font[3] == 0)
 				return 1;
@@ -316,7 +316,7 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static int stbtt__matches(byte* fc, uint offset, byte* name, int flags)
+		public static int stbtt__matches(FakePtr<byte> fc, uint offset, byte* name, int flags)
 		{
 			var nlen = (int)CRuntime.strlen((sbyte*)name);
 			uint nm = 0;
@@ -355,7 +355,7 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static int stbtt__matchpair(byte* fc, uint nm, byte* name, int nlen, int target_id, int next_id)
+		public static int stbtt__matchpair(FakePtr<byte> fc, uint nm, byte* name, int nlen, int target_id, int next_id)
 		{
 			var i = 0;
 			int count = ttUSHORT(fc + nm + 2);
@@ -392,7 +392,7 @@ namespace StbTrueTypeNext
 								{
 									++matchlen;
 									if (stbtt_CompareUTF8toUTF16_bigendian_internal((sbyte*)(name + matchlen),
-										nlen - matchlen, (sbyte*)(fc + stringOffset + off), slen) != 0)
+										nlen - matchlen, fc + stringOffset + off, slen) != 0)
 										return 1;
 								}
 							}
@@ -668,14 +668,14 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static int stbtt_BakeFontBitmap(byte* data, int offset, float pixel_height, byte[] pixels, int pw, int ph,
+		public static int stbtt_BakeFontBitmap(byte[] data, int offset, float pixel_height, byte[] pixels, int pw, int ph,
 			int first_char, int num_chars, stbtt_bakedchar* chardata)
 		{
 			return stbtt_BakeFontBitmap_internal(data, offset, pixel_height, pixels, pw, ph, first_char, num_chars,
 				chardata);
 		}
 
-		public static int stbtt_BakeFontBitmap_internal(byte* data, int offset, float pixel_height, byte[] pixels,
+		public static int stbtt_BakeFontBitmap_internal(byte[] data, int offset, float pixel_height, byte[] pixels,
 			int pw, int ph, int first_char, int num_chars, stbtt_bakedchar* chardata)
 		{
 			float scale = 0;
@@ -730,22 +730,22 @@ namespace StbTrueTypeNext
 			return bottom_y;
 		}
 
-		public static int stbtt_CompareUTF8toUTF16_bigendian(sbyte* s1, int len1, sbyte* s2, int len2)
+		public static int stbtt_CompareUTF8toUTF16_bigendian(sbyte* s1, int len1, FakePtr<byte> s2, int len2)
 		{
 			return stbtt_CompareUTF8toUTF16_bigendian_internal(s1, len1, s2, len2);
 		}
 
-		public static int stbtt_CompareUTF8toUTF16_bigendian_internal(sbyte* s1, int len1, sbyte* s2, int len2)
+		public static int stbtt_CompareUTF8toUTF16_bigendian_internal(sbyte* s1, int len1, FakePtr<byte> s2, int len2)
 		{
-			return len1 == stbtt__CompareUTF8toUTF16_bigendian_prefix((byte*)s1, len1, (byte*)s2, len2) ? 1 : 0;
+			return len1 == stbtt__CompareUTF8toUTF16_bigendian_prefix((byte*)s1, len1, s2, len2) ? 1 : 0;
 		}
 
-		public static int stbtt_FindMatchingFont(byte* fontdata, sbyte* name, int flags)
+		public static int stbtt_FindMatchingFont(byte[] fontdata, sbyte* name, int flags)
 		{
 			return stbtt_FindMatchingFont_internal(fontdata, name, flags);
 		}
 
-		public static int stbtt_FindMatchingFont_internal(byte* font_collection, sbyte* name_utf8, int flags)
+		public static int stbtt_FindMatchingFont_internal(byte[] font_collection, sbyte* name_utf8, int flags)
 		{
 			var i = 0;
 			for (i = 0; ; ++i)
@@ -753,7 +753,7 @@ namespace StbTrueTypeNext
 				var off = stbtt_GetFontOffsetForIndex(font_collection, i);
 				if (off < 0)
 					return off;
-				if (stbtt__matches(font_collection, (uint)off, (byte*)name_utf8, flags) != 0)
+				if (stbtt__matches(new FakePtr<byte>(font_collection), (uint)off, (byte*)name_utf8, flags) != 0)
 					return off;
 			}
 		}
@@ -869,13 +869,14 @@ namespace StbTrueTypeNext
 			*xpos += b->xadvance;
 		}
 
-		public static int stbtt_GetFontOffsetForIndex(byte* data, int index)
+		public static int stbtt_GetFontOffsetForIndex(byte[] data, int index)
 		{
-			return stbtt_GetFontOffsetForIndex_internal(data, index);
+			return stbtt_GetFontOffsetForIndex_internal(new FakePtr<byte>(data), index);
 		}
 
-		public static int stbtt_GetFontOffsetForIndex_internal(byte* font_collection, int index)
+		public static int stbtt_GetFontOffsetForIndex_internal(FakePtr<byte> font_collection, int index)
 		{
+
 			if (stbtt__isfont(font_collection) != 0)
 				return index == 0 ? 0 : -1;
 			if (font_collection[0] == "ttcf"[0] && font_collection[1] == "ttcf"[1] && font_collection[2] == "ttcf"[2] &&
@@ -891,12 +892,12 @@ namespace StbTrueTypeNext
 			return -1;
 		}
 
-		public static int stbtt_GetNumberOfFonts(byte* data)
+		public static int stbtt_GetNumberOfFonts(byte[] data)
 		{
-			return stbtt_GetNumberOfFonts_internal(data);
+			return stbtt_GetNumberOfFonts_internal(new FakePtr<byte>(data));
 		}
 
-		public static int stbtt_GetNumberOfFonts_internal(byte* font_collection)
+		public static int stbtt_GetNumberOfFonts_internal(FakePtr<byte> font_collection)
 		{
 			if (stbtt__isfont(font_collection) != 0)
 				return 1;
@@ -938,7 +939,7 @@ namespace StbTrueTypeNext
 			*xpos += b->xadvance;
 		}
 
-		public static void stbtt_GetScaledFontVMetrics(byte* fontdata, int index, float size, float* ascent,
+		public static void stbtt_GetScaledFontVMetrics(byte[] fontdata, int index, float size, float* ascent,
 			float* descent, float* lineGap)
 		{
 			var i_ascent = 0;
@@ -963,22 +964,22 @@ namespace StbTrueTypeNext
 			v->cy = (short)cy;
 		}
 
-		public static int ttLONG(byte* p)
+		public static int ttLONG(FakePtr<byte> p)
 		{
 			return (p[0] << 24) + (p[1] << 16) + (p[2] << 8) + p[3];
 		}
 
-		public static short ttSHORT(byte* p)
+		public static short ttSHORT(FakePtr<byte> p)
 		{
 			return (short)(p[0] * 256 + p[1]);
 		}
 
-		public static uint ttULONG(byte* p)
+		public static uint ttULONG(FakePtr<byte> p)
 		{
 			return (uint)((p[0] << 24) + (p[1] << 16) + (p[2] << 8) + p[3]);
 		}
 
-		public static ushort ttUSHORT(byte* p)
+		public static ushort ttUSHORT(FakePtr<byte> p)
 		{
 			return (ushort)(p[0] * 256 + p[1]);
 		}

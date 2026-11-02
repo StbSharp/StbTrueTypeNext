@@ -78,7 +78,7 @@ namespace StbTrueTypeNext
 			CRuntime.free(spc.pack_info);
 		}
 
-		public static int stbtt_PackFontRange(stbtt_pack_context spc, byte* fontdata, int font_index, float font_size,
+		public static int stbtt_PackFontRange(stbtt_pack_context spc, byte[] fontdata, int font_index, float font_size,
 			int first_unicode_codepoint_in_range, int num_chars_in_range, stbtt_packedchar* chardata_for_range)
 		{
 			var range = new stbtt_pack_range();
@@ -90,7 +90,7 @@ namespace StbTrueTypeNext
 			return stbtt_PackFontRanges(spc, fontdata, font_index, &range, 1);
 		}
 
-		public static int stbtt_PackFontRanges(stbtt_pack_context spc, byte* fontdata, int font_index,
+		public static int stbtt_PackFontRanges(stbtt_pack_context spc, byte[] fontdata, int font_index,
 			stbtt_pack_range* ranges, int num_ranges)
 		{
 			var info = new stbtt_fontinfo();
