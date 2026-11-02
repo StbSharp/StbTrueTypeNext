@@ -1637,20 +1637,20 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static int stbtt_GetKerningTable(stbtt_fontinfo info, stbtt_kerningentry* table, int table_length)
+		public static stbtt_kerningentry[] stbtt_GetKerningTable(stbtt_fontinfo info)
 		{
 			var data = new FakePtr<byte>(info.data, info.kern);
 			var k = 0;
 			var length = 0;
 			if (info.kern == 0)
-				return 0;
+				return null;
 			if (ttUSHORT(data + 2) < 1)
-				return 0;
+				return null;
 			if (ttUSHORT(data + 8) != 1)
-				return 0;
+				return null;
 			length = ttUSHORT(data + 10);
-			if (table_length < length)
-				length = table_length;
+
+			var table = new stbtt_kerningentry[length];
 			for (k = 0; k < length; k++)
 			{
 				table[k].glyph1 = ttUSHORT(data + 18 + k * 6);
@@ -1658,19 +1658,7 @@ namespace StbTrueTypeNext
 				table[k].advance = ttSHORT(data + 22 + k * 6);
 			}
 
-			return length;
-		}
-
-		public static int stbtt_GetKerningTableLength(stbtt_fontinfo info)
-		{
-			var data = new FakePtr<byte>(info.data, info.kern);
-			if (info.kern == 0)
-				return 0;
-			if (ttUSHORT(data + 2) < 1)
-				return 0;
-			if (ttUSHORT(data + 8) != 1)
-				return 0;
-			return ttUSHORT(data + 10);
+			return table;
 		}
 
 		public static int stbtt_InitFont(stbtt_fontinfo info, byte[] data, int offset)
