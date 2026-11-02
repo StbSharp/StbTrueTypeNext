@@ -47,8 +47,8 @@ unsafe class Program
 				continue;
 			}
 
-			int advanceTemp = 0, lsbTemp = 0;
-			stbtt_GetGlyphHMetrics(info, glyphId, &advanceTemp, &lsbTemp);
+			int advanceTemp, lsbTemp;
+			stbtt_GetGlyphHMetrics(info, glyphId, out advanceTemp, out lsbTemp);
 			var advance = (int)(advanceTemp * scale + 0.5f);
 
 			int x0, y0, x1, y1;
