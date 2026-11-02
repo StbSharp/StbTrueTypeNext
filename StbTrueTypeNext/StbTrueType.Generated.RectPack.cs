@@ -14,7 +14,7 @@ namespace StbTrueTypeNext
 			con.bottom_y = 0;
 		}
 
-		public static void stbrp_pack_rects(stbrp_context con, stbrp_rect* rects, int num_rects)
+		public static void stbrp_pack_rects(stbrp_context con, stbrp_rect[] rects, int num_rects)
 		{
 			var i = 0;
 			for (i = 0; i < num_rects; ++i)
@@ -91,7 +91,6 @@ namespace StbTrueTypeNext
 			var j = 0;
 			var n = 0;
 			var return_value = 1;
-			stbrp_rect* rects;
 			for (i = 0; i < num_ranges; ++i)
 				for (j = 0; j < ranges[i].num_chars; ++j)
 					ranges[i].chardata_for_range[j].x0 = ranges[i].chardata_for_range[j].y0 =
@@ -100,19 +99,18 @@ namespace StbTrueTypeNext
 			n = 0;
 			for (i = 0; i < num_ranges; ++i) n += ranges[i].num_chars;
 
-			rects = (stbrp_rect*)CRuntime.malloc((ulong)(sizeof(stbrp_rect) * n));
-			if (rects == null)
-				return 0;
+			var rects = new stbrp_rect[n];
+
 			stbtt_InitFont(info, fontdata, stbtt_GetFontOffsetForIndex(fontdata, font_index));
 			n = stbtt_PackFontRangesGatherRects(spc, info, ranges, num_ranges, rects);
 			stbtt_PackFontRangesPackRects(spc, rects, n);
 			return_value = stbtt_PackFontRangesRenderIntoRects(spc, info, ranges, num_ranges, rects);
-			CRuntime.free(rects);
+
 			return return_value;
 		}
 
 		public static int stbtt_PackFontRangesGatherRects(stbtt_pack_context spc, stbtt_fontinfo info,
-			stbtt_pack_range* ranges, int num_ranges, stbrp_rect* rects)
+			stbtt_pack_range* ranges, int num_ranges, stbrp_rect[] rects)
 		{
 			var i = 0;
 			var j = 0;
@@ -156,13 +154,10 @@ namespace StbTrueTypeNext
 			return k;
 		}
 
-		public static void stbtt_PackFontRangesPackRects(stbtt_pack_context spc, stbrp_rect* rects, int num_rects)
-		{
-			stbrp_pack_rects((stbrp_context)spc.pack_info, rects, num_rects);
-		}
+		public static void stbtt_PackFontRangesPackRects(stbtt_pack_context spc, stbrp_rect[] rects, int num_rects) => stbrp_pack_rects(spc.pack_info, rects, num_rects);
 
 		public static int stbtt_PackFontRangesRenderIntoRects(stbtt_pack_context spc, stbtt_fontinfo info,
-			stbtt_pack_range* ranges, int num_ranges, stbrp_rect* rects)
+			stbtt_pack_range* ranges, int num_ranges, stbrp_rect[] rects)
 		{
 			var i = 0;
 			var j = 0;
@@ -188,8 +183,8 @@ namespace StbTrueTypeNext
 				sub_y = stbtt__oversample_shift((int)spc.v_oversample);
 				for (j = 0; j < ranges[i].num_chars; ++j)
 				{
-					var r = &rects[k];
-					if (r->was_packed != 0 && r->w != 0 && r->h != 0)
+					var r = rects[k];
+					if (r.was_packed != 0 && r.w != 0 && r.h != 0)
 					{
 						var advance = 0;
 						var lsb = 0;
@@ -202,33 +197,33 @@ namespace StbTrueTypeNext
 							: ranges[i].array_of_unicode_codepoints[j];
 						var glyph = stbtt_FindGlyphIndex(info, codepoint);
 						var pad = spc.padding;
-						r->x += pad;
-						r->y += pad;
-						r->w -= pad;
-						r->h -= pad;
+						r.x += pad;
+						r.y += pad;
+						r.w -= pad;
+						r.h -= pad;
 						stbtt_GetGlyphHMetrics(info, glyph, out advance, out lsb);
 						stbtt_GetGlyphBitmapBox(info, glyph, scale * spc.h_oversample, scale * spc.v_oversample,
 							out x0, out y0, out x1, out y1);
-						stbtt_MakeGlyphBitmapSubpixel(info, new FakePtr<byte>(spc.pixels, r->x + r->y * spc.stride_in_bytes),
-							(int)(r->w - spc.h_oversample + 1), (int)(r->h - spc.v_oversample + 1),
+						stbtt_MakeGlyphBitmapSubpixel(info, new FakePtr<byte>(spc.pixels, r.x + r.y * spc.stride_in_bytes),
+							(int)(r.w - spc.h_oversample + 1), (int)(r.h - spc.v_oversample + 1),
 							spc.stride_in_bytes, scale * spc.h_oversample, scale * spc.v_oversample, 0, 0, glyph);
 						if (spc.h_oversample > 1)
-							stbtt__h_prefilter(new FakePtr<byte>(spc.pixels, r->x + r->y * spc.stride_in_bytes), r->w, r->h,
+							stbtt__h_prefilter(new FakePtr<byte>(spc.pixels, r.x + r.y * spc.stride_in_bytes), r.w, r.h,
 								spc.stride_in_bytes, spc.h_oversample);
 						if (spc.v_oversample > 1)
-							stbtt__v_prefilter(new FakePtr<byte>(spc.pixels, r->x + r->y * spc.stride_in_bytes), r->w, r->h,
+							stbtt__v_prefilter(new FakePtr<byte>(spc.pixels, r.x + r.y * spc.stride_in_bytes), r.w, r.h,
 								spc.stride_in_bytes, spc.v_oversample);
 
 						var bc = ranges[i].chardata_for_range[j];
-						bc.x0 = (ushort)(short)r->x;
-						bc.y0 = (ushort)(short)r->y;
-						bc.x1 = (ushort)(short)(r->x + r->w);
-						bc.y1 = (ushort)(short)(r->y + r->h);
+						bc.x0 = (ushort)(short)r.x;
+						bc.y0 = (ushort)(short)r.y;
+						bc.x1 = (ushort)(short)(r.x + r.w);
+						bc.y1 = (ushort)(short)(r.y + r.h);
 						bc.xadvance = scale * advance;
 						bc.xoff = x0 * recip_h + sub_x;
 						bc.yoff = y0 * recip_v + sub_y;
-						bc.xoff2 = (x0 + r->w) * recip_h + sub_x;
-						bc.yoff2 = (y0 + r->h) * recip_v + sub_y;
+						bc.xoff2 = (x0 + r.w) * recip_h + sub_x;
+						bc.yoff2 = (y0 + r.h) * recip_v + sub_y;
 						ranges[i].chardata_for_range[j] = bc;
 						if (glyph == 0)
 							missing_glyph = j;
@@ -237,7 +232,7 @@ namespace StbTrueTypeNext
 					{
 						return_value = 0;
 					}
-					else if (r->was_packed != 0 && r->w == 0 && r->h == 0 && missing_glyph >= 0)
+					else if (r.was_packed != 0 && r.w == 0 && r.h == 0 && missing_glyph >= 0)
 					{
 						ranges[i].chardata_for_range[j] = ranges[i].chardata_for_range[missing_glyph];
 					}
@@ -245,6 +240,8 @@ namespace StbTrueTypeNext
 					{
 						return_value = 0;
 					}
+
+					rects[k] = r;
 
 					++k;
 				}
