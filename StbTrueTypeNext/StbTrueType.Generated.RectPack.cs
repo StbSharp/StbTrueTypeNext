@@ -1,4 +1,3 @@
-using StbTrueTypeNext.Hebron.Runtime;
 using System.Runtime.InteropServices;
 
 namespace StbTrueTypeNext
@@ -42,13 +41,7 @@ namespace StbTrueTypeNext
 		{
 			var context = new stbrp_context();
 			var num_nodes = pw - padding;
-			var nodes = (stbrp_node*)CRuntime.malloc((ulong)(sizeof(stbrp_node) * num_nodes));
-			if (nodes == null)
-			{
-				if (nodes != null)
-					CRuntime.free(nodes);
-				return 0;
-			}
+			var nodes = new stbrp_node[num_nodes];
 
 			spc.width = pw;
 			spc.height = ph;
@@ -68,7 +61,6 @@ namespace StbTrueTypeNext
 
 		public static void stbtt_PackEnd(stbtt_pack_context spc)
 		{
-			CRuntime.free(spc.nodes);
 		}
 
 		public static int stbtt_PackFontRange(stbtt_pack_context spc, byte[] fontdata, int font_index, float font_size,
@@ -80,17 +72,21 @@ namespace StbTrueTypeNext
 			range.num_chars = num_chars_in_range;
 			range.chardata_for_range = chardata_for_range;
 			range.font_size = font_size;
-			return stbtt_PackFontRanges(spc, fontdata, font_index, &range, 1);
+
+			var ranges = new stbtt_pack_range[] { range };
+			
+			return stbtt_PackFontRanges(spc, fontdata, font_index, ranges);
 		}
 
-		public static int stbtt_PackFontRanges(stbtt_pack_context spc, byte[] fontdata, int font_index,
-			stbtt_pack_range* ranges, int num_ranges)
+		public static int stbtt_PackFontRanges(stbtt_pack_context spc, byte[] fontdata, int font_index, stbtt_pack_range[] ranges)
 		{
 			var info = new stbtt_fontinfo();
 			var i = 0;
 			var j = 0;
 			var n = 0;
 			var return_value = 1;
+
+			var num_ranges = ranges.Length;
 			for (i = 0; i < num_ranges; ++i)
 				for (j = 0; j < ranges[i].num_chars; ++j)
 					ranges[i].chardata_for_range[j].x0 = ranges[i].chardata_for_range[j].y0 =
@@ -102,21 +98,23 @@ namespace StbTrueTypeNext
 			var rects = new stbrp_rect[n];
 
 			stbtt_InitFont(info, fontdata, stbtt_GetFontOffsetForIndex(fontdata, font_index));
-			n = stbtt_PackFontRangesGatherRects(spc, info, ranges, num_ranges, rects);
+			n = stbtt_PackFontRangesGatherRects(spc, info, ranges, rects);
 			stbtt_PackFontRangesPackRects(spc, rects, n);
-			return_value = stbtt_PackFontRangesRenderIntoRects(spc, info, ranges, num_ranges, rects);
+			return_value = stbtt_PackFontRangesRenderIntoRects(spc, info, ranges, rects);
 
 			return return_value;
 		}
 
 		public static int stbtt_PackFontRangesGatherRects(stbtt_pack_context spc, stbtt_fontinfo info,
-			stbtt_pack_range* ranges, int num_ranges, stbrp_rect[] rects)
+			stbtt_pack_range[] ranges, stbrp_rect[] rects)
 		{
 			var i = 0;
 			var j = 0;
 			var k = 0;
 			var missing_glyph_added = 0;
 			k = 0;
+
+			var num_ranges = ranges.Length;
 			for (i = 0; i < num_ranges; ++i)
 			{
 				var fh = ranges[i].font_size;
@@ -157,7 +155,7 @@ namespace StbTrueTypeNext
 		public static void stbtt_PackFontRangesPackRects(stbtt_pack_context spc, stbrp_rect[] rects, int num_rects) => stbrp_pack_rects(spc.pack_info, rects, num_rects);
 
 		public static int stbtt_PackFontRangesRenderIntoRects(stbtt_pack_context spc, stbtt_fontinfo info,
-			stbtt_pack_range* ranges, int num_ranges, stbrp_rect[] rects)
+			stbtt_pack_range[] ranges, stbrp_rect[] rects)
 		{
 			var i = 0;
 			var j = 0;
@@ -167,6 +165,8 @@ namespace StbTrueTypeNext
 			var old_h_over = (int)spc.h_oversample;
 			var old_v_over = (int)spc.v_oversample;
 			k = 0;
+
+			var num_ranges = ranges.Length;
 			for (i = 0; i < num_ranges; ++i)
 			{
 				var fh = ranges[i].font_size;
@@ -295,7 +295,7 @@ namespace StbTrueTypeNext
 		{
 			public uint h_oversample;
 			public int height;
-			public void* nodes;
+			public stbrp_node[] nodes;
 			public stbrp_context pack_info;
 			public int padding;
 			public byte[] pixels;
@@ -305,8 +305,7 @@ namespace StbTrueTypeNext
 			public int width;
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
-		public struct stbtt_pack_range
+		public class stbtt_pack_range
 		{
 			public float font_size;
 			public int first_unicode_codepoint_in_range;
