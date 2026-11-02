@@ -1739,11 +1739,11 @@ namespace StbTrueTypeNext
 				b = info.cff;
 				b.stbtt__buf_skip(2);
 				b.stbtt__buf_seek(b.stbtt__buf_get8());
-				stbtt__cff_get_index(&b);
-				topdictidx = stbtt__cff_get_index(&b);
+				b.stbtt__cff_get_index();
+				topdictidx = b.stbtt__cff_get_index();
 				topdict = stbtt__cff_index_get(topdictidx, 0);
-				stbtt__cff_get_index(&b);
-				info.gsubrs = stbtt__cff_get_index(&b);
+				b.stbtt__cff_get_index();
+				info.gsubrs = b.stbtt__cff_get_index();
 				stbtt__dict_get_ints(&topdict, 17, 1, &charstrings);
 				stbtt__dict_get_ints(&topdict, 0x100 | 6, 1, &cstype);
 				stbtt__dict_get_ints(&topdict, 0x100 | 36, 1, &fdarrayoff);
@@ -1758,12 +1758,12 @@ namespace StbTrueTypeNext
 					if (fdselectoff == 0)
 						return 0;
 					b.stbtt__buf_seek((int)fdarrayoff);
-					info.fontdicts = stbtt__cff_get_index(&b);
+					info.fontdicts = b.stbtt__cff_get_index();
 					info.fdselect = b.stbtt__buf_range((int)fdselectoff, (int)(b.size - fdselectoff));
 				}
 
 				b.stbtt__buf_seek((int)charstrings);
-				info.charstrings = stbtt__cff_get_index(&b);
+				info.charstrings = b.stbtt__cff_get_index();
 			}
 
 			t = stbtt__find_table(dataPtr, (uint)fontstart, "maxp");

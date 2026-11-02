@@ -6,23 +6,6 @@ namespace StbTrueTypeNext
 {
 	unsafe partial class StbTrueType
 	{
-		public static stbtt__buf stbtt__cff_get_index(stbtt__buf* b)
-		{
-			var count = 0;
-			var start = 0;
-			var offsize = 0;
-			start = b->cursor;
-			count = (int)b->stbtt__buf_get(2);
-			if (count != 0)
-			{
-				offsize = b->stbtt__buf_get8();
-				b->stbtt__buf_skip(offsize * count);
-				b->stbtt__buf_skip((int)(b->stbtt__buf_get(offsize) - 1));
-			}
-
-			return b->stbtt__buf_range(start, b->cursor - start);
-		}
-
 		public static int stbtt__cff_index_count(stbtt__buf* b)
 		{
 			b->stbtt__buf_seek(0);
@@ -135,7 +118,7 @@ namespace StbTrueTypeNext
 			if (subrsoff == 0)
 				return stbtt__buf.Null;
 			cff.stbtt__buf_seek((int)(private_loc[1] + subrsoff));
-			return stbtt__cff_get_index(&cff);
+			return cff.stbtt__cff_get_index();
 		}
 
 		public static stbtt__buf stbtt__new_buf(FakePtr<byte> p, ulong size)
@@ -197,6 +180,23 @@ namespace StbTrueTypeNext
 			public void stbtt__buf_skip(int o)
 			{
 				stbtt__buf_seek(cursor + o);
+			}
+
+			public stbtt__buf stbtt__cff_get_index()
+			{
+				var count = 0;
+				var start = 0;
+				var offsize = 0;
+				start = cursor;
+				count = (int)stbtt__buf_get(2);
+				if (count != 0)
+				{
+					offsize = stbtt__buf_get8();
+					stbtt__buf_skip(offsize * count);
+					stbtt__buf_skip((int)(stbtt__buf_get(offsize) - 1));
+				}
+
+				return stbtt__buf_range(start, cursor - start);
 			}
 		}
 	}
