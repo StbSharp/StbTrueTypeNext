@@ -5,7 +5,7 @@ namespace StbTrueTypeNext
 {
 	unsafe partial class StbTrueType
 	{
-		public static void stbrp_init_target(stbrp_context con, int pw, int ph, stbrp_node* nodes, int num_nodes)
+		public static void stbrp_init_target(stbrp_context con, int pw, int ph)
 		{
 			con.width = pw;
 			con.height = ph;
@@ -60,7 +60,7 @@ namespace StbTrueTypeNext
 			spc.h_oversample = 1;
 			spc.v_oversample = 1;
 			spc.skip_missing = 0;
-			stbrp_init_target(context, pw - padding, ph - padding, nodes, num_nodes);
+			stbrp_init_target(context, pw - padding, ph - padding);
 
 			pixels.Set((byte)0, pw * ph);
 			return 1;
