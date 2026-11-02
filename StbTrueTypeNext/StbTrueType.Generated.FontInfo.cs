@@ -360,9 +360,12 @@ namespace StbTrueTypeNext
 		public static int stbtt__GetGlyphInfoT2(stbtt_fontinfo info, int glyph_index, int* x0, int* y0, int* x1,
 			int* y1)
 		{
-			var c = new stbtt__csctx();
-			c.bounds = 1;
-			var r = stbtt__run_charstring(info, glyph_index, &c);
+			var c = new stbtt__csctx
+			{
+				bounds = 1
+			};
+
+			var r = stbtt__run_charstring(info, glyph_index, c);
 			if (x0 != null)
 				*x0 = r != 0 ? c.min_x : 0;
 			if (y0 != null)
@@ -408,14 +411,20 @@ namespace StbTrueTypeNext
 
 		public static int stbtt__GetGlyphShapeT2(stbtt_fontinfo info, int glyph_index, out stbtt_vertex[] pvertices)
 		{
-			var count_ctx = new stbtt__csctx();
-			count_ctx.bounds = 1;
-			var output_ctx = new stbtt__csctx();
-			if (stbtt__run_charstring(info, glyph_index, &count_ctx) != 0)
+			var count_ctx = new stbtt__csctx
 			{
+				bounds = 1
+			};
+
+			if (stbtt__run_charstring(info, glyph_index, count_ctx) != 0)
+			{
+				var output_ctx = new stbtt__csctx();
 				pvertices = new stbtt_vertex[count_ctx.num_vertices];
 				output_ctx.pvertices = pvertices;
-				if (stbtt__run_charstring(info, glyph_index, &output_ctx) != 0) return output_ctx.num_vertices;
+				if (stbtt__run_charstring(info, glyph_index, output_ctx) != 0)
+				{
+					return output_ctx.num_vertices;
+				}
 			}
 
 			pvertices = null;
@@ -693,7 +702,7 @@ namespace StbTrueTypeNext
 			return num_vertices;
 		}
 
-		public static int stbtt__run_charstring(stbtt_fontinfo info, int glyph_index, stbtt__csctx* c)
+		public static int stbtt__run_charstring(stbtt_fontinfo info, int glyph_index, stbtt__csctx c)
 		{
 			var in_header = 1;
 			var maskbits = 0;
