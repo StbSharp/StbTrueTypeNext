@@ -36,7 +36,6 @@ namespace StbTrueTypeNext
 			public int numGlyphs;
 			public stbtt__buf subrs;
 			public int svg;
-			public void* userdata;
 			public bool useOldRasterizer;
 		}
 

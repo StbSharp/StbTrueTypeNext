@@ -1325,8 +1325,7 @@ namespace StbTrueTypeNext
 			{
 				gbm.pixels = new FakePtr<byte>(gbm.w * gbm.h);
 				gbm.stride = gbm.w;
-				stbtt_Rasterize(gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1,
-					info.userdata, info.useOldRasterizer);
+				stbtt_Rasterize(gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.useOldRasterizer);
 			}
 
 			return gbm.pixels.Data;
@@ -1855,8 +1854,9 @@ namespace StbTrueTypeNext
 			gbm.h = out_h;
 			gbm.stride = out_stride;
 			if (gbm.w != 0 && gbm.h != 0)
-				stbtt_Rasterize(gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1,
-					info.userdata, info.useOldRasterizer);
+			{
+				stbtt_Rasterize(gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.useOldRasterizer);
+			}
 		}
 
 		public static void stbtt_MakeGlyphBitmapSubpixelPrefilter(stbtt_fontinfo info, byte[] output, int out_w,

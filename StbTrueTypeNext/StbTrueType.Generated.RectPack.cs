@@ -38,8 +38,7 @@ namespace StbTrueTypeNext
 			for (; i < num_rects; ++i) rects[i].was_packed = 0;
 		}
 
-		public static int stbtt_PackBegin(stbtt_pack_context spc, byte[] pixels, int pw, int ph, int stride_in_bytes,
-			int padding, void* alloc_context)
+		public static int stbtt_PackBegin(stbtt_pack_context spc, byte[] pixels, int pw, int ph, int stride_in_bytes, int padding)
 		{
 			var context = (stbrp_context*)CRuntime.malloc((ulong)sizeof(stbrp_context));
 			var num_nodes = pw - padding;
@@ -53,7 +52,6 @@ namespace StbTrueTypeNext
 				return 0;
 			}
 
-			spc.user_allocator_context = alloc_context;
 			spc.width = pw;
 			spc.height = ph;
 			spc.pixels = pixels;
@@ -108,7 +106,6 @@ namespace StbTrueTypeNext
 			rects = (stbrp_rect*)CRuntime.malloc((ulong)(sizeof(stbrp_rect) * n));
 			if (rects == null)
 				return 0;
-			info.userdata = spc.user_allocator_context;
 			stbtt_InitFont(info, fontdata, stbtt_GetFontOffsetForIndex(fontdata, font_index));
 			n = stbtt_PackFontRangesGatherRects(spc, info, ranges, num_ranges, rects);
 			stbtt_PackFontRangesPackRects(spc, rects, n);
@@ -309,7 +306,6 @@ namespace StbTrueTypeNext
 			public byte[] pixels;
 			public int skip_missing;
 			public int stride_in_bytes;
-			public void* user_allocator_context;
 			public uint v_oversample;
 			public int width;
 		}

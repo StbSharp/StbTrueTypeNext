@@ -7,7 +7,7 @@ namespace StbTrueTypeNext
 {
 	unsafe partial class StbTrueType
 	{
-		public static void* stbtt__hheap_alloc(stbtt__hheap* hh, ulong size, void* userdata)
+		public static void* stbtt__hheap_alloc(stbtt__hheap* hh, ulong size)
 		{
 			if (hh->first_free != null)
 			{
@@ -32,7 +32,7 @@ namespace StbTrueTypeNext
 			return (sbyte*)hh->head + sizeof(stbtt__hheap_chunk) + size * (ulong)hh->num_remaining_in_head_chunk;
 		}
 
-		public static void stbtt__hheap_cleanup(stbtt__hheap* hh, void* userdata)
+		public static void stbtt__hheap_cleanup(stbtt__hheap* hh)
 		{
 			var c = hh->head;
 			while (c != null)
@@ -50,9 +50,9 @@ namespace StbTrueTypeNext
 		}
 
 		public static stbtt__active_edge* stbtt__new_active(stbtt__hheap* hh, stbtt__edge* e, int off_x,
-			float start_point, void* userdata)
+			float start_point)
 		{
-			var z = (stbtt__active_edge*)stbtt__hheap_alloc(hh, (ulong)sizeof(stbtt__active_edge), userdata);
+			var z = (stbtt__active_edge*)stbtt__hheap_alloc(hh, (ulong)sizeof(stbtt__active_edge));
 			var dxdy = (e->x1 - e->x0) / (e->y1 - e->y0);
 			if (z == null)
 				return z;

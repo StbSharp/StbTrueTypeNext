@@ -5,9 +5,9 @@ namespace StbTrueTypeNext
 {
 	unsafe partial class StbTrueType
 	{
-		public static stbtt__active_edge_old_rasterizer* stbtt__new_active_old_rasterizer(stbtt__hheap* hh, stbtt__edge* e, int off_x, float start_point, void* userdata)
+		public static stbtt__active_edge_old_rasterizer* stbtt__new_active_old_rasterizer(stbtt__hheap* hh, stbtt__edge* e, int off_x, float start_point)
 		{
-			stbtt__active_edge_old_rasterizer* z = (stbtt__active_edge_old_rasterizer*)(stbtt__hheap_alloc(hh, (ulong)(sizeof(stbtt__active_edge_old_rasterizer)), userdata));
+			stbtt__active_edge_old_rasterizer* z = (stbtt__active_edge_old_rasterizer*)(stbtt__hheap_alloc(hh, (ulong)(sizeof(stbtt__active_edge_old_rasterizer))));
 			float dxdy = (e->x1 - e->x0) / (e->y1 - e->y0);
 			if (z == null)
 				return z;
@@ -72,7 +72,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static void stbtt__rasterize_sorted_edges_old_rasterizer(stbtt__bitmap result, stbtt__edge* e, int n, int vsubsample, int off_x, int off_y, void* userdata)
+		public static void stbtt__rasterize_sorted_edges_old_rasterizer(stbtt__bitmap result, stbtt__edge* e, int n, int vsubsample, int off_x, int off_y)
 		{
 			usedOldRasterizer = true;
 
@@ -145,7 +145,7 @@ namespace StbTrueTypeNext
 					{
 						if ((e->y1) > (scan_y))
 						{
-							stbtt__active_edge_old_rasterizer* z = stbtt__new_active_old_rasterizer(&hh, e, (int)(off_x), (float)(scan_y), userdata);
+							stbtt__active_edge_old_rasterizer* z = stbtt__new_active_old_rasterizer(&hh, e, (int)(off_x), (float)(scan_y));
 							if (z != null)
 							{
 								if ((active) == (null))
@@ -185,7 +185,7 @@ namespace StbTrueTypeNext
 				++j;
 			}
 
-			stbtt__hheap_cleanup(&hh, userdata);
+			stbtt__hheap_cleanup(&hh);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]

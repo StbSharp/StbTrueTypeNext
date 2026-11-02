@@ -18,7 +18,7 @@ public unsafe class FontBaker
 		_bitmap = new byte[width * height];
 		_context = new StbTrueType.stbtt_pack_context();
 
-		StbTrueType.stbtt_PackBegin(_context, _bitmap, width, height, width, 1, null);
+		StbTrueType.stbtt_PackBegin(_context, _bitmap, width, height, width, 1);
 
 		_glyphs = new Dictionary<int, GlyphInfo>();
 	}

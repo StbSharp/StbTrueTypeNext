@@ -216,8 +216,7 @@ namespace StbTrueTypeNext
 		}
 
 		public static void stbtt__rasterize(stbtt__bitmap result, stbtt__point[] pts, int* wcount, int windings,
-			float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert,
-			void* userdata, bool useOldRasterizer)
+			float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, bool useOldRasterizer)
 		{
 			var y_scale_inv = invert != 0 ? -scale_y : scale_y;
 			stbtt__edge* e;
@@ -273,18 +272,18 @@ namespace StbTrueTypeNext
 
 			if (!useOldRasterizer)
 			{
-				stbtt__rasterize_sorted_edges(result, e, n, vsubsample, off_x, off_y, userdata);
+				stbtt__rasterize_sorted_edges(result, e, n, vsubsample, off_x, off_y);
 			}
 			else
 			{
-				stbtt__rasterize_sorted_edges_old_rasterizer(result, e, n, vsubsample, off_x, off_y, userdata);
+				stbtt__rasterize_sorted_edges_old_rasterizer(result, e, n, vsubsample, off_x, off_y);
 			}
 
 			CRuntime.free(e);
 		}
 
 		public static void stbtt__rasterize_sorted_edges(stbtt__bitmap result, stbtt__edge* e, int n, int vsubsample,
-			int off_x, int off_y, void* userdata)
+			int off_x, int off_y)
 		{
 			usedOldRasterizer = false;
 
@@ -334,7 +333,7 @@ namespace StbTrueTypeNext
 				{
 					if (e->y0 != e->y1)
 					{
-						var z = stbtt__new_active(&hh, e, off_x, scan_y_top, userdata);
+						var z = stbtt__new_active(&hh, e, off_x, scan_y_top);
 						if (z != null)
 						{
 							if (j == 0 && off_y != 0)
@@ -379,7 +378,7 @@ namespace StbTrueTypeNext
 				++j;
 			}
 
-			stbtt__hheap_cleanup(&hh, userdata);
+			stbtt__hheap_cleanup(&hh);
 		}
 
 		public static void stbtt__sort_edges(stbtt__edge* p, int n)
@@ -475,18 +474,17 @@ namespace StbTrueTypeNext
 		}
 
 		public static void stbtt_Rasterize(stbtt__bitmap result, float flatness_in_pixels, stbtt_vertex[] vertices,
-			int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert,
-			void* userdata, bool useOldRasterizer)
+			int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, bool useOldRasterizer)
 		{
 			var scale = scale_x > scale_y ? scale_y : scale_x;
 			var winding_count = 0;
 			int* winding_lengths = null;
 			var windings = stbtt_FlattenCurves(vertices, num_verts, flatness_in_pixels / scale, &winding_lengths,
-				&winding_count, userdata);
+				&winding_count);
 			if (windings != null)
 			{
 				stbtt__rasterize(result, windings, winding_lengths, winding_count, scale_x, scale_y, shift_x, shift_y,
-					x_off, y_off, (int)invert, userdata, useOldRasterizer);
+					x_off, y_off, (int)invert, useOldRasterizer);
 				CRuntime.free(winding_lengths);
 			}
 		}

@@ -669,7 +669,7 @@ namespace StbTrueTypeNext
 			var bottom_y = 0;
 			var i = 0;
 			var f = new stbtt_fontinfo();
-			f.userdata = null;
+
 			if (stbtt_InitFont(f, data, offset) == 0)
 				return -1;
 			pixels.Set((byte)0, pw * ph);
@@ -744,7 +744,7 @@ namespace StbTrueTypeNext
 		}
 
 		public static stbtt__point[] stbtt_FlattenCurves(stbtt_vertex[] vertices, int num_verts, float objspace_flatness,
-			int** contour_lengths, int* num_contours, void* userdata)
+			int** contour_lengths, int* num_contours)
 		{
 			stbtt__point[] points = null;
 			var num_points = 0;
@@ -816,12 +816,12 @@ namespace StbTrueTypeNext
 			return points;
 		}
 
-		public static void stbtt_FreeBitmap(byte* bitmap, void* userdata)
+		public static void stbtt_FreeBitmap(byte* bitmap)
 		{
 			CRuntime.free(bitmap);
 		}
 
-		public static void stbtt_FreeSDF(byte* bitmap, void* userdata)
+		public static void stbtt_FreeSDF(byte* bitmap)
 		{
 			CRuntime.free(bitmap);
 		}
