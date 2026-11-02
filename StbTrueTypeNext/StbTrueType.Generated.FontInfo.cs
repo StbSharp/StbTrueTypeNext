@@ -1,6 +1,7 @@
 using StbTrueTypeNext.Hebron.Runtime;
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace StbTrueTypeNext
 {
@@ -1199,8 +1200,7 @@ namespace StbTrueTypeNext
 			y1 = ttSHORT(dataPtr + info.head + 42);
 		}
 
-		public static FakePtr<byte> stbtt_GetFontNameString(stbtt_fontinfo font, int* length, int platformID, int encodingID,
-			int languageID, int nameID)
+		public static string stbtt_GetFontNameString(stbtt_fontinfo font, int platformID, int encodingID, int languageID, int nameID)
 		{
 			var i = 0;
 			var count = 0;
@@ -1209,7 +1209,10 @@ namespace StbTrueTypeNext
 			var offset = (uint)font.fontstart;
 			var nm = stbtt__find_table(fc, offset, "name");
 			if (nm == 0)
-				return FakePtr<byte>.Null;
+			{
+				return null;
+			}
+
 			count = ttUSHORT(fc + nm + 2);
 			stringOffset = (int)(nm + ttUSHORT(fc + nm + 4));
 			for (i = 0; i < count; ++i)
@@ -1218,12 +1221,20 @@ namespace StbTrueTypeNext
 				if (platformID == ttUSHORT(fc + loc + 0) && encodingID == ttUSHORT(fc + loc + 2) &&
 					languageID == ttUSHORT(fc + loc + 4) && nameID == ttUSHORT(fc + loc + 6))
 				{
-					*length = ttUSHORT(fc + loc + 8);
-					return fc + stringOffset + ttUSHORT(fc + loc + 10);
+					var sb = new StringBuilder();
+					var length = ttUSHORT(fc + loc + 8);
+
+					var ptr = fc + stringOffset + ttUSHORT(fc + loc + 10);
+					for (var j = 0; j < length; ++j)
+					{
+						sb.Append((char)ptr[j]);
+					}
+
+					return sb.ToString();
 				}
 			}
 
-			return FakePtr<byte>.Null;
+			return null;
 		}
 
 		public static void stbtt_GetFontVMetrics(stbtt_fontinfo info, out int ascent, out int descent, out int lineGap)
