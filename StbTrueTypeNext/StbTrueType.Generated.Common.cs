@@ -743,8 +743,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static stbtt__point[] stbtt_FlattenCurves(stbtt_vertex[] vertices, int num_verts, float objspace_flatness,
-			int** contour_lengths, int* num_contours)
+		public static stbtt__point[] stbtt_FlattenCurves(stbtt_vertex[] vertices, int num_verts, float objspace_flatness, out int[] contour_lengths)
 		{
 			stbtt__point[] points = null;
 			var num_points = 0;
@@ -757,15 +756,10 @@ namespace StbTrueTypeNext
 				if (vertices[i].type == STBTT_vmove)
 					++n;
 
-			*num_contours = n;
+			contour_lengths = null;
 			if (n == 0)
 				return null;
-			*contour_lengths = (int*)CRuntime.malloc((ulong)(sizeof(int) * n));
-			if (*contour_lengths == null)
-			{
-				*num_contours = 0;
-				return null;
-			}
+			contour_lengths = new int[n];
 
 			for (pass = 0; pass < 2; ++pass)
 			{
@@ -783,7 +777,7 @@ namespace StbTrueTypeNext
 					{
 						case STBTT_vmove:
 							if (n >= 0)
-								(*contour_lengths)[n] = num_points - start;
+								contour_lengths[n] = num_points - start;
 							++n;
 							start = num_points;
 							x = vertices[i].x;
@@ -810,20 +804,10 @@ namespace StbTrueTypeNext
 							break;
 					}
 
-				(*contour_lengths)[n] = num_points - start;
+				contour_lengths[n] = num_points - start;
 			}
 
 			return points;
-		}
-
-		public static void stbtt_FreeBitmap(byte* bitmap)
-		{
-			CRuntime.free(bitmap);
-		}
-
-		public static void stbtt_FreeSDF(byte* bitmap)
-		{
-			CRuntime.free(bitmap);
 		}
 
 		public static void stbtt_GetBakedQuad(stbtt_bakedchar[] chardata, int pw, int ph, int char_index, float* xpos,

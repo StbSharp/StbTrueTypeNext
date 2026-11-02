@@ -215,7 +215,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static void stbtt__rasterize(stbtt__bitmap result, stbtt__point[] pts, int* wcount, int windings,
+		public static void stbtt__rasterize(stbtt__bitmap result, stbtt__point[] pts, int[] wcount,
 			float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, bool useOldRasterizer)
 		{
 			var y_scale_inv = invert != 0 ? -scale_y : scale_y;
@@ -233,6 +233,8 @@ namespace StbTrueTypeNext
 			}
 
 			n = 0;
+
+			var windings = wcount.Length;
 			for (i = 0; i < windings; ++i) n += wcount[i];
 
 			e = (stbtt__edge*)CRuntime.malloc((ulong)(sizeof(stbtt__edge) * (n + 1)));
@@ -477,15 +479,12 @@ namespace StbTrueTypeNext
 			int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, bool useOldRasterizer)
 		{
 			var scale = scale_x > scale_y ? scale_y : scale_x;
-			var winding_count = 0;
-			int* winding_lengths = null;
-			var windings = stbtt_FlattenCurves(vertices, num_verts, flatness_in_pixels / scale, &winding_lengths,
-				&winding_count);
+
+			int[] winding_lengths;
+			var windings = stbtt_FlattenCurves(vertices, num_verts, flatness_in_pixels / scale, out winding_lengths);
 			if (windings != null)
 			{
-				stbtt__rasterize(result, windings, winding_lengths, winding_count, scale_x, scale_y, shift_x, shift_y,
-					x_off, y_off, (int)invert, useOldRasterizer);
-				CRuntime.free(winding_lengths);
+				stbtt__rasterize(result, windings, winding_lengths, scale_x, scale_y, shift_x, shift_y, x_off, y_off, invert, useOldRasterizer);
 			}
 		}
 
