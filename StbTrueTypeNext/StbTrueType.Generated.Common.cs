@@ -131,8 +131,10 @@ namespace StbTrueTypeNext
 		public static int stbtt__compute_crossings_x(float x, float y, int nverts, stbtt_vertex[] verts)
 		{
 			var i = 0;
-			var orig = stackalloc float[2];
-			var ray = stackalloc float[] { 1, 0 };
+			var orig = new float[2];
+			var ray = new float[] { 1, 0 };
+			var hits = new float[4];
+
 			float y_frac = 0;
 			var winding = 0;
 			y_frac = (float)CRuntime.fmod(y, 1.0f);
@@ -174,7 +176,6 @@ namespace StbTrueTypeNext
 						var q0 = new stbtt__point(x0, y0);
 						var q1 = new stbtt__point(x1, y1);
 						var q2 = new stbtt__point(x2, y2);
-						var hits = stackalloc float[4];
 						if (q0.Equals(q1) || q1.Equals(q2))
 						{
 							x0 = verts[i - 1].x;
@@ -408,8 +409,7 @@ namespace StbTrueTypeNext
 			return stbtt__sized_trapezoid_area(height, tx1 - tx0, bx1 - bx0);
 		}
 
-		public static int stbtt__ray_intersect_bezier(float* orig, float* ray, stbtt__point q0, stbtt__point q1, stbtt__point q2,
-			float* hits)
+		public static int stbtt__ray_intersect_bezier(float[] orig, float[] ray, stbtt__point q0, stbtt__point q1, stbtt__point q2, float[] hits)
 		{
 			var q0perp = q0.y * ray[0] - q0.x * ray[1];
 			var q1perp = q1.y * ray[0] - q1.x * ray[1];
