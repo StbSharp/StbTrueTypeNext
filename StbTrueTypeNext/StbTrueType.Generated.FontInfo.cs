@@ -995,7 +995,7 @@ namespace StbTrueTypeNext
 						else
 						{
 							b.stbtt__buf_skip(-1);
-							f = (short)stbtt__cff_int(&b);
+							f = (short)b.stbtt__cff_int();
 						}
 
 						if (sp >= 48)

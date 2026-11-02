@@ -21,22 +21,6 @@ namespace StbTrueTypeNext
 			return b.stbtt__buf_range(2 + (count + 1) * offsize + start, end - start);
 		}
 
-		public static uint stbtt__cff_int(stbtt__buf* b)
-		{
-			int b0 = b->stbtt__buf_get8();
-			if (b0 >= 32 && b0 <= 246)
-				return (uint)(b0 - 139);
-			if (b0 >= 247 && b0 <= 250)
-				return (uint)((b0 - 247) * 256 + b->stbtt__buf_get8() + 108);
-			if (b0 >= 251 && b0 <= 254)
-				return (uint)(-(b0 - 251) * 256 - b->stbtt__buf_get8() - 108);
-			if (b0 == 28)
-				return b->stbtt__buf_get(2);
-			if (b0 == 29)
-				return b->stbtt__buf_get(4);
-			return 0;
-		}
-
 		public static void stbtt__cff_skip_operand(stbtt__buf* b)
 		{
 			var v = 0;
@@ -53,7 +37,7 @@ namespace StbTrueTypeNext
 			}
 			else
 			{
-				stbtt__cff_int(b);
+				b->stbtt__cff_int();
 			}
 		}
 
@@ -82,7 +66,10 @@ namespace StbTrueTypeNext
 		{
 			var i = 0;
 			var operands = stbtt__dict_get(b, key);
-			for (i = 0; i < outcount && operands.cursor < operands.size; i++) _out_[i] = stbtt__cff_int(&operands);
+			for (i = 0; i < outcount && operands.cursor < operands.size; i++)
+			{
+				_out_[i] = operands.stbtt__cff_int();
+			}
 		}
 
 		public static stbtt__buf stbtt__get_subr(stbtt__buf idx, int n)
@@ -197,6 +184,22 @@ namespace StbTrueTypeNext
 			{
 				stbtt__buf_seek(0);
 				return (int)stbtt__buf_get(2);
+			}
+
+			public uint stbtt__cff_int()
+			{
+				int b0 = stbtt__buf_get8();
+				if (b0 >= 32 && b0 <= 246)
+					return (uint)(b0 - 139);
+				if (b0 >= 247 && b0 <= 250)
+					return (uint)((b0 - 247) * 256 + stbtt__buf_get8() + 108);
+				if (b0 >= 251 && b0 <= 254)
+					return (uint)(-(b0 - 251) * 256 - stbtt__buf_get8() - 108);
+				if (b0 == 28)
+					return stbtt__buf_get(2);
+				if (b0 == 29)
+					return stbtt__buf_get(4);
+				return 0;
 			}
 		}
 	}
