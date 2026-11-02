@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace StbTrueTypeNext
 {
-	unsafe partial class StbTrueType
+	partial class StbTrueType
 	{
 		public static void stbrp_init_target(stbrp_context con, int pw, int ph)
 		{
@@ -74,7 +74,7 @@ namespace StbTrueTypeNext
 			range.font_size = font_size;
 
 			var ranges = new stbtt_pack_range[] { range };
-			
+
 			return stbtt_PackFontRanges(spc, fontdata, font_index, ranges);
 		}
 
@@ -309,7 +309,7 @@ namespace StbTrueTypeNext
 		{
 			public float font_size;
 			public int first_unicode_codepoint_in_range;
-			public int* array_of_unicode_codepoints;
+			public int[] array_of_unicode_codepoints;
 			public int num_chars;
 			public stbtt_packedchar[] chardata_for_range;
 			public byte h_oversample;
