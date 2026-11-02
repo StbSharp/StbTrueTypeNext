@@ -53,7 +53,7 @@ unsafe class Program
 
 			int x0, y0, x1, y1;
 			stbtt_GetGlyphBitmapBox(
-				info, glyphId, scale, scale, &x0, &y0, &x1, &y1
+				info, glyphId, scale, scale, out x0, out y0, out x1, out y1
 			);
 
 			posX += x0;
