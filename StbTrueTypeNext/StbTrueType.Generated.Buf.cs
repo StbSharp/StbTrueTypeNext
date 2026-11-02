@@ -6,12 +6,6 @@ namespace StbTrueTypeNext
 {
 	unsafe partial class StbTrueType
 	{
-		public static int stbtt__cff_index_count(stbtt__buf* b)
-		{
-			b->stbtt__buf_seek(0);
-			return (int)b->stbtt__buf_get(2);
-		}
-
 		public static stbtt__buf stbtt__cff_index_get(stbtt__buf b, int i)
 		{
 			var count = 0;
@@ -93,7 +87,7 @@ namespace StbTrueTypeNext
 
 		public static stbtt__buf stbtt__get_subr(stbtt__buf idx, int n)
 		{
-			var count = stbtt__cff_index_count(&idx);
+			var count = idx.stbtt__cff_index_count();
 			var bias = 107;
 			if (count >= 33900)
 				bias = 32768;
@@ -197,6 +191,12 @@ namespace StbTrueTypeNext
 				}
 
 				return stbtt__buf_range(start, cursor - start);
+			}
+
+			public int stbtt__cff_index_count()
+			{
+				stbtt__buf_seek(0);
+				return (int)stbtt__buf_get(2);
 			}
 		}
 	}
