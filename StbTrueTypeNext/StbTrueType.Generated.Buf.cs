@@ -6,22 +6,6 @@ namespace StbTrueTypeNext
 {
 	unsafe partial class StbTrueType
 	{
-		public static uint stbtt__buf_get(stbtt__buf* b, int n)
-		{
-			uint v = 0;
-			var i = 0;
-			for (i = 0; i < n; i++) v = (v << 8) | stbtt__buf_get8(b);
-
-			return v;
-		}
-
-		public static byte stbtt__buf_get8(stbtt__buf* b)
-		{
-			if (b->cursor >= b->size)
-				return 0;
-			return b->data[b->cursor++];
-		}
-
 		public static byte stbtt__buf_peek8(stbtt__buf* b)
 		{
 			if (b->cursor >= b->size)
@@ -55,12 +39,12 @@ namespace StbTrueTypeNext
 			var start = 0;
 			var offsize = 0;
 			start = b->cursor;
-			count = (int)stbtt__buf_get(b, 2);
+			count = (int)b->stbtt__buf_get(2);
 			if (count != 0)
 			{
-				offsize = stbtt__buf_get8(b);
+				offsize = b->stbtt__buf_get8();
 				stbtt__buf_skip(b, offsize * count);
-				stbtt__buf_skip(b, (int)(stbtt__buf_get(b, offsize) - 1));
+				stbtt__buf_skip(b, (int)(b->stbtt__buf_get(offsize) - 1));
 			}
 
 			return stbtt__buf_range(b, start, b->cursor - start);
@@ -69,7 +53,7 @@ namespace StbTrueTypeNext
 		public static int stbtt__cff_index_count(stbtt__buf* b)
 		{
 			stbtt__buf_seek(b, 0);
-			return (int)stbtt__buf_get(b, 2);
+			return (int)b->stbtt__buf_get(2);
 		}
 
 		public static stbtt__buf stbtt__cff_index_get(stbtt__buf b, int i)
@@ -79,27 +63,27 @@ namespace StbTrueTypeNext
 			var start = 0;
 			var end = 0;
 			stbtt__buf_seek(&b, 0);
-			count = (int)stbtt__buf_get(&b, 2);
-			offsize = stbtt__buf_get8(&b);
+			count = (int)b.stbtt__buf_get(2);
+			offsize = b.stbtt__buf_get8();
 			stbtt__buf_skip(&b, i * offsize);
-			start = (int)stbtt__buf_get(&b, offsize);
-			end = (int)stbtt__buf_get(&b, offsize);
+			start = (int)b.stbtt__buf_get(offsize);
+			end = (int)b.stbtt__buf_get(offsize);
 			return stbtt__buf_range(&b, 2 + (count + 1) * offsize + start, end - start);
 		}
 
 		public static uint stbtt__cff_int(stbtt__buf* b)
 		{
-			int b0 = stbtt__buf_get8(b);
+			int b0 = b->stbtt__buf_get8();
 			if (b0 >= 32 && b0 <= 246)
 				return (uint)(b0 - 139);
 			if (b0 >= 247 && b0 <= 250)
-				return (uint)((b0 - 247) * 256 + stbtt__buf_get8(b) + 108);
+				return (uint)((b0 - 247) * 256 + b->stbtt__buf_get8() + 108);
 			if (b0 >= 251 && b0 <= 254)
-				return (uint)(-(b0 - 251) * 256 - stbtt__buf_get8(b) - 108);
+				return (uint)(-(b0 - 251) * 256 - b->stbtt__buf_get8() - 108);
 			if (b0 == 28)
-				return stbtt__buf_get(b, 2);
+				return b->stbtt__buf_get(2);
 			if (b0 == 29)
-				return stbtt__buf_get(b, 4);
+				return b->stbtt__buf_get(4);
 			return 0;
 		}
 
@@ -112,7 +96,7 @@ namespace StbTrueTypeNext
 				stbtt__buf_skip(b, 1);
 				while (b->cursor < b->size)
 				{
-					v = stbtt__buf_get8(b);
+					v = b->stbtt__buf_get8();
 					if ((v & 0xF) == 0xF || v >> 4 == 0xF)
 						break;
 				}
@@ -134,9 +118,9 @@ namespace StbTrueTypeNext
 				while (stbtt__buf_peek8(b) >= 28) stbtt__cff_skip_operand(b);
 
 				end = b->cursor;
-				op = stbtt__buf_get8(b);
+				op = b->stbtt__buf_get8();
 				if (op == 12)
-					op = stbtt__buf_get8(b) | 0x100;
+					op = b->stbtt__buf_get8() | 0x100;
 				if (op == key)
 					return stbtt__buf_range(b, start, end - start);
 			}
@@ -198,6 +182,22 @@ namespace StbTrueTypeNext
 			public FakePtr<byte> data;
 			public int cursor;
 			public int size;
+
+			public byte stbtt__buf_get8()
+			{
+				if (cursor >= size)
+					return 0;
+				return data[cursor++];
+			}
+
+			public uint stbtt__buf_get(int n)
+			{
+				uint v = 0;
+				var i = 0;
+				for (i = 0; i < n; i++) v = (v << 8) | stbtt__buf_get8();
+
+				return v;
+			}
 		}
 	}
 }

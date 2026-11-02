@@ -19,20 +19,20 @@ namespace StbTrueTypeNext
 			var fdselector = -1;
 			var i = 0;
 			stbtt__buf_seek(&fdselect, 0);
-			fmt = stbtt__buf_get8(&fdselect);
+			fmt = fdselect.stbtt__buf_get8();
 			if (fmt == 0)
 			{
 				stbtt__buf_skip(&fdselect, glyph_index);
-				fdselector = stbtt__buf_get8(&fdselect);
+				fdselector = fdselect.stbtt__buf_get8();
 			}
 			else if (fmt == 3)
 			{
-				nranges = (int)stbtt__buf_get(&fdselect, 2);
-				start = (int)stbtt__buf_get(&fdselect, 2);
+				nranges = (int)fdselect.stbtt__buf_get(2);
+				start = (int)fdselect.stbtt__buf_get(2);
 				for (i = 0; i < nranges; i++)
 				{
-					v = stbtt__buf_get8(&fdselect);
-					end = (int)stbtt__buf_get(&fdselect, 2);
+					v = fdselect.stbtt__buf_get8();
+					end = (int)fdselect.stbtt__buf_get(2);
 					if (glyph_index >= start && glyph_index < end)
 					{
 						fdselector = v;
@@ -726,7 +726,7 @@ namespace StbTrueTypeNext
 			{
 				i = 0;
 				clear_stack = 1;
-				b0 = stbtt__buf_get8(&b);
+				b0 = b.stbtt__buf_get8();
 				switch (b0)
 				{
 					case 0x13:
@@ -907,7 +907,7 @@ namespace StbTrueTypeNext
 							float dy6 = 0;
 							float dx = 0;
 							float dy = 0;
-							int b1 = stbtt__buf_get8(&b);
+							int b1 = b.stbtt__buf_get8();
 							switch (b1)
 							{
 								case 0x22:
@@ -990,7 +990,7 @@ namespace StbTrueTypeNext
 							return 0;
 						if (b0 == 255)
 						{
-							f = (float)(int)stbtt__buf_get(&b, 4) / 0x10000;
+							f = (float)(int)b.stbtt__buf_get(4) / 0x10000;
 						}
 						else
 						{
@@ -1738,7 +1738,7 @@ namespace StbTrueTypeNext
 				info.cff = stbtt__new_buf(dataPtr + cff, 512 * 1024 * 1024);
 				b = info.cff;
 				stbtt__buf_skip(&b, 2);
-				stbtt__buf_seek(&b, stbtt__buf_get8(&b));
+				stbtt__buf_seek(&b, b.stbtt__buf_get8());
 				stbtt__cff_get_index(&b);
 				topdictidx = stbtt__cff_get_index(&b);
 				topdict = stbtt__cff_index_get(topdictidx, 0);
