@@ -510,7 +510,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static void stbtt__tesselate_cubic(stbtt__point[] points, int* num_points, float x0, float y0, float x1,
+		public static void stbtt__tesselate_cubic(stbtt__point[] points, ref int num_points, float x0, float y0, float x1,
 			float y1, float x2, float y2, float x3, float y3, float objspace_flatness_squared, int n)
 		{
 			var dx0 = x1 - x0;
@@ -541,19 +541,19 @@ namespace StbTrueTypeNext
 				var yb = (y12 + y23) / 2;
 				var mx = (xa + xb) / 2;
 				var my = (ya + yb) / 2;
-				stbtt__tesselate_cubic(points, num_points, x0, y0, x01, y01, xa, ya, mx, my, objspace_flatness_squared,
+				stbtt__tesselate_cubic(points, ref num_points, x0, y0, x01, y01, xa, ya, mx, my, objspace_flatness_squared,
 					n + 1);
-				stbtt__tesselate_cubic(points, num_points, mx, my, xb, yb, x23, y23, x3, y3, objspace_flatness_squared,
+				stbtt__tesselate_cubic(points, ref num_points, mx, my, xb, yb, x23, y23, x3, y3, objspace_flatness_squared,
 					n + 1);
 			}
 			else
 			{
-				stbtt__add_point(points, *num_points, x3, y3);
-				*num_points = *num_points + 1;
+				stbtt__add_point(points, num_points, x3, y3);
+				++num_points;
 			}
 		}
 
-		public static int stbtt__tesselate_curve(stbtt__point[] points, int* num_points, float x0, float y0, float x1,
+		public static int stbtt__tesselate_curve(stbtt__point[] points, ref int num_points, float x0, float y0, float x1,
 			float y1, float x2, float y2, float objspace_flatness_squared, int n)
 		{
 			var mx = (x0 + 2 * x1 + x2) / 4;
@@ -564,15 +564,15 @@ namespace StbTrueTypeNext
 				return 1;
 			if (dx * dx + dy * dy > objspace_flatness_squared)
 			{
-				stbtt__tesselate_curve(points, num_points, x0, y0, (x0 + x1) / 2.0f, (y0 + y1) / 2.0f, mx, my,
+				stbtt__tesselate_curve(points, ref num_points, x0, y0, (x0 + x1) / 2.0f, (y0 + y1) / 2.0f, mx, my,
 					objspace_flatness_squared, n + 1);
-				stbtt__tesselate_curve(points, num_points, mx, my, (x1 + x2) / 2.0f, (y1 + y2) / 2.0f, x2, y2,
+				stbtt__tesselate_curve(points, ref num_points, mx, my, (x1 + x2) / 2.0f, (y1 + y2) / 2.0f, x2, y2,
 					objspace_flatness_squared, n + 1);
 			}
 			else
 			{
-				stbtt__add_point(points, *num_points, x2, y2);
-				*num_points = *num_points + 1;
+				stbtt__add_point(points, num_points, x2, y2);
+				++num_points;
 			}
 
 			return 1;
@@ -797,13 +797,13 @@ namespace StbTrueTypeNext
 							stbtt__add_point(points, num_points++, x, y);
 							break;
 						case STBTT_vcurve:
-							stbtt__tesselate_curve(points, &num_points, x, y, vertices[i].cx, vertices[i].cy,
+							stbtt__tesselate_curve(points, ref num_points, x, y, vertices[i].cx, vertices[i].cy,
 								vertices[i].x, vertices[i].y, objspace_flatness_squared, 0);
 							x = vertices[i].x;
 							y = vertices[i].y;
 							break;
 						case STBTT_vcubic:
-							stbtt__tesselate_cubic(points, &num_points, x, y, vertices[i].cx, vertices[i].cy,
+							stbtt__tesselate_cubic(points, ref num_points, x, y, vertices[i].cx, vertices[i].cy,
 								vertices[i].cx1, vertices[i].cy1, vertices[i].x, vertices[i].y,
 								objspace_flatness_squared, 0);
 							x = vertices[i].x;
