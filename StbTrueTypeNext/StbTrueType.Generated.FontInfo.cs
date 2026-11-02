@@ -1173,7 +1173,7 @@ namespace StbTrueTypeNext
 			return stbtt_GetGlyphKernAdvance(info, stbtt_FindGlyphIndex(info, ch1), stbtt_FindGlyphIndex(info, ch2));
 		}
 
-		public static byte* stbtt_GetCodepointSDF(stbtt_fontinfo info, float scale, int codepoint, int padding,
+		public static byte[] stbtt_GetCodepointSDF(stbtt_fontinfo info, float scale, int codepoint, int padding,
 			byte onedge_value, float pixel_dist_scale, out int width, out int height, out int xoff, out int yoff)
 		{
 			return stbtt_GetGlyphSDF(info, scale, stbtt_FindGlyphIndex(info, codepoint), padding, onedge_value,
@@ -1229,7 +1229,7 @@ namespace StbTrueTypeNext
 		public static void stbtt_GetFontVMetrics(stbtt_fontinfo info, out int ascent, out int descent, out int lineGap)
 		{
 			var dataPtr = new FakePtr<byte>(info.data);
-			
+
 			ascent = ttSHORT(dataPtr + info.hhea + 4);
 			descent = ttSHORT(dataPtr + info.hhea + 6);
 			lineGap = ttSHORT(dataPtr + info.hhea + 8);
@@ -1379,10 +1379,11 @@ namespace StbTrueTypeNext
 			return xAdvance;
 		}
 
-		public static byte* stbtt_GetGlyphSDF(stbtt_fontinfo info, float scale, int glyph, int padding,
+		public static byte[] stbtt_GetGlyphSDF(stbtt_fontinfo info, float scale, int glyph, int padding,
 			byte onedge_value, float pixel_dist_scale, out int width, out int height, out int xoff, out int yoff)
 		{
 			width = height = xoff = yoff = 0;
+			byte[] data = null;
 
 			var scale_x = scale;
 			var scale_y = scale;
@@ -1392,7 +1393,6 @@ namespace StbTrueTypeNext
 			var iy1 = 0;
 			var w = 0;
 			var h = 0;
-			byte* data;
 			if (scale == 0)
 				return null;
 			stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale, scale, 0.0f, 0.0f, out ix0, out iy0, out ix1, out iy1);
@@ -1418,7 +1418,7 @@ namespace StbTrueTypeNext
 				float* precompute;
 				stbtt_vertex[] verts;
 				var num_verts = stbtt_GetGlyphShape(info, glyph, out verts);
-				data = (byte*)CRuntime.malloc((ulong)(w * h));
+				data = new byte[w * h];
 				precompute = (float*)CRuntime.malloc((ulong)(num_verts * sizeof(float)));
 				for (i = 0, j = num_verts - 1; i < num_verts; j = i++)
 					if (verts[i].type == STBTT_vline)
