@@ -57,11 +57,6 @@ namespace StbTrueTypeNext
 		public const int STBTT_vline = 2;
 		public const int STBTT_vmove = 1;
 
-		public static int equal(float* a, float* b)
-		{
-			return a[0] == b[0] && a[1] == b[1] ? 1 : 0;
-		}
-
 		public static void stbtt__add_point(stbtt__point[] points, int n, float x, float y)
 		{
 			if (points == null)
@@ -176,17 +171,11 @@ namespace StbTrueTypeNext
 					var by = y0 < (y1 < y2 ? y2 : y1) ? y1 < y2 ? y2 : y1 : y0;
 					if (y > ay && y < by && x > ax)
 					{
-						var q0 = stackalloc float[2];
-						var q1 = stackalloc float[2];
-						var q2 = stackalloc float[2];
+						var q0 = new stbtt__point(x0, y0);
+						var q1 = new stbtt__point(x1, y1);
+						var q2 = new stbtt__point(x2, y2);
 						var hits = stackalloc float[4];
-						q0[0] = x0;
-						q0[1] = y0;
-						q1[0] = x1;
-						q1[1] = y1;
-						q2[0] = x2;
-						q2[1] = y2;
-						if (equal(q0, q1) != 0 || equal(q1, q2) != 0)
+						if (q0.Equals(q1) || q1.Equals(q2))
 						{
 							x0 = verts[i - 1].x;
 							y0 = verts[i - 1].y;
@@ -419,12 +408,12 @@ namespace StbTrueTypeNext
 			return stbtt__sized_trapezoid_area(height, tx1 - tx0, bx1 - bx0);
 		}
 
-		public static int stbtt__ray_intersect_bezier(float* orig, float* ray, float* q0, float* q1, float* q2,
+		public static int stbtt__ray_intersect_bezier(float* orig, float* ray, stbtt__point q0, stbtt__point q1, stbtt__point q2,
 			float* hits)
 		{
-			var q0perp = q0[1] * ray[0] - q0[0] * ray[1];
-			var q1perp = q1[1] * ray[0] - q1[0] * ray[1];
-			var q2perp = q2[1] * ray[0] - q2[0] * ray[1];
+			var q0perp = q0.y * ray[0] - q0.x * ray[1];
+			var q1perp = q1.y * ray[0] - q1.x * ray[1];
+			var q2perp = q2.y * ray[0] - q2.x * ray[1];
 			var roperp = orig[1] * ray[0] - orig[0] * ray[1];
 			var a = q0perp - 2 * q1perp + q2perp;
 			var b = q1perp - q0perp;
@@ -463,9 +452,9 @@ namespace StbTrueTypeNext
 			var rcp_len2 = 1 / (ray[0] * ray[0] + ray[1] * ray[1]);
 			var rayn_x = ray[0] * rcp_len2;
 			var rayn_y = ray[1] * rcp_len2;
-			var q0d = q0[0] * rayn_x + q0[1] * rayn_y;
-			var q1d = q1[0] * rayn_x + q1[1] * rayn_y;
-			var q2d = q2[0] * rayn_x + q2[1] * rayn_y;
+			var q0d = q0.x * rayn_x + q0.y * rayn_y;
+			var q1d = q1.x * rayn_x + q1.y * rayn_y;
+			var q2d = q2.x * rayn_x + q2.y * rayn_y;
 			var rod = orig[0] * rayn_x + orig[1] * rayn_y;
 			var q10d = q1d - q0d;
 			var q20d = q2d - q0d;
@@ -979,6 +968,17 @@ namespace StbTrueTypeNext
 		{
 			public float x;
 			public float y;
+
+			public stbtt__point(float _x, float _y)
+			{
+				x = _x;
+				y = _y;
+			}
+
+			public bool Equals(stbtt__point other)
+			{
+				return x == other.x && y == other.y;
+			}
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
