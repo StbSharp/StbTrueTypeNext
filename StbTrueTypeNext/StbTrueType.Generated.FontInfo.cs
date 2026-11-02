@@ -1129,10 +1129,10 @@ namespace StbTrueTypeNext
 		}
 
 		public static byte[] stbtt_GetCodepointBitmap(stbtt_fontinfo info, float scale_x, float scale_y, int codepoint,
-			int* width, int* height, int* xoff, int* yoff)
+			out int width, out int height, out int xoff, out int yoff)
 		{
-			return stbtt_GetCodepointBitmapSubpixel(info, scale_x, scale_y, 0.0f, 0.0f, codepoint, width, height, xoff,
-				yoff);
+			return stbtt_GetCodepointBitmapSubpixel(info, scale_x, scale_y, 0.0f, 0.0f, codepoint, 
+				out width, out height, out xoff, out yoff);
 		}
 
 		public static void stbtt_GetCodepointBitmapBox(stbtt_fontinfo font, int codepoint, float scale_x, float scale_y,
@@ -1149,10 +1149,10 @@ namespace StbTrueTypeNext
 		}
 
 		public static byte[] stbtt_GetCodepointBitmapSubpixel(stbtt_fontinfo info, float scale_x, float scale_y,
-			float shift_x, float shift_y, int codepoint, int* width, int* height, int* xoff, int* yoff)
+			float shift_x, float shift_y, int codepoint, out int width, out int height, out int xoff, out int yoff)
 		{
 			return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y, shift_x, shift_y,
-				stbtt_FindGlyphIndex(info, codepoint), width, height, xoff, yoff);
+				stbtt_FindGlyphIndex(info, codepoint), out width, out height, out xoff, out yoff);
 		}
 
 		public static int stbtt_GetCodepointBox(stbtt_fontinfo info, int codepoint, out int x0, out int y0, out int x1, out int y1)
@@ -1174,10 +1174,10 @@ namespace StbTrueTypeNext
 		}
 
 		public static byte* stbtt_GetCodepointSDF(stbtt_fontinfo info, float scale, int codepoint, int padding,
-			byte onedge_value, float pixel_dist_scale, int* width, int* height, int* xoff, int* yoff)
+			byte onedge_value, float pixel_dist_scale, out int width, out int height, out int xoff, out int yoff)
 		{
 			return stbtt_GetGlyphSDF(info, scale, stbtt_FindGlyphIndex(info, codepoint), padding, onedge_value,
-				pixel_dist_scale, width, height, xoff, yoff);
+				pixel_dist_scale, out width, out height, out xoff, out yoff);
 		}
 
 		public static int stbtt_GetCodepointShape(stbtt_fontinfo info, int unicode_codepoint, out stbtt_vertex[] vertices)
@@ -1254,9 +1254,9 @@ namespace StbTrueTypeNext
 		}
 
 		public static byte[] stbtt_GetGlyphBitmap(stbtt_fontinfo info, float scale_x, float scale_y, int glyph,
-			int* width, int* height, int* xoff, int* yoff)
+			out int width, out int height, out int xoff, out int yoff)
 		{
-			return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y, 0.0f, 0.0f, glyph, width, height, xoff, yoff);
+			return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y, 0.0f, 0.0f, glyph, out width, out height, out xoff, out yoff);
 		}
 
 		public static void stbtt_GetGlyphBitmapBox(stbtt_fontinfo font, int glyph, float scale_x, float scale_y,
@@ -1289,8 +1289,10 @@ namespace StbTrueTypeNext
 		}
 
 		public static byte[] stbtt_GetGlyphBitmapSubpixel(stbtt_fontinfo info, float scale_x, float scale_y,
-			float shift_x, float shift_y, int glyph, int* width, int* height, int* xoff, int* yoff)
+			float shift_x, float shift_y, int glyph, out int width, out int height, out int xoff, out int yoff)
 		{
+			width = height = xoff = yoff = 0;
+
 			var ix0 = 0;
 			var iy0 = 0;
 			var ix1 = 0;
@@ -1314,14 +1316,11 @@ namespace StbTrueTypeNext
 			gbm.w = ix1 - ix0;
 			gbm.h = iy1 - iy0;
 			gbm.pixels = FakePtr<byte>.Null;
-			if (width != null)
-				*width = gbm.w;
-			if (height != null)
-				*height = gbm.h;
-			if (xoff != null)
-				*xoff = ix0;
-			if (yoff != null)
-				*yoff = iy0;
+
+			width = gbm.w;
+			height = gbm.h;
+			xoff = ix0;
+			yoff = iy0;
 			if (gbm.w != 0 && gbm.h != 0)
 			{
 				gbm.pixels = new FakePtr<byte>(gbm.w * gbm.h);
@@ -1389,8 +1388,10 @@ namespace StbTrueTypeNext
 		}
 
 		public static byte* stbtt_GetGlyphSDF(stbtt_fontinfo info, float scale, int glyph, int padding,
-			byte onedge_value, float pixel_dist_scale, int* width, int* height, int* xoff, int* yoff)
+			byte onedge_value, float pixel_dist_scale, out int width, out int height, out int xoff, out int yoff)
 		{
+			width = height = xoff = yoff = 0;
+
 			var scale_x = scale;
 			var scale_y = scale;
 			var ix0 = 0;
@@ -1411,14 +1412,11 @@ namespace StbTrueTypeNext
 			iy1 += padding;
 			w = ix1 - ix0;
 			h = iy1 - iy0;
-			if (width != null)
-				*width = w;
-			if (height != null)
-				*height = h;
-			if (xoff != null)
-				*xoff = ix0;
-			if (yoff != null)
-				*yoff = iy0;
+
+			width = w;
+			height = h;
+			xoff = ix0;
+			yoff = iy0;
 			scale_y = -scale_y;
 			{
 				var x = 0;
