@@ -22,7 +22,7 @@ namespace StbTrueTypeNext
 			fmt = fdselect.stbtt__buf_get8();
 			if (fmt == 0)
 			{
-				stbtt__buf_skip(&fdselect, glyph_index);
+				fdselect.stbtt__buf_skip(glyph_index);
 				fdselector = fdselect.stbtt__buf_get8();
 			}
 			else if (fmt == 3)
@@ -734,7 +734,7 @@ namespace StbTrueTypeNext
 						if (in_header != 0)
 							maskbits += sp / 2;
 						in_header = 0;
-						stbtt__buf_skip(&b, (maskbits + 7) / 8);
+						b.stbtt__buf_skip((maskbits + 7) / 8);
 						break;
 					case 0x01:
 					case 0x03:
@@ -994,7 +994,7 @@ namespace StbTrueTypeNext
 						}
 						else
 						{
-							stbtt__buf_skip(&b, -1);
+							b.stbtt__buf_skip(-1);
 							f = (short)stbtt__cff_int(&b);
 						}
 
@@ -1737,7 +1737,7 @@ namespace StbTrueTypeNext
 				info.fdselect = stbtt__buf.Null;
 				info.cff = stbtt__new_buf(dataPtr + cff, 512 * 1024 * 1024);
 				b = info.cff;
-				stbtt__buf_skip(&b, 2);
+				b.stbtt__buf_skip(2);
 				b.stbtt__buf_seek(b.stbtt__buf_get8());
 				stbtt__cff_get_index(&b);
 				topdictidx = stbtt__cff_get_index(&b);

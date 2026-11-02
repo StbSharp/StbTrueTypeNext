@@ -6,11 +6,6 @@ namespace StbTrueTypeNext
 {
 	unsafe partial class StbTrueType
 	{
-		public static void stbtt__buf_skip(stbtt__buf* b, int o)
-		{
-			b->stbtt__buf_seek(b->cursor + o);
-		}
-
 		public static stbtt__buf stbtt__cff_get_index(stbtt__buf* b)
 		{
 			var count = 0;
@@ -21,8 +16,8 @@ namespace StbTrueTypeNext
 			if (count != 0)
 			{
 				offsize = b->stbtt__buf_get8();
-				stbtt__buf_skip(b, offsize * count);
-				stbtt__buf_skip(b, (int)(b->stbtt__buf_get(offsize) - 1));
+				b->stbtt__buf_skip(offsize * count);
+				b->stbtt__buf_skip((int)(b->stbtt__buf_get(offsize) - 1));
 			}
 
 			return b->stbtt__buf_range(start, b->cursor - start);
@@ -43,7 +38,7 @@ namespace StbTrueTypeNext
 			b.stbtt__buf_seek(0);
 			count = (int)b.stbtt__buf_get(2);
 			offsize = b.stbtt__buf_get8();
-			stbtt__buf_skip(&b, i * offsize);
+			b.stbtt__buf_skip(i * offsize);
 			start = (int)b.stbtt__buf_get(offsize);
 			end = (int)b.stbtt__buf_get(offsize);
 			return b.stbtt__buf_range(2 + (count + 1) * offsize + start, end - start);
@@ -71,7 +66,7 @@ namespace StbTrueTypeNext
 			int b0 = b->stbtt__buf_peek8();
 			if (b0 == 30)
 			{
-				stbtt__buf_skip(b, 1);
+				b->stbtt__buf_skip(1);
 				while (b->cursor < b->size)
 				{
 					v = b->stbtt__buf_get8();
@@ -197,6 +192,11 @@ namespace StbTrueTypeNext
 			public void stbtt__buf_seek(int o)
 			{
 				cursor = o > size || o < 0 ? size : o;
+			}
+
+			public void stbtt__buf_skip(int o)
+			{
+				stbtt__buf_seek(cursor + o);
 			}
 		}
 	}
