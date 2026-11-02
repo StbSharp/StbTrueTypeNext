@@ -598,6 +598,9 @@ namespace StbTrueTypeNext
 				var comp = data + g + 10;
 				num_vertices = 0;
 				vertices = null;
+
+				var mtx = new float[6];
+
 				while (more != 0)
 				{
 					ushort flags = 0;
@@ -606,7 +609,9 @@ namespace StbTrueTypeNext
 					var i = 0;
 					stbtt_vertex[] comp_verts = null;
 					stbtt_vertex[] tmp = null;
-					var mtx = stackalloc float[] { 1, 0, 0, 1, 0, 0 };
+
+					mtx[0] = mtx[3] = 1;
+					mtx[1] = mtx[2] = mtx[4] = mtx[5] = 0;
 					float m = 0;
 					float n = 0;
 					flags = (ushort)ttSHORT(comp);
@@ -709,7 +714,7 @@ namespace StbTrueTypeNext
 			var b0 = 0;
 			var has_subrs = 0;
 			var clear_stack = 0;
-			var s = stackalloc float[48];
+			var s = new float[48];
 			var subr_stack = new stbtt__buf[10];
 			var subrs = info.subrs;
 			var b = new stbtt__buf();
@@ -1121,11 +1126,6 @@ namespace StbTrueTypeNext
 			}
 
 			return FakePtr<byte>.Null;
-		}
-
-		public static void stbtt_FreeShape(stbtt_fontinfo info, stbtt_vertex* v)
-		{
-			CRuntime.free(v);
 		}
 
 		public static byte[] stbtt_GetCodepointBitmap(stbtt_fontinfo info, float scale_x, float scale_y, int codepoint,
