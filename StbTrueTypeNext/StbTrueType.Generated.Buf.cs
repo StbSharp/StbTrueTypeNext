@@ -6,13 +6,6 @@ namespace StbTrueTypeNext
 {
 	unsafe partial class StbTrueType
 	{
-		public static byte stbtt__buf_peek8(stbtt__buf* b)
-		{
-			if (b->cursor >= b->size)
-				return 0;
-			return b->data[b->cursor];
-		}
-
 		public static stbtt__buf stbtt__buf_range(stbtt__buf* b, int o, int s)
 		{
 			var r = stbtt__buf.Null;
@@ -90,7 +83,7 @@ namespace StbTrueTypeNext
 		public static void stbtt__cff_skip_operand(stbtt__buf* b)
 		{
 			var v = 0;
-			int b0 = stbtt__buf_peek8(b);
+			int b0 = b->stbtt__buf_peek8();
 			if (b0 == 30)
 			{
 				stbtt__buf_skip(b, 1);
@@ -115,7 +108,7 @@ namespace StbTrueTypeNext
 				var start = b->cursor;
 				var end = 0;
 				var op = 0;
-				while (stbtt__buf_peek8(b) >= 28) stbtt__cff_skip_operand(b);
+				while (b->stbtt__buf_peek8() >= 28) stbtt__cff_skip_operand(b);
 
 				end = b->cursor;
 				op = b->stbtt__buf_get8();
@@ -197,6 +190,13 @@ namespace StbTrueTypeNext
 				for (i = 0; i < n; i++) v = (v << 8) | stbtt__buf_get8();
 
 				return v;
+			}
+
+			public byte stbtt__buf_peek8()
+			{
+				if (cursor >= size)
+					return 0;
+				return data[cursor];
 			}
 		}
 	}
