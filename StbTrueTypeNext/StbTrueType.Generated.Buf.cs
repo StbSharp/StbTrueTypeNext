@@ -21,16 +21,6 @@ namespace StbTrueTypeNext
 			return b.stbtt__buf_range(2 + (count + 1) * offsize + start, end - start);
 		}
 
-		public static void stbtt__dict_get_ints(stbtt__buf* b, int key, int outcount, uint* _out_)
-		{
-			var i = 0;
-			var operands = b->stbtt__dict_get(key);
-			for (i = 0; i < outcount && operands.cursor < operands.size; i++)
-			{
-				_out_[i] = operands.stbtt__cff_int();
-			}
-		}
-
 		public static stbtt__buf stbtt__get_subr(stbtt__buf idx, int n)
 		{
 			var count = idx.stbtt__cff_index_count();
@@ -50,11 +40,11 @@ namespace StbTrueTypeNext
 			uint subrsoff = 0;
 			var private_loc = stackalloc uint[] { 0, 0 };
 			var pdict = new stbtt__buf();
-			stbtt__dict_get_ints(&fontdict, 18, 2, private_loc);
+			fontdict.stbtt__dict_get_ints(18, 2, private_loc);
 			if (private_loc[1] == 0 || private_loc[0] == 0)
 				return stbtt__buf.Null;
 			pdict = cff.stbtt__buf_range((int)private_loc[1], (int)private_loc[0]);
-			stbtt__dict_get_ints(&pdict, 19, 1, &subrsoff);
+			pdict.stbtt__dict_get_ints(19, 1, &subrsoff);
 			if (subrsoff == 0)
 				return stbtt__buf.Null;
 			cff.stbtt__buf_seek((int)(private_loc[1] + subrsoff));
@@ -200,6 +190,16 @@ namespace StbTrueTypeNext
 				}
 
 				return stbtt__buf_range(0, 0);
+			}
+
+			public void stbtt__dict_get_ints(int key, int outcount, uint* _out_)
+			{
+				var i = 0;
+				var operands = stbtt__dict_get(key);
+				for (i = 0; i < outcount && operands.cursor < operands.size; i++)
+				{
+					_out_[i] = operands.stbtt__cff_int();
+				}
 			}
 		}
 	}

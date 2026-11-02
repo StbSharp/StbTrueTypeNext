@@ -1744,10 +1744,10 @@ namespace StbTrueTypeNext
 				topdict = stbtt__cff_index_get(topdictidx, 0);
 				b.stbtt__cff_get_index();
 				info.gsubrs = b.stbtt__cff_get_index();
-				stbtt__dict_get_ints(&topdict, 17, 1, &charstrings);
-				stbtt__dict_get_ints(&topdict, 0x100 | 6, 1, &cstype);
-				stbtt__dict_get_ints(&topdict, 0x100 | 36, 1, &fdarrayoff);
-				stbtt__dict_get_ints(&topdict, 0x100 | 37, 1, &fdselectoff);
+				topdict.stbtt__dict_get_ints(17, 1, &charstrings);
+				topdict.stbtt__dict_get_ints(0x100 | 6, 1, &cstype);
+				topdict.stbtt__dict_get_ints(0x100 | 36, 1, &fdarrayoff);
+				topdict.stbtt__dict_get_ints(0x100 | 37, 1, &fdselectoff);
 				info.subrs = stbtt__get_subrs(b, topdict);
 				if (cstype != 2)
 					return 0;
