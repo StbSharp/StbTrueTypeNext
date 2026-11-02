@@ -21,31 +21,10 @@ namespace StbTrueTypeNext
 			return b.stbtt__buf_range(2 + (count + 1) * offsize + start, end - start);
 		}
 
-		public static stbtt__buf stbtt__dict_get(stbtt__buf* b, int key)
-		{
-			b->stbtt__buf_seek(0);
-			while (b->cursor < b->size)
-			{
-				var start = b->cursor;
-				var end = 0;
-				var op = 0;
-				while (b->stbtt__buf_peek8() >= 28) b->stbtt__cff_skip_operand();
-
-				end = b->cursor;
-				op = b->stbtt__buf_get8();
-				if (op == 12)
-					op = b->stbtt__buf_get8() | 0x100;
-				if (op == key)
-					return b->stbtt__buf_range(start, end - start);
-			}
-
-			return b->stbtt__buf_range(0, 0);
-		}
-
 		public static void stbtt__dict_get_ints(stbtt__buf* b, int key, int outcount, uint* _out_)
 		{
 			var i = 0;
-			var operands = stbtt__dict_get(b, key);
+			var operands = b->stbtt__dict_get(key);
 			for (i = 0; i < outcount && operands.cursor < operands.size; i++)
 			{
 				_out_[i] = operands.stbtt__cff_int();
@@ -202,6 +181,26 @@ namespace StbTrueTypeNext
 				}
 			}
 
+			public stbtt__buf stbtt__dict_get(int key)
+			{
+				stbtt__buf_seek(0);
+				while (cursor < size)
+				{
+					var start = cursor;
+					var end = 0;
+					var op = 0;
+					while (stbtt__buf_peek8() >= 28) stbtt__cff_skip_operand();
+
+					end = cursor;
+					op = stbtt__buf_get8();
+					if (op == 12)
+						op = stbtt__buf_get8() | 0x100;
+					if (op == key)
+						return stbtt__buf_range(start, end - start);
+				}
+
+				return stbtt__buf_range(0, 0);
+			}
 		}
 	}
 }
