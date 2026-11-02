@@ -46,21 +46,21 @@ namespace StbTrueTypeNext
 			return stbtt__get_subrs(info.cff, stbtt__cff_index_get(info.fontdicts, fdselector));
 		}
 
-		public static int stbtt__close_shape(stbtt_vertex* vertices, int num_vertices, int was_off, int start_off,
+		public static int stbtt__close_shape(stbtt_vertex[] vertices, int num_vertices, int was_off, int start_off,
 			int sx, int sy, int scx, int scy, int cx, int cy)
 		{
 			if (start_off != 0)
 			{
 				if (was_off != 0)
-					stbtt_setvertex(&vertices[num_vertices++], STBTT_vcurve, (cx + scx) >> 1, (cy + scy) >> 1, cx, cy);
-				stbtt_setvertex(&vertices[num_vertices++], STBTT_vcurve, sx, sy, scx, scy);
+					stbtt_setvertex(ref vertices[num_vertices++], STBTT_vcurve, (cx + scx) >> 1, (cy + scy) >> 1, cx, cy);
+				stbtt_setvertex(ref vertices[num_vertices++], STBTT_vcurve, sx, sy, scx, scy);
 			}
 			else
 			{
 				if (was_off != 0)
-					stbtt_setvertex(&vertices[num_vertices++], STBTT_vcurve, sx, sy, cx, cy);
+					stbtt_setvertex(ref vertices[num_vertices++], STBTT_vcurve, sx, sy, cx, cy);
 				else
-					stbtt_setvertex(&vertices[num_vertices++], STBTT_vline, sx, sy, 0, 0);
+					stbtt_setvertex(ref vertices[num_vertices++], STBTT_vline, sx, sy, 0, 0);
 			}
 
 			return num_vertices;
@@ -406,32 +406,33 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static int stbtt__GetGlyphShapeT2(stbtt_fontinfo info, int glyph_index, stbtt_vertex** pvertices)
+		public static int stbtt__GetGlyphShapeT2(stbtt_fontinfo info, int glyph_index, out stbtt_vertex[] pvertices)
 		{
 			var count_ctx = new stbtt__csctx();
 			count_ctx.bounds = 1;
 			var output_ctx = new stbtt__csctx();
 			if (stbtt__run_charstring(info, glyph_index, &count_ctx) != 0)
 			{
-				*pvertices = (stbtt_vertex*)CRuntime.malloc((ulong)(count_ctx.num_vertices * sizeof(stbtt_vertex)));
-				output_ctx.pvertices = *pvertices;
+				pvertices = new stbtt_vertex[count_ctx.num_vertices];
+				output_ctx.pvertices = pvertices;
 				if (stbtt__run_charstring(info, glyph_index, &output_ctx) != 0) return output_ctx.num_vertices;
 			}
 
-			*pvertices = null;
+			pvertices = null;
 			return 0;
 		}
 
-		public static int stbtt__GetGlyphShapeTT(stbtt_fontinfo info, int glyph_index, stbtt_vertex** pvertices)
+		public static int stbtt__GetGlyphShapeTT(stbtt_fontinfo info, int glyph_index, out stbtt_vertex[] pvertices)
 		{
 			short numberOfContours = 0;
 			var data = new FakePtr<byte>(info.data);
-			stbtt_vertex* vertices = null;
 			var num_vertices = 0;
 			var g = stbtt__GetGlyfOffset(info, glyph_index);
-			*pvertices = null;
+			pvertices = null;
 			if (g < 0)
 				return 0;
+
+			stbtt_vertex[] vertices = null;
 
 			numberOfContours = ttSHORT(data + g);
 			if (numberOfContours > 0)
@@ -460,9 +461,7 @@ namespace StbTrueTypeNext
 				var points = data + g + 10 + numberOfContours * 2 + 2 + ins;
 				n = 1 + ttUSHORT(endPtsOfContours + numberOfContours * 2 - 2);
 				m = n + 2 * numberOfContours;
-				vertices = (stbtt_vertex*)CRuntime.malloc((ulong)(m * sizeof(stbtt_vertex)));
-				if (vertices == null)
-					return 0;
+				vertices = new stbtt_vertex[m];
 				next_move = 0;
 				flagcount = 0;
 				off = m - n;
@@ -559,7 +558,7 @@ namespace StbTrueTypeNext
 							sy = y;
 						}
 
-						stbtt_setvertex(&vertices[num_vertices++], STBTT_vmove, sx, sy, 0, 0);
+						stbtt_setvertex(ref vertices[num_vertices++], STBTT_vmove, sx, sy, 0, 0);
 						was_off = 0;
 						next_move = 1 + ttUSHORT(endPtsOfContours + j * 2);
 						++j;
@@ -569,7 +568,7 @@ namespace StbTrueTypeNext
 						if ((flags & 1) == 0)
 						{
 							if (was_off != 0)
-								stbtt_setvertex(&vertices[num_vertices++], STBTT_vcurve, (cx + x) >> 1, (cy + y) >> 1,
+								stbtt_setvertex(ref vertices[num_vertices++], STBTT_vcurve, (cx + x) >> 1, (cy + y) >> 1,
 									cx, cy);
 							cx = x;
 							cy = y;
@@ -578,9 +577,9 @@ namespace StbTrueTypeNext
 						else
 						{
 							if (was_off != 0)
-								stbtt_setvertex(&vertices[num_vertices++], STBTT_vcurve, x, y, cx, cy);
+								stbtt_setvertex(ref vertices[num_vertices++], STBTT_vcurve, x, y, cx, cy);
 							else
-								stbtt_setvertex(&vertices[num_vertices++], STBTT_vline, x, y, 0, 0);
+								stbtt_setvertex(ref vertices[num_vertices++], STBTT_vline, x, y, 0, 0);
 							was_off = 0;
 						}
 					}
@@ -600,8 +599,8 @@ namespace StbTrueTypeNext
 					ushort gidx = 0;
 					var comp_num_verts = 0;
 					var i = 0;
-					stbtt_vertex* comp_verts = null;
-					stbtt_vertex* tmp = null;
+					stbtt_vertex[] comp_verts = null;
+					stbtt_vertex[] tmp = null;
 					var mtx = stackalloc float[] { 1, 0, 0, 1, 0, 0 };
 					float m = 0;
 					float n = 0;
@@ -655,43 +654,34 @@ namespace StbTrueTypeNext
 
 					m = (float)CRuntime.sqrt(mtx[0] * mtx[0] + mtx[1] * mtx[1]);
 					n = (float)CRuntime.sqrt(mtx[2] * mtx[2] + mtx[3] * mtx[3]);
-					comp_num_verts = stbtt_GetGlyphShape(info, gidx, &comp_verts);
+					comp_num_verts = stbtt_GetGlyphShape(info, gidx, out comp_verts);
 					if (comp_num_verts > 0)
 					{
 						for (i = 0; i < comp_num_verts; ++i)
 						{
-							var v = &comp_verts[i];
+							var v = comp_verts[i];
 							short x = 0;
 							short y = 0;
-							x = v->x;
-							y = v->y;
-							v->x = (short)(m * (mtx[0] * x + mtx[2] * y + mtx[4]));
-							v->y = (short)(n * (mtx[1] * x + mtx[3] * y + mtx[5]));
-							x = v->cx;
-							y = v->cy;
-							v->cx = (short)(m * (mtx[0] * x + mtx[2] * y + mtx[4]));
-							v->cy = (short)(n * (mtx[1] * x + mtx[3] * y + mtx[5]));
+							x = v.x;
+							y = v.y;
+							v.x = (short)(m * (mtx[0] * x + mtx[2] * y + mtx[4]));
+							v.y = (short)(n * (mtx[1] * x + mtx[3] * y + mtx[5]));
+							x = v.cx;
+							y = v.cy;
+							v.cx = (short)(m * (mtx[0] * x + mtx[2] * y + mtx[4]));
+							v.cy = (short)(n * (mtx[1] * x + mtx[3] * y + mtx[5]));
+
+							comp_verts[i] = v;
 						}
 
-						tmp = (stbtt_vertex*)CRuntime.malloc((ulong)((num_vertices + comp_num_verts) *
-																	   sizeof(stbtt_vertex)));
-						if (tmp == null)
-						{
-							if (vertices != null)
-								CRuntime.free(vertices);
-							if (comp_verts != null)
-								CRuntime.free(comp_verts);
-							return 0;
-						}
-
+						tmp = new stbtt_vertex[num_vertices + comp_num_verts];
 						if (num_vertices > 0 && vertices != null)
-							CRuntime.memcpy(tmp, vertices, (ulong)(num_vertices * sizeof(stbtt_vertex)));
-						CRuntime.memcpy(tmp + num_vertices, comp_verts,
-							(ulong)(comp_num_verts * sizeof(stbtt_vertex)));
-						if (vertices != null)
-							CRuntime.free(vertices);
+						{
+							Array.Copy(vertices, tmp, num_vertices);
+						}
+
+						Array.Copy(comp_verts, 0, tmp, num_vertices, comp_num_verts);
 						vertices = tmp;
-						CRuntime.free(comp_verts);
 						num_vertices += comp_num_verts;
 					}
 
@@ -699,7 +689,7 @@ namespace StbTrueTypeNext
 				}
 			}
 
-			*pvertices = vertices;
+			pvertices = vertices;
 			return num_vertices;
 		}
 
@@ -1185,9 +1175,9 @@ namespace StbTrueTypeNext
 				pixel_dist_scale, width, height, xoff, yoff);
 		}
 
-		public static int stbtt_GetCodepointShape(stbtt_fontinfo info, int unicode_codepoint, stbtt_vertex** vertices)
+		public static int stbtt_GetCodepointShape(stbtt_fontinfo info, int unicode_codepoint, out stbtt_vertex[] vertices)
 		{
-			return stbtt_GetGlyphShape(info, stbtt_FindGlyphIndex(info, unicode_codepoint), vertices);
+			return stbtt_GetGlyphShape(info, stbtt_FindGlyphIndex(info, unicode_codepoint), out vertices);
 		}
 
 		public static int stbtt_GetCodepointSVG(stbtt_fontinfo info, int unicode_codepoint, ref FakePtr<byte> svg)
@@ -1309,15 +1299,14 @@ namespace StbTrueTypeNext
 			var ix1 = 0;
 			var iy1 = 0;
 			var gbm = new stbtt__bitmap();
-			stbtt_vertex* vertices;
-			var num_verts = stbtt_GetGlyphShape(info, glyph, &vertices);
+			stbtt_vertex[] vertices;
+			var num_verts = stbtt_GetGlyphShape(info, glyph, out vertices);
 			if (scale_x == 0)
 				scale_x = scale_y;
 			if (scale_y == 0)
 			{
 				if (scale_x == 0)
 				{
-					CRuntime.free(vertices);
 					return null;
 				}
 
@@ -1344,7 +1333,6 @@ namespace StbTrueTypeNext
 					info.userdata, info.useOldRasterizer);
 			}
 
-			CRuntime.free(vertices);
 			return gbm.pixels.Data;
 		}
 
@@ -1444,8 +1432,8 @@ namespace StbTrueTypeNext
 				var i = 0;
 				var j = 0;
 				float* precompute;
-				stbtt_vertex* verts;
-				var num_verts = stbtt_GetGlyphShape(info, glyph, &verts);
+				stbtt_vertex[] verts;
+				var num_verts = stbtt_GetGlyphShape(info, glyph, out verts);
 				data = (byte*)CRuntime.malloc((ulong)(w * h));
 				precompute = (float*)CRuntime.malloc((ulong)(num_verts * sizeof(float)));
 				for (i = 0, j = num_verts - 1; i < num_verts; j = i++)
@@ -1623,17 +1611,19 @@ namespace StbTrueTypeNext
 					}
 
 				CRuntime.free(precompute);
-				CRuntime.free(verts);
 			}
 
 			return data;
 		}
 
-		public static int stbtt_GetGlyphShape(stbtt_fontinfo info, int glyph_index, stbtt_vertex** pvertices)
+		public static int stbtt_GetGlyphShape(stbtt_fontinfo info, int glyph_index, out stbtt_vertex[] pvertices)
 		{
 			if (info.cff.size == 0)
-				return stbtt__GetGlyphShapeTT(info, glyph_index, pvertices);
-			return stbtt__GetGlyphShapeT2(info, glyph_index, pvertices);
+			{
+				return stbtt__GetGlyphShapeTT(info, glyph_index, out pvertices);
+			}
+
+			return stbtt__GetGlyphShapeT2(info, glyph_index, out pvertices);
 		}
 
 		public static int stbtt_GetGlyphSVG(stbtt_fontinfo info, int gl, ref FakePtr<byte> svg)
@@ -1859,8 +1849,8 @@ namespace StbTrueTypeNext
 		{
 			var ix0 = 0;
 			var iy0 = 0;
-			stbtt_vertex* vertices;
-			var num_verts = stbtt_GetGlyphShape(info, glyph, &vertices);
+			stbtt_vertex[] vertices;
+			var num_verts = stbtt_GetGlyphShape(info, glyph, out vertices);
 			var gbm = new stbtt__bitmap();
 			stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y, &ix0, &iy0, null, null);
 			gbm.pixels = output;
@@ -1870,7 +1860,6 @@ namespace StbTrueTypeNext
 			if (gbm.w != 0 && gbm.h != 0)
 				stbtt_Rasterize(gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1,
 					info.userdata, info.useOldRasterizer);
-			CRuntime.free(vertices);
 		}
 
 		public static void stbtt_MakeGlyphBitmapSubpixelPrefilter(stbtt_fontinfo info, byte[] output, int out_w,

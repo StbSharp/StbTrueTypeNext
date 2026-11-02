@@ -52,7 +52,7 @@ namespace StbTrueTypeNext
 			}
 			else
 			{
-				stbtt_setvertex(&c->pvertices[c->num_vertices], type, x, y, cx, cy);
+				stbtt_setvertex(ref c->pvertices[c->num_vertices], type, x, y, cx, cy);
 				c->pvertices[c->num_vertices].cx1 = (short)cx1;
 				c->pvertices[c->num_vertices].cy1 = (short)cy1;
 			}
@@ -86,7 +86,7 @@ namespace StbTrueTypeNext
 			public int max_x;
 			public int min_y;
 			public int max_y;
-			public stbtt_vertex* pvertices;
+			public stbtt_vertex[] pvertices;
 			public int num_vertices;
 		}
 	}

@@ -135,7 +135,7 @@ namespace StbTrueTypeNext
 			return i;
 		}
 
-		public static int stbtt__compute_crossings_x(float x, float y, int nverts, stbtt_vertex* verts)
+		public static int stbtt__compute_crossings_x(float x, float y, int nverts, stbtt_vertex[] verts)
 		{
 			var i = 0;
 			var orig = stackalloc float[2];
@@ -758,7 +758,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static stbtt__point* stbtt_FlattenCurves(stbtt_vertex* vertices, int num_verts, float objspace_flatness,
+		public static stbtt__point* stbtt_FlattenCurves(stbtt_vertex[] vertices, int num_verts, float objspace_flatness,
 			int** contour_lengths, int* num_contours, void* userdata)
 		{
 			stbtt__point* points = null;
@@ -955,13 +955,13 @@ namespace StbTrueTypeNext
 			*lineGap = i_lineGap * scale;
 		}
 
-		public static void stbtt_setvertex(stbtt_vertex* v, byte type, int x, int y, int cx, int cy)
+		public static void stbtt_setvertex(ref stbtt_vertex v, byte type, int x, int y, int cx, int cy)
 		{
-			v->type = type;
-			v->x = (short)x;
-			v->y = (short)y;
-			v->cx = (short)cx;
-			v->cy = (short)cy;
+			v.type = type;
+			v.x = (short)x;
+			v.y = (short)y;
+			v.cx = (short)cx;
+			v.cy = (short)cy;
 		}
 
 		public static int ttLONG(FakePtr<byte> p)

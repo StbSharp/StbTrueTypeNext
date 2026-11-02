@@ -474,7 +474,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static void stbtt_Rasterize(stbtt__bitmap result, float flatness_in_pixels, stbtt_vertex* vertices,
+		public static void stbtt_Rasterize(stbtt__bitmap result, float flatness_in_pixels, stbtt_vertex[] vertices,
 			int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert,
 			void* userdata, bool useOldRasterizer)
 		{
