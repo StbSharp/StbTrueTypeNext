@@ -1246,19 +1246,18 @@ namespace StbTrueTypeNext
 			lineGap = ttSHORT(dataPtr + info.hhea + 8);
 		}
 
-		public static int stbtt_GetFontVMetricsOS2(stbtt_fontinfo info, int* typoAscent, int* typoDescent,
-			int* typoLineGap)
+		public static int stbtt_GetFontVMetricsOS2(stbtt_fontinfo info, out int typoAscent, out int typoDescent, out int typoLineGap)
 		{
+			typoAscent = typoDescent = typoLineGap = 0;
 			var dataPtr = new FakePtr<byte>(info.data);
 			var tab = (int)stbtt__find_table(dataPtr, (uint)info.fontstart, "OS/2");
 			if (tab == 0)
 				return 0;
-			if (typoAscent != null)
-				*typoAscent = ttSHORT(dataPtr + tab + 68);
-			if (typoDescent != null)
-				*typoDescent = ttSHORT(dataPtr + tab + 70);
-			if (typoLineGap != null)
-				*typoLineGap = ttSHORT(dataPtr + tab + 72);
+
+			typoAscent = ttSHORT(dataPtr + tab + 68);
+			typoDescent = ttSHORT(dataPtr + tab + 70);
+			typoLineGap = ttSHORT(dataPtr + tab + 72);
+
 			return 1;
 		}
 
