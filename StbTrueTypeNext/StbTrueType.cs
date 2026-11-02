@@ -56,17 +56,6 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static bool stbtt_BakeFontBitmap(byte[] ttf, int offset, float pixel_height, byte[] pixels, int pw,
-			int ph, int first_char, int num_chars, stbtt_bakedchar[] chardata)
-		{
-			fixed (stbtt_bakedchar* chardataPtr = chardata)
-			{
-				var result = stbtt_BakeFontBitmap(ttf, offset, pixel_height, pixels, pw, ph, first_char, num_chars, chardataPtr);
-
-				return result != 0;
-			}
-		}
-
 		/// <summary>
 		///     Creates and initializes a font from ttf/otf/ttc data
 		/// </summary>

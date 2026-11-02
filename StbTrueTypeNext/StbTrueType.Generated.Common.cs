@@ -654,14 +654,14 @@ namespace StbTrueTypeNext
 		}
 
 		public static int stbtt_BakeFontBitmap(byte[] data, int offset, float pixel_height, byte[] pixels, int pw, int ph,
-			int first_char, int num_chars, stbtt_bakedchar* chardata)
+			int first_char, int num_chars, stbtt_bakedchar[] chardata)
 		{
 			return stbtt_BakeFontBitmap_internal(data, offset, pixel_height, pixels, pw, ph, first_char, num_chars,
 				chardata);
 		}
 
 		public static int stbtt_BakeFontBitmap_internal(byte[] data, int offset, float pixel_height, byte[] pixels,
-			int pw, int ph, int first_char, int num_chars, stbtt_bakedchar* chardata)
+			int pw, int ph, int first_char, int num_chars, stbtt_bakedchar[] chardata)
 		{
 			float scale = 0;
 			var x = 0;
@@ -826,24 +826,24 @@ namespace StbTrueTypeNext
 			CRuntime.free(bitmap);
 		}
 
-		public static void stbtt_GetBakedQuad(stbtt_bakedchar* chardata, int pw, int ph, int char_index, float* xpos,
+		public static void stbtt_GetBakedQuad(stbtt_bakedchar[] chardata, int pw, int ph, int char_index, float* xpos,
 			float* ypos, stbtt_aligned_quad* q, int opengl_fillrule)
 		{
 			var d3d_bias = opengl_fillrule != 0 ? 0 : -0.5f;
 			var ipw = 1.0f / pw;
 			var iph = 1.0f / ph;
-			var b = chardata + char_index;
-			var round_x = (int)CRuntime.floor(*xpos + b->xoff + 0.5f);
-			var round_y = (int)CRuntime.floor(*ypos + b->yoff + 0.5f);
+			var b = chardata[char_index];
+			var round_x = (int)CRuntime.floor(*xpos + b.xoff + 0.5f);
+			var round_y = (int)CRuntime.floor(*ypos + b.yoff + 0.5f);
 			q->x0 = round_x + d3d_bias;
 			q->y0 = round_y + d3d_bias;
-			q->x1 = round_x + b->x1 - b->x0 + d3d_bias;
-			q->y1 = round_y + b->y1 - b->y0 + d3d_bias;
-			q->s0 = b->x0 * ipw;
-			q->t0 = b->y0 * iph;
-			q->s1 = b->x1 * ipw;
-			q->t1 = b->y1 * iph;
-			*xpos += b->xadvance;
+			q->x1 = round_x + b.x1 - b.x0 + d3d_bias;
+			q->y1 = round_y + b.y1 - b.y0 + d3d_bias;
+			q->s0 = b.x0 * ipw;
+			q->t0 = b.y0 * iph;
+			q->s1 = b.x1 * ipw;
+			q->t1 = b.y1 * iph;
+			*xpos += b.xadvance;
 		}
 
 		public static int stbtt_GetFontOffsetForIndex(byte[] data, int index)
