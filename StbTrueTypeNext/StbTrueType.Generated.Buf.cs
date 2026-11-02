@@ -51,15 +51,6 @@ namespace StbTrueTypeNext
 			return cff.stbtt__cff_get_index();
 		}
 
-		public static stbtt__buf stbtt__new_buf(FakePtr<byte> p, ulong size)
-		{
-			var r = new stbtt__buf();
-			r.data = p;
-			r.size = (int)size;
-			r.cursor = 0;
-			return r;
-		}
-
 		[StructLayout(LayoutKind.Sequential)]
 		public struct stbtt__buf
 		{
@@ -68,6 +59,13 @@ namespace StbTrueTypeNext
 			public FakePtr<byte> data;
 			public int cursor;
 			public int size;
+
+			public stbtt__buf(FakePtr<byte> ptr, int sz)
+			{
+				data = ptr;
+				size = sz;
+				cursor = 0;
+			}
 
 			public byte stbtt__buf_get8()
 			{

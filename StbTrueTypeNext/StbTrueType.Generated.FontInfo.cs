@@ -1735,7 +1735,7 @@ namespace StbTrueTypeNext
 					return 0;
 				info.fontdicts = stbtt__buf.Null;
 				info.fdselect = stbtt__buf.Null;
-				info.cff = stbtt__new_buf(dataPtr + cff, 512 * 1024 * 1024);
+				info.cff = new stbtt__buf(dataPtr + cff, 512 * 1024 * 1024);
 				b = info.cff;
 				b.stbtt__buf_skip(2);
 				b.stbtt__buf_seek(b.stbtt__buf_get8());
