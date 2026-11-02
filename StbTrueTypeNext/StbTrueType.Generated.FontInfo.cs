@@ -5,7 +5,7 @@ using System.Text;
 
 namespace StbTrueTypeNext
 {
-	unsafe partial class StbTrueType
+	partial class StbTrueType
 	{
 		public static stbtt__buf stbtt__cid_get_glyph_subrs(stbtt_fontinfo info, int glyph_index)
 		{
@@ -1807,10 +1807,10 @@ namespace StbTrueTypeNext
 
 		public static void stbtt_MakeCodepointBitmapSubpixelPrefilter(stbtt_fontinfo info, byte[] output, int out_w,
 			int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int oversample_x,
-			int oversample_y, float* sub_x, float* sub_y, int codepoint)
+			int oversample_y, out float sub_x, out float sub_y, int codepoint)
 		{
 			stbtt_MakeGlyphBitmapSubpixelPrefilter(info, output, out_w, out_h, out_stride, scale_x, scale_y, shift_x,
-				shift_y, oversample_x, oversample_y, sub_x, sub_y, stbtt_FindGlyphIndex(info, codepoint));
+				shift_y, oversample_x, oversample_y, out sub_x, out sub_y, stbtt_FindGlyphIndex(info, codepoint));
 		}
 
 		public static void stbtt_MakeGlyphBitmap(stbtt_fontinfo info, byte[] output, int out_w, int out_h,
@@ -1854,7 +1854,7 @@ namespace StbTrueTypeNext
 
 		public static void stbtt_MakeGlyphBitmapSubpixelPrefilter(stbtt_fontinfo info, byte[] output, int out_w,
 			int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int prefilter_x,
-			int prefilter_y, float* sub_x, float* sub_y, int glyph)
+			int prefilter_y, out float sub_x, out float sub_y, int glyph)
 		{
 			stbtt_MakeGlyphBitmapSubpixel(info, output, out_w - (prefilter_x - 1), out_h - (prefilter_y - 1),
 				out_stride, scale_x, scale_y, shift_x, shift_y, glyph);
@@ -1862,8 +1862,8 @@ namespace StbTrueTypeNext
 				stbtt__h_prefilter(output, out_w, out_h, out_stride, (uint)prefilter_x);
 			if (prefilter_y > 1)
 				stbtt__v_prefilter(output, out_w, out_h, out_stride, (uint)prefilter_y);
-			*sub_x = stbtt__oversample_shift(prefilter_x);
-			*sub_y = stbtt__oversample_shift(prefilter_y);
+			sub_x = stbtt__oversample_shift(prefilter_x);
+			sub_y = stbtt__oversample_shift(prefilter_y);
 		}
 
 		public static float stbtt_ScaleForMappingEmToPixels(stbtt_fontinfo info, float pixels)
