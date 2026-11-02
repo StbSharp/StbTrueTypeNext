@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace StbTrueTypeNext
 {
-	unsafe partial class StbTrueType
+	partial class StbTrueType
 	{
 		public const int STBTT_MAC_EID_ARABIC = 4;
 		public const int STBTT_MAC_EID_CHINESE_TRAD = 2;
@@ -870,7 +870,7 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static void stbtt_GetPackedQuad(stbtt_packedchar[] chardata, int pw, int ph, int char_index, 
+		public static void stbtt_GetPackedQuad(stbtt_packedchar[] chardata, int pw, int ph, int char_index,
 			ref float xpos, ref float ypos, ref stbtt_aligned_quad q, int align_to_integer)
 		{
 			var ipw = 1.0f / pw;
@@ -900,8 +900,8 @@ namespace StbTrueTypeNext
 			xpos += b.xadvance;
 		}
 
-		public static void stbtt_GetScaledFontVMetrics(byte[] fontdata, int index, float size, float* ascent,
-			float* descent, float* lineGap)
+		public static void stbtt_GetScaledFontVMetrics(byte[] fontdata, int index, float size,
+			out float ascent, out float descent, out float lineGap)
 		{
 			var i_ascent = 0;
 			var i_descent = 0;
@@ -910,10 +910,11 @@ namespace StbTrueTypeNext
 			var info = new stbtt_fontinfo();
 			stbtt_InitFont(info, fontdata, stbtt_GetFontOffsetForIndex(fontdata, index));
 			scale = size > 0 ? stbtt_ScaleForPixelHeight(info, size) : stbtt_ScaleForMappingEmToPixels(info, -size);
-			stbtt_GetFontVMetrics(info, &i_ascent, &i_descent, &i_lineGap);
-			*ascent = i_ascent * scale;
-			*descent = i_descent * scale;
-			*lineGap = i_lineGap * scale;
+			stbtt_GetFontVMetrics(info, out i_ascent, out i_descent, out i_lineGap);
+
+			ascent = i_ascent * scale;
+			descent = i_descent * scale;
+			lineGap = i_lineGap * scale;
 		}
 
 		public static void stbtt_setvertex(ref stbtt_vertex v, byte type, int x, int y, int cx, int cy)

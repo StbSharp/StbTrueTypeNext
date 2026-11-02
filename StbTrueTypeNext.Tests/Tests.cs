@@ -72,7 +72,7 @@ namespace StbTrueTypeNext.Tests
 		private void TestRasterize(stbtt_fontinfo fontInfo, string text, float size)
 		{
 			int iascent, idescent, ilineGap;
-			stbtt_GetFontVMetrics(fontInfo, &iascent, &idescent, &ilineGap);
+			stbtt_GetFontVMetrics(fontInfo, out iascent, out idescent, out ilineGap);
 
 			var scale = stbtt_ScaleForPixelHeight(fontInfo, 32.0f);
 			var ascent = iascent * scale;

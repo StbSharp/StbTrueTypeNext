@@ -45,7 +45,7 @@ public unsafe class FontBaker
 		var scaleFactor = StbTrueType.stbtt_ScaleForPixelHeight(fontInfo, fontPixelHeight);
 
 		int ascent, descent, lineGap;
-		StbTrueType.stbtt_GetFontVMetrics(fontInfo, &ascent, &descent, &lineGap);
+		StbTrueType.stbtt_GetFontVMetrics(fontInfo, out ascent, out descent, out lineGap);
 
 		foreach (var range in characterRanges)
 		{

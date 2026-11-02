@@ -27,7 +27,7 @@ unsafe class Program
 		var res = stbtt_InitFont(info, bytes, 0);
 
 		int ascent, descent, lineGap;
-		stbtt_GetFontVMetrics(info, &ascent, &descent, &lineGap);
+		stbtt_GetFontVMetrics(info, out ascent, out descent, out lineGap);
 		var lineHeight = ascent - descent + lineGap;
 
 		var scale = stbtt_ScaleForPixelHeight(info, fontSize);
