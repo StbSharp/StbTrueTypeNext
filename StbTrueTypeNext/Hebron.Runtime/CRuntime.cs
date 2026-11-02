@@ -243,15 +243,5 @@ namespace StbTrueTypeNext.Hebron.Runtime
 		{
 			return x % y;
 		}
-
-		public static ulong strlen(sbyte* str)
-		{
-			var ptr = str;
-
-			while (*ptr != '\0')
-				ptr++;
-
-			return (ulong)ptr - (ulong)str - 1;
-		}
 	}
 }
