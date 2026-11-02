@@ -1461,7 +1461,9 @@ namespace StbTrueTypeNext
 						precompute[i] = 0.0f;
 					}
 
+				var res = new float[3];
 				for (y = iy0; y < iy1; ++y)
+				{
 					for (x = ix0; x < ix1; ++x)
 					{
 						float val = 0;
@@ -1515,7 +1517,9 @@ namespace StbTrueTypeNext
 									var by = y0 - 2 * y1 + y2;
 									var mx = x0 - sx;
 									var my = y0 - sy;
-									var res = stackalloc float[] { 0, 0, 0 };
+
+									res.Set(0.0f);
+
 									float px = 0;
 									float py = 0;
 									float t = 0;
@@ -1603,6 +1607,7 @@ namespace StbTrueTypeNext
 							val = 255;
 						data[(y - iy0) * w + (x - ix0)] = (byte)val;
 					}
+				}
 
 				CRuntime.free(precompute);
 			}

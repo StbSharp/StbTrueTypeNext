@@ -9,5 +9,7 @@
 				ptr[i] = value;
 			}
 		}
+
+		public static void Set<T>(this T[] ptr, T value) where T : unmanaged => Set(ptr, value, ptr.Length);
 	}
 }

@@ -480,7 +480,7 @@ namespace StbTrueTypeNext
 			return height * width / 2;
 		}
 
-		public static int stbtt__solve_cubic(float a, float b, float c, float* r)
+		public static int stbtt__solve_cubic(float a, float b, float c, float[] r)
 		{
 			var s = -a / 3;
 			var p = b - a * a / 3;
