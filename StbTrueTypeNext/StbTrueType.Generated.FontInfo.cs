@@ -1425,11 +1425,10 @@ namespace StbTrueTypeNext
 				var y = 0;
 				var i = 0;
 				var j = 0;
-				float* precompute;
 				stbtt_vertex[] verts;
 				var num_verts = stbtt_GetGlyphShape(info, glyph, out verts);
 				data = new byte[w * h];
-				precompute = (float*)CRuntime.malloc((ulong)(num_verts * sizeof(float)));
+				var precompute = new float[num_verts];
 				for (i = 0, j = num_verts - 1; i < num_verts; j = i++)
 					if (verts[i].type == STBTT_vline)
 					{
@@ -1608,8 +1607,6 @@ namespace StbTrueTypeNext
 						data[(y - iy0) * w + (x - ix0)] = (byte)val;
 					}
 				}
-
-				CRuntime.free(precompute);
 			}
 
 			return data;
