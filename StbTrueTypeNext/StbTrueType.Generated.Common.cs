@@ -220,15 +220,14 @@ namespace StbTrueTypeNext
 
 		public static void stbtt__h_prefilter(FakePtr<byte> pixels, int w, int h, int stride_in_bytes, uint kernel_width)
 		{
-			var buffer = stackalloc byte[8];
+			var buffer = new byte[8];
 			var safe_w = (int)(w - kernel_width);
 			var j = 0;
-			CRuntime.memset(buffer, 0, (ulong)8);
 			for (j = 0; j < h; ++j)
 			{
 				var i = 0;
 				uint total = 0;
-				CRuntime.memset(buffer, 0, (ulong)kernel_width);
+				buffer.Set((byte)0, (int)kernel_width);
 				total = 0;
 				switch (kernel_width)
 				{
