@@ -8,7 +8,7 @@ namespace StbTrueTypeNext
 #else
 	internal
 #endif
-	static unsafe partial class StbTrueType
+	static partial class StbTrueType
 	{
 		internal static bool usedOldRasterizer = false;
 
