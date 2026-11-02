@@ -5,34 +5,34 @@ namespace StbTrueTypeNext
 {
 	unsafe partial class StbTrueType
 	{
-		public static void stbrp_init_target(stbrp_context* con, int pw, int ph, stbrp_node* nodes, int num_nodes)
+		public static void stbrp_init_target(stbrp_context con, int pw, int ph, stbrp_node* nodes, int num_nodes)
 		{
-			con->width = pw;
-			con->height = ph;
-			con->x = 0;
-			con->y = 0;
-			con->bottom_y = 0;
+			con.width = pw;
+			con.height = ph;
+			con.x = 0;
+			con.y = 0;
+			con.bottom_y = 0;
 		}
 
-		public static void stbrp_pack_rects(stbrp_context* con, stbrp_rect* rects, int num_rects)
+		public static void stbrp_pack_rects(stbrp_context con, stbrp_rect* rects, int num_rects)
 		{
 			var i = 0;
 			for (i = 0; i < num_rects; ++i)
 			{
-				if (con->x + rects[i].w > con->width)
+				if (con.x + rects[i].w > con.width)
 				{
-					con->x = 0;
-					con->y = con->bottom_y;
+					con.x = 0;
+					con.y = con.bottom_y;
 				}
 
-				if (con->y + rects[i].h > con->height)
+				if (con.y + rects[i].h > con.height)
 					break;
-				rects[i].x = con->x;
-				rects[i].y = con->y;
+				rects[i].x = con.x;
+				rects[i].y = con.y;
 				rects[i].was_packed = 1;
-				con->x += rects[i].w;
-				if (con->y + rects[i].h > con->bottom_y)
-					con->bottom_y = con->y + rects[i].h;
+				con.x += rects[i].w;
+				if (con.y + rects[i].h > con.bottom_y)
+					con.bottom_y = con.y + rects[i].h;
 			}
 
 			for (; i < num_rects; ++i) rects[i].was_packed = 0;
@@ -40,13 +40,11 @@ namespace StbTrueTypeNext
 
 		public static int stbtt_PackBegin(stbtt_pack_context spc, byte[] pixels, int pw, int ph, int stride_in_bytes, int padding)
 		{
-			var context = (stbrp_context*)CRuntime.malloc((ulong)sizeof(stbrp_context));
+			var context = new stbrp_context();
 			var num_nodes = pw - padding;
 			var nodes = (stbrp_node*)CRuntime.malloc((ulong)(sizeof(stbrp_node) * num_nodes));
-			if (context == null || nodes == null)
+			if (nodes == null)
 			{
-				if (context != null)
-					CRuntime.free(context);
 				if (nodes != null)
 					CRuntime.free(nodes);
 				return 0;
@@ -71,7 +69,6 @@ namespace StbTrueTypeNext
 		public static void stbtt_PackEnd(stbtt_pack_context spc)
 		{
 			CRuntime.free(spc.nodes);
-			CRuntime.free(spc.pack_info);
 		}
 
 		public static int stbtt_PackFontRange(stbtt_pack_context spc, byte[] fontdata, int font_index, float font_size,
@@ -161,7 +158,7 @@ namespace StbTrueTypeNext
 
 		public static void stbtt_PackFontRangesPackRects(stbtt_pack_context spc, stbrp_rect* rects, int num_rects)
 		{
-			stbrp_pack_rects((stbrp_context*)spc.pack_info, rects, num_rects);
+			stbrp_pack_rects((stbrp_context)spc.pack_info, rects, num_rects);
 		}
 
 		public static int stbtt_PackFontRangesRenderIntoRects(stbtt_pack_context spc, stbtt_fontinfo info,
@@ -271,8 +268,7 @@ namespace StbTrueTypeNext
 			spc.skip_missing = skip;
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
-		public struct stbrp_context
+		public class stbrp_context
 		{
 			public int width;
 			public int height;
@@ -303,7 +299,7 @@ namespace StbTrueTypeNext
 			public uint h_oversample;
 			public int height;
 			public void* nodes;
-			public void* pack_info;
+			public stbrp_context pack_info;
 			public int padding;
 			public byte[] pixels;
 			public int skip_missing;
