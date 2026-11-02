@@ -75,7 +75,7 @@ namespace StbTrueTypeNext
 		}
 
 		public static int stbtt_PackFontRange(stbtt_pack_context spc, byte[] fontdata, int font_index, float font_size,
-			int first_unicode_codepoint_in_range, int num_chars_in_range, stbtt_packedchar* chardata_for_range)
+			int first_unicode_codepoint_in_range, int num_chars_in_range, stbtt_packedchar[] chardata_for_range)
 		{
 			var range = new stbtt_pack_range();
 			range.first_unicode_codepoint_in_range = first_unicode_codepoint_in_range;
@@ -194,7 +194,6 @@ namespace StbTrueTypeNext
 					var r = &rects[k];
 					if (r->was_packed != 0 && r->w != 0 && r->h != 0)
 					{
-						var bc = &ranges[i].chardata_for_range[j];
 						var advance = 0;
 						var lsb = 0;
 						var x0 = 0;
@@ -222,15 +221,18 @@ namespace StbTrueTypeNext
 						if (spc.v_oversample > 1)
 							stbtt__v_prefilter(new FakePtr<byte>(spc.pixels, r->x + r->y * spc.stride_in_bytes), r->w, r->h,
 								spc.stride_in_bytes, spc.v_oversample);
-						bc->x0 = (ushort)(short)r->x;
-						bc->y0 = (ushort)(short)r->y;
-						bc->x1 = (ushort)(short)(r->x + r->w);
-						bc->y1 = (ushort)(short)(r->y + r->h);
-						bc->xadvance = scale * advance;
-						bc->xoff = x0 * recip_h + sub_x;
-						bc->yoff = y0 * recip_v + sub_y;
-						bc->xoff2 = (x0 + r->w) * recip_h + sub_x;
-						bc->yoff2 = (y0 + r->h) * recip_v + sub_y;
+
+						var bc = ranges[i].chardata_for_range[j];
+						bc.x0 = (ushort)(short)r->x;
+						bc.y0 = (ushort)(short)r->y;
+						bc.x1 = (ushort)(short)(r->x + r->w);
+						bc.y1 = (ushort)(short)(r->y + r->h);
+						bc.xadvance = scale * advance;
+						bc.xoff = x0 * recip_h + sub_x;
+						bc.yoff = y0 * recip_v + sub_y;
+						bc.xoff2 = (x0 + r->w) * recip_h + sub_x;
+						bc.yoff2 = (y0 + r->h) * recip_v + sub_y;
+						ranges[i].chardata_for_range[j] = bc;
 						if (glyph == 0)
 							missing_glyph = j;
 					}
@@ -317,7 +319,7 @@ namespace StbTrueTypeNext
 			public int first_unicode_codepoint_in_range;
 			public int* array_of_unicode_codepoints;
 			public int num_chars;
-			public stbtt_packedchar* chardata_for_range;
+			public stbtt_packedchar[] chardata_for_range;
 			public byte h_oversample;
 			public byte v_oversample;
 		}

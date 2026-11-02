@@ -53,13 +53,10 @@ public unsafe class FontBaker
 				continue;
 
 			var cd = new StbTrueType.stbtt_packedchar[range.End - range.Start + 1];
-			fixed (StbTrueType.stbtt_packedchar* chardataPtr = cd)
-			{
-				StbTrueType.stbtt_PackFontRange(_context, fontInfo.data, 0, fontPixelHeight,
-					range.Start,
-					range.End - range.Start + 1,
-					chardataPtr);
-			}
+			StbTrueType.stbtt_PackFontRange(_context, fontInfo.data, 0, fontPixelHeight,
+				range.Start,
+				range.End - range.Start + 1,
+				cd);
 
 			for (var i = 0; i < cd.Length; ++i)
 			{

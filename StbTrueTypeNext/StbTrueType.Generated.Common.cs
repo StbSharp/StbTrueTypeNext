@@ -870,34 +870,34 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static void stbtt_GetPackedQuad(stbtt_packedchar* chardata, int pw, int ph, int char_index, float* xpos,
-			float* ypos, stbtt_aligned_quad* q, int align_to_integer)
+		public static void stbtt_GetPackedQuad(stbtt_packedchar[] chardata, int pw, int ph, int char_index, 
+			ref float xpos, ref float ypos, ref stbtt_aligned_quad q, int align_to_integer)
 		{
 			var ipw = 1.0f / pw;
 			var iph = 1.0f / ph;
-			var b = chardata + char_index;
+			var b = chardata[char_index];
 			if (align_to_integer != 0)
 			{
-				float x = (int)CRuntime.floor(*xpos + b->xoff + 0.5f);
-				float y = (int)CRuntime.floor(*ypos + b->yoff + 0.5f);
-				q->x0 = x;
-				q->y0 = y;
-				q->x1 = x + b->xoff2 - b->xoff;
-				q->y1 = y + b->yoff2 - b->yoff;
+				float x = (int)CRuntime.floor(xpos + b.xoff + 0.5f);
+				float y = (int)CRuntime.floor(ypos + b.yoff + 0.5f);
+				q.x0 = x;
+				q.y0 = y;
+				q.x1 = x + b.xoff2 - b.xoff;
+				q.y1 = y + b.yoff2 - b.yoff;
 			}
 			else
 			{
-				q->x0 = *xpos + b->xoff;
-				q->y0 = *ypos + b->yoff;
-				q->x1 = *xpos + b->xoff2;
-				q->y1 = *ypos + b->yoff2;
+				q.x0 = xpos + b.xoff;
+				q.y0 = ypos + b.yoff;
+				q.x1 = xpos + b.xoff2;
+				q.y1 = ypos + b.yoff2;
 			}
 
-			q->s0 = b->x0 * ipw;
-			q->t0 = b->y0 * iph;
-			q->s1 = b->x1 * ipw;
-			q->t1 = b->y1 * iph;
-			*xpos += b->xadvance;
+			q.s0 = b.x0 * ipw;
+			q.t0 = b.y0 * iph;
+			q.s1 = b.x1 * ipw;
+			q.t1 = b.y1 * iph;
+			xpos += b.xadvance;
 		}
 
 		public static void stbtt_GetScaledFontVMetrics(byte[] fontdata, int index, float size, float* ascent,
