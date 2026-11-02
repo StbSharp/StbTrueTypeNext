@@ -1759,7 +1759,7 @@ namespace StbTrueTypeNext
 						return 0;
 					stbtt__buf_seek(&b, (int)fdarrayoff);
 					info.fontdicts = stbtt__cff_get_index(&b);
-					info.fdselect = stbtt__buf_range(&b, (int)fdselectoff, (int)(b.size - fdselectoff));
+					info.fdselect = b.stbtt__buf_range((int)fdselectoff, (int)(b.size - fdselectoff));
 				}
 
 				stbtt__buf_seek(&b, (int)charstrings);

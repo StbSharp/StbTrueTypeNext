@@ -6,16 +6,6 @@ namespace StbTrueTypeNext
 {
 	unsafe partial class StbTrueType
 	{
-		public static stbtt__buf stbtt__buf_range(stbtt__buf* b, int o, int s)
-		{
-			var r = stbtt__buf.Null;
-			if (o < 0 || s < 0 || o > b->size || s > b->size - o)
-				return r;
-			r.data = b->data + o;
-			r.size = s;
-			return r;
-		}
-
 		public static void stbtt__buf_seek(stbtt__buf* b, int o)
 		{
 			b->cursor = o > b->size || o < 0 ? b->size : o;
@@ -40,7 +30,7 @@ namespace StbTrueTypeNext
 				stbtt__buf_skip(b, (int)(b->stbtt__buf_get(offsize) - 1));
 			}
 
-			return stbtt__buf_range(b, start, b->cursor - start);
+			return b->stbtt__buf_range(start, b->cursor - start);
 		}
 
 		public static int stbtt__cff_index_count(stbtt__buf* b)
@@ -61,7 +51,7 @@ namespace StbTrueTypeNext
 			stbtt__buf_skip(&b, i * offsize);
 			start = (int)b.stbtt__buf_get(offsize);
 			end = (int)b.stbtt__buf_get(offsize);
-			return stbtt__buf_range(&b, 2 + (count + 1) * offsize + start, end - start);
+			return b.stbtt__buf_range(2 + (count + 1) * offsize + start, end - start);
 		}
 
 		public static uint stbtt__cff_int(stbtt__buf* b)
@@ -115,10 +105,10 @@ namespace StbTrueTypeNext
 				if (op == 12)
 					op = b->stbtt__buf_get8() | 0x100;
 				if (op == key)
-					return stbtt__buf_range(b, start, end - start);
+					return b->stbtt__buf_range(start, end - start);
 			}
 
-			return stbtt__buf_range(b, 0, 0);
+			return b->stbtt__buf_range(0, 0);
 		}
 
 		public static void stbtt__dict_get_ints(stbtt__buf* b, int key, int outcount, uint* _out_)
@@ -150,7 +140,7 @@ namespace StbTrueTypeNext
 			stbtt__dict_get_ints(&fontdict, 18, 2, private_loc);
 			if (private_loc[1] == 0 || private_loc[0] == 0)
 				return stbtt__buf.Null;
-			pdict = stbtt__buf_range(&cff, (int)private_loc[1], (int)private_loc[0]);
+			pdict = cff.stbtt__buf_range((int)private_loc[1], (int)private_loc[0]);
 			stbtt__dict_get_ints(&pdict, 19, 1, &subrsoff);
 			if (subrsoff == 0)
 				return stbtt__buf.Null;
@@ -197,6 +187,16 @@ namespace StbTrueTypeNext
 				if (cursor >= size)
 					return 0;
 				return data[cursor];
+			}
+
+			public stbtt__buf stbtt__buf_range(int o, int s)
+			{
+				var r = Null;
+				if (o < 0 || s < 0 || o > size || s > size - o)
+					return r;
+				r.data = data + o;
+				r.size = s;
+				return r;
 			}
 		}
 	}
