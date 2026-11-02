@@ -6,14 +6,9 @@ namespace StbTrueTypeNext
 {
 	unsafe partial class StbTrueType
 	{
-		public static void stbtt__buf_seek(stbtt__buf* b, int o)
-		{
-			b->cursor = o > b->size || o < 0 ? b->size : o;
-		}
-
 		public static void stbtt__buf_skip(stbtt__buf* b, int o)
 		{
-			stbtt__buf_seek(b, b->cursor + o);
+			b->stbtt__buf_seek(b->cursor + o);
 		}
 
 		public static stbtt__buf stbtt__cff_get_index(stbtt__buf* b)
@@ -35,7 +30,7 @@ namespace StbTrueTypeNext
 
 		public static int stbtt__cff_index_count(stbtt__buf* b)
 		{
-			stbtt__buf_seek(b, 0);
+			b->stbtt__buf_seek(0);
 			return (int)b->stbtt__buf_get(2);
 		}
 
@@ -45,7 +40,7 @@ namespace StbTrueTypeNext
 			var offsize = 0;
 			var start = 0;
 			var end = 0;
-			stbtt__buf_seek(&b, 0);
+			b.stbtt__buf_seek(0);
 			count = (int)b.stbtt__buf_get(2);
 			offsize = b.stbtt__buf_get8();
 			stbtt__buf_skip(&b, i * offsize);
@@ -92,7 +87,7 @@ namespace StbTrueTypeNext
 
 		public static stbtt__buf stbtt__dict_get(stbtt__buf* b, int key)
 		{
-			stbtt__buf_seek(b, 0);
+			b->stbtt__buf_seek(0);
 			while (b->cursor < b->size)
 			{
 				var start = b->cursor;
@@ -144,7 +139,7 @@ namespace StbTrueTypeNext
 			stbtt__dict_get_ints(&pdict, 19, 1, &subrsoff);
 			if (subrsoff == 0)
 				return stbtt__buf.Null;
-			stbtt__buf_seek(&cff, (int)(private_loc[1] + subrsoff));
+			cff.stbtt__buf_seek((int)(private_loc[1] + subrsoff));
 			return stbtt__cff_get_index(&cff);
 		}
 
@@ -197,6 +192,11 @@ namespace StbTrueTypeNext
 				r.data = data + o;
 				r.size = s;
 				return r;
+			}
+
+			public void stbtt__buf_seek(int o)
+			{
+				cursor = o > size || o < 0 ? size : o;
 			}
 		}
 	}

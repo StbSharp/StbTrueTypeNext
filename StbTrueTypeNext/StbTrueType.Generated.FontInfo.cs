@@ -18,7 +18,7 @@ namespace StbTrueTypeNext
 			var fmt = 0;
 			var fdselector = -1;
 			var i = 0;
-			stbtt__buf_seek(&fdselect, 0);
+			fdselect.stbtt__buf_seek(0);
 			fmt = fdselect.stbtt__buf_get8();
 			if (fmt == 0)
 			{
@@ -1738,7 +1738,7 @@ namespace StbTrueTypeNext
 				info.cff = stbtt__new_buf(dataPtr + cff, 512 * 1024 * 1024);
 				b = info.cff;
 				stbtt__buf_skip(&b, 2);
-				stbtt__buf_seek(&b, b.stbtt__buf_get8());
+				b.stbtt__buf_seek(b.stbtt__buf_get8());
 				stbtt__cff_get_index(&b);
 				topdictidx = stbtt__cff_get_index(&b);
 				topdict = stbtt__cff_index_get(topdictidx, 0);
@@ -1757,12 +1757,12 @@ namespace StbTrueTypeNext
 				{
 					if (fdselectoff == 0)
 						return 0;
-					stbtt__buf_seek(&b, (int)fdarrayoff);
+					b.stbtt__buf_seek((int)fdarrayoff);
 					info.fontdicts = stbtt__cff_get_index(&b);
 					info.fdselect = b.stbtt__buf_range((int)fdselectoff, (int)(b.size - fdselectoff));
 				}
 
-				stbtt__buf_seek(&b, (int)charstrings);
+				b.stbtt__buf_seek((int)charstrings);
 				info.charstrings = stbtt__cff_get_index(&b);
 			}
 
