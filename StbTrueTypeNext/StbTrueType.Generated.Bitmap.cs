@@ -215,7 +215,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static void stbtt__rasterize(stbtt__bitmap result, stbtt__point* pts, int* wcount, int windings,
+		public static void stbtt__rasterize(stbtt__bitmap result, stbtt__point[] pts, int* wcount, int windings,
 			float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert,
 			void* userdata, bool useOldRasterizer)
 		{
@@ -243,7 +243,7 @@ namespace StbTrueTypeNext
 			m = 0;
 			for (i = 0; i < windings; ++i)
 			{
-				var p = pts + m;
+				var p = new FakePtr<stbtt__point>(pts, m);
 				m += wcount[i];
 				j = wcount[i] - 1;
 				for (k = 0; k < wcount[i]; j = k++)
@@ -488,7 +488,6 @@ namespace StbTrueTypeNext
 				stbtt__rasterize(result, windings, winding_lengths, winding_count, scale_x, scale_y, shift_x, shift_y,
 					x_off, y_off, (int)invert, userdata, useOldRasterizer);
 				CRuntime.free(winding_lengths);
-				CRuntime.free(windings);
 			}
 		}
 

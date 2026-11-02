@@ -62,7 +62,7 @@ namespace StbTrueTypeNext
 			return a[0] == b[0] && a[1] == b[1] ? 1 : 0;
 		}
 
-		public static void stbtt__add_point(stbtt__point* points, int n, float x, float y)
+		public static void stbtt__add_point(stbtt__point[] points, int n, float x, float y)
 		{
 			if (points == null)
 				return;
@@ -522,7 +522,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static void stbtt__tesselate_cubic(stbtt__point* points, int* num_points, float x0, float y0, float x1,
+		public static void stbtt__tesselate_cubic(stbtt__point[] points, int* num_points, float x0, float y0, float x1,
 			float y1, float x2, float y2, float x3, float y3, float objspace_flatness_squared, int n)
 		{
 			var dx0 = x1 - x0;
@@ -565,7 +565,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static int stbtt__tesselate_curve(stbtt__point* points, int* num_points, float x0, float y0, float x1,
+		public static int stbtt__tesselate_curve(stbtt__point[] points, int* num_points, float x0, float y0, float x1,
 			float y1, float x2, float y2, float objspace_flatness_squared, int n)
 		{
 			var mx = (x0 + 2 * x1 + x2) / 4;
@@ -756,10 +756,10 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static stbtt__point* stbtt_FlattenCurves(stbtt_vertex[] vertices, int num_verts, float objspace_flatness,
+		public static stbtt__point[] stbtt_FlattenCurves(stbtt_vertex[] vertices, int num_verts, float objspace_flatness,
 			int** contour_lengths, int* num_contours, void* userdata)
 		{
-			stbtt__point* points = null;
+			stbtt__point[] points = null;
 			var num_points = 0;
 			var objspace_flatness_squared = objspace_flatness * objspace_flatness;
 			var i = 0;
@@ -786,9 +786,7 @@ namespace StbTrueTypeNext
 				float y = 0;
 				if (pass == 1)
 				{
-					points = (stbtt__point*)CRuntime.malloc((ulong)(num_points * sizeof(stbtt__point)));
-					if (points == null)
-						goto error;
+					points = new stbtt__point[num_points];
 				}
 
 				num_points = 0;
@@ -829,12 +827,6 @@ namespace StbTrueTypeNext
 			}
 
 			return points;
-		error:;
-			CRuntime.free(points);
-			CRuntime.free(*contour_lengths);
-			*contour_lengths = null;
-			*num_contours = 0;
-			return null;
 		}
 
 		public static void stbtt_FreeBitmap(byte* bitmap, void* userdata)
