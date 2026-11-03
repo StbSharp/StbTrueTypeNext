@@ -1,44 +1,44 @@
 ﻿using StbTrueTypeNext.Hebron.Runtime;
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace StbTrueTypeNext
 {
 	unsafe partial class StbTrueType
 	{
-		public static stbtt__active_edge_old_rasterizer* stbtt__new_active_old_rasterizer(stbtt__hheap* hh, stbtt__edge* e, int off_x, float start_point)
+		public static stbtt__active_edge_old_rasterizer stbtt__new_active_old_rasterizer(stbtt__edge* e, int off_x, float start_point)
 		{
-			stbtt__active_edge_old_rasterizer* z = (stbtt__active_edge_old_rasterizer*)(stbtt__hheap_alloc(hh, (ulong)(sizeof(stbtt__active_edge_old_rasterizer))));
+			var z = new stbtt__active_edge_old_rasterizer();
 			float dxdy = (e->x1 - e->x0) / (e->y1 - e->y0);
-			if (z == null)
-				return z;
 			if ((dxdy) < (0))
-				z->dx = (int)(-((int)(CRuntime.floor((double)((1 << 10) * -dxdy)))));
+				z.dx = (int)(-((int)(CRuntime.floor((double)((1 << 10) * -dxdy)))));
 			else
-				z->dx = ((int)(CRuntime.floor((double)((1 << 10) * dxdy))));
+				z.dx = ((int)(CRuntime.floor((double)((1 << 10) * dxdy))));
 
-			z->x = ((int)(CRuntime.floor((double)((1 << 10) * e->x0 + z->dx * (start_point - e->y0)))));
-			z->x -= (int)(off_x * (1 << 10));
-			z->ey = (float)(e->y1);
-			z->next = null;
-			z->direction = (int)((e->invert) != 0 ? 1 : -1);
+			z.x = ((int)(CRuntime.floor((double)((1 << 10) * e->x0 + z.dx * (start_point - e->y0)))));
+			z.x -= (int)(off_x * (1 << 10));
+			z.ey = (float)(e->y1);
+			z.direction = (int)((e->invert) != 0 ? 1 : -1);
+
 			return z;
 		}
 
-		public static void stbtt__fill_active_edges_old_rasterizer(byte[] scanline, int len, stbtt__active_edge_old_rasterizer* e, int max_weight)
+		public static void stbtt__fill_active_edges_old_rasterizer(byte[] scanline, int len, List<stbtt__active_edge_old_rasterizer> edges, int max_weight)
 		{
-			int x0 = 0; 
+			int x0 = 0;
 			int w = 0;
-			while ((e) != null)
+
+			for (var k = 0; k < edges.Count; ++k)
 			{
+				var e = edges[k];
 				if ((w) == (0))
 				{
-					x0 = (int)(e->x);
-					w += (int)(e->direction);
+					x0 = (int)(e.x);
+					w += (int)(e.direction);
 				}
 				else
 				{
-					int x1 = e->x;
-					w += (int)(e->direction);
+					int x1 = e.x;
+					w += (int)(e.direction);
 					if ((w) == (0))
 					{
 						int i = x0 >> 10;
@@ -67,8 +67,6 @@ namespace StbTrueTypeNext
 						}
 					}
 				}
-
-				e = e->next;
 			}
 		}
 
@@ -76,11 +74,10 @@ namespace StbTrueTypeNext
 		{
 			usedOldRasterizer = true;
 
-			var hh = new stbtt__hheap();
-			stbtt__active_edge_old_rasterizer* active = null;
+			var edges = new List<stbtt__active_edge_old_rasterizer>();
 			int y = 0; int j = 0;
-			int max_weight = (255 / vsubsample);
-			int s = 0;
+			int max_weight = (255 / vsubsample); // weight per vertical scanline
+			int s = 0; // vertical subsample index
 			var scanline_data = new byte[512];
 			byte[] scanline;
 
@@ -92,7 +89,7 @@ namespace StbTrueTypeNext
 			{
 				scanline = scanline_data;
 			}
-			
+
 			y = off_y * vsubsample;
 			e[n].y0 = (off_y + result.h) * (float)(vsubsample) + 1;
 			while ((j) < (result.h))
@@ -100,82 +97,59 @@ namespace StbTrueTypeNext
 				scanline.Set((byte)0, result.w);
 				for (s = (int)(0); (s) < (vsubsample); ++s)
 				{
+					// find center of pixel for this scanline
 					float scan_y = y + 0.5f;
-					stbtt__active_edge_old_rasterizer** step = &active;
-					while ((*step) != null)
+
+					// update all active edges;
+					// remove all active edges that terminate before the center of this scanline
+					for (var i = edges.Count - 1; i >= 0; --i)
 					{
-						stbtt__active_edge_old_rasterizer* z = *step;
-						if ((z->ey) <= (scan_y))
+						var z = edges[i];
+						if ((z.ey) <= (scan_y))
 						{
-							*step = z->next;
-							z->direction = (int)(0);
-							stbtt__hheap_free(&hh, z);
+							edges.RemoveAt(i); // delete from list
 						}
 						else
 						{
-							z->x += (int)(z->dx);
-							step = &((*step)->next);
+							z.x += (int)(z.dx); // advance to position for current scanline
 						}
 					}
 
-					for (; ; )
-					{
-						int changed = 0;
-						step = &active;
-						while (((*step) != null) && (((*step)->next) != null))
-						{
-							if (((*step)->x) > ((*step)->next->x))
-							{
-								stbtt__active_edge_old_rasterizer* t = *step;
-								stbtt__active_edge_old_rasterizer* q = t->next;
-								t->next = q->next;
-								q->next = t;
-								*step = q;
-								changed = (int)(1);
-							}
+					// resort the list if needed
+					edges.Sort((a, b) => a.x.CompareTo(b.x));
 
-							step = &(*step)->next;
-						}
-
-						if (changed == 0)
-							break;
-					}
-
+					// insert all edges that start before the center of this scanline -- omit ones that also end on this scanline
 					while ((e->y0) <= (scan_y))
 					{
 						if ((e->y1) > (scan_y))
 						{
-							stbtt__active_edge_old_rasterizer* z = stbtt__new_active_old_rasterizer(&hh, e, (int)(off_x), (float)(scan_y));
-							if (z != null)
-							{
-								if ((active) == (null))
-									active = z;
-								else if ((z->x) < (active->x))
-								{
-									z->next = active;
-									active = z;
-								}
-								else
-								{
-									stbtt__active_edge_old_rasterizer* p = active;
-									while (((p->next) != null) && ((p->next->x) < (z->x)))
-									{
-										p = p->next;
-									}
+							var z = stbtt__new_active_old_rasterizer(e, (int)(off_x), (float)(scan_y));
 
-									z->next = p->next;
-									p->next = z;
+							// find insertion point
+							if (edges.Count == 0)
+							{
+								edges.Add(z);
+							}
+							else if ((z.x) < edges[0].x)
+							{
+								// insert at front
+								edges.Insert(0, z);
+							}
+							else
+							{
+								var i = 0;
+								for (; i < edges.Count && edges[i].x < z.x; ++i)
+								{
 								}
+
+								edges.Insert(i, z);
 							}
 						}
 
 						++e;
 					}
 
-					if (active != null)
-					{
-						stbtt__fill_active_edges_old_rasterizer(scanline, (int)(result.w), active, (int)(max_weight));
-					}
+					stbtt__fill_active_edges_old_rasterizer(scanline, (int)(result.w), edges, (int)(max_weight));
 					++y;
 				}
 
@@ -184,14 +158,10 @@ namespace StbTrueTypeNext
 
 				++j;
 			}
-
-			stbtt__hheap_cleanup(&hh);
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
-		public struct stbtt__active_edge_old_rasterizer
+		public class stbtt__active_edge_old_rasterizer
 		{
-			public stbtt__active_edge_old_rasterizer* next;
 			public int x;
 			public int dx;
 			public float ey;
