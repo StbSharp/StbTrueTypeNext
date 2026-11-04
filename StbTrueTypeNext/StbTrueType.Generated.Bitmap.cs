@@ -1,4 +1,4 @@
-using StbTrueTypeNext.Hebron.Runtime;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
@@ -371,7 +371,7 @@ namespace StbTrueTypeNext
 					var m = 0;
 					sum += scanline2[i];
 					k = scanline[i] + sum;
-					k = CRuntime.fabs(k) * 255 + 0.5f;
+					k = Math.Abs(k) * 255 + 0.5f;
 					m = (int)k;
 					if (m > 255)
 						m = 255;

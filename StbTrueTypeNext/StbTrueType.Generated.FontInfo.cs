@@ -971,7 +971,7 @@ namespace StbTrueTypeNext
 									dx6 = dy6 = s[10];
 									dx = dx1 + dx2 + dx3 + dx4 + dx5;
 									dy = dy1 + dy2 + dy3 + dy4 + dy5;
-									if (CRuntime.fabs(dx) > CRuntime.fabs(dy))
+									if (Math.Abs(dx) > Math.Abs(dy))
 										dy6 = -dy;
 									else
 										dx6 = -dx;
@@ -1484,7 +1484,7 @@ namespace StbTrueTypeNext
 								var dist2 = (x0 - sx) * (x0 - sx) + (y0 - sy) * (y0 - sy);
 								if (dist2 < min_dist * min_dist)
 									min_dist = (float)CRuntime.sqrt(dist2);
-								dist = CRuntime.fabs((x1 - x0) * (y0 - sy) - (y1 - y0) * (x0 - sx)) * precompute[i];
+								dist = Math.Abs((x1 - x0) * (y0 - sy) - (y1 - y0) * (x0 - sx)) * precompute[i];
 								if (dist < min_dist)
 								{
 									var dx = x1 - x0;
