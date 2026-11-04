@@ -501,7 +501,7 @@ namespace StbTrueTypeNext
 			else
 			{
 				var u = (float)CRuntime.sqrt(-p / 3);
-				var v = (float)CRuntime.acos(-CRuntime.sqrt(-27 / p3) * q / 2) / 3;
+				var v = (float)Math.Acos(-CRuntime.sqrt(-27 / p3) * q / 2) / 3;
 				var m = (float)Math.Cos(v);
 				var n = (float)Math.Cos(v - 3.141592 / 2) * 1.732050808f;
 				r[0] = s + u * 2 * m;
