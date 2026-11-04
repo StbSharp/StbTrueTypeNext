@@ -49,21 +49,19 @@ namespace StbTrueTypeNext
 			hh->first_free = p;
 		}
 
-		public static stbtt__active_edge* stbtt__new_active(stbtt__hheap* hh, stbtt__edge* e, int off_x,
-			float start_point)
+		public static stbtt__active_edge stbtt__new_active(stbtt__edge* e, int off_x, float start_point)
 		{
-			var z = (stbtt__active_edge*)stbtt__hheap_alloc(hh, (ulong)sizeof(stbtt__active_edge));
+			var z = new stbtt__active_edge();
 			var dxdy = (e->x1 - e->x0) / (e->y1 - e->y0);
-			if (z == null)
-				return z;
-			z->fdx = dxdy;
-			z->fdy = dxdy != 0.0f ? 1.0f / dxdy : 0.0f;
-			z->fx = e->x0 + dxdy * (start_point - e->y0);
-			z->fx -= off_x;
-			z->direction = e->invert != 0 ? 1.0f : -1.0f;
-			z->sy = e->y0;
-			z->ey = e->y1;
-			z->next = null;
+
+			z.fdx = dxdy;
+			z.fdy = dxdy != 0.0f ? 1.0f / dxdy : 0.0f;
+			z.fx = e->x0 + dxdy * (start_point - e->y0);
+			z.fx -= off_x;
+			z.direction = e->invert != 0 ? 1.0f : -1.0f;
+			z.sy = e->y0;
+			z.ey = e->y1;
+
 			return z;
 		}
 
