@@ -6,6 +6,21 @@ namespace StbTrueTypeNext
 {
 	unsafe partial class StbTrueType
 	{
+		public static stbtt__active_edge stbtt__new_active(stbtt__edge* e, int off_x, float start_point)
+		{
+			var dxdy = (e->x1 - e->x0) / (e->y1 - e->y0);
+
+			return new stbtt__active_edge
+			{
+				fdx = dxdy,
+				fdy = dxdy != 0.0f ? 1.0f / dxdy : 0.0f,
+				fx = e->x0 + dxdy * (start_point - e->y0) - off_x,
+				direction = e->invert != 0 ? 1.0f : -1.0f,
+				sy = e->y0,
+				ey = e->y1
+			};
+		}
+
 		private static void stbtt__fill_active_edges_new(FakePtr<float> scanline, FakePtr<float> scanline_fill, int len, List<stbtt__active_edge> es, float y_top)
 		{
 			var y_bottom = y_top + 1;
