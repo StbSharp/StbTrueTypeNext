@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace StbTrueTypeNext
 {
-	unsafe partial class StbTrueType
+	partial class StbTrueType
 	{
 		public static stbtt__active_edge_old_rasterizer stbtt__new_active_old_rasterizer(ref stbtt__edge e, int off_x, float start_point)
 		{

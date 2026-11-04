@@ -2,7 +2,6 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net471;net8.0</TargetFrameworks>
     <Description>Safe fork of StbTrueTypeSharp</Description>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RootNamespace>StbTrueTypeNext</RootNamespace>
   </PropertyGroup>
 

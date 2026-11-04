@@ -3,12 +3,7 @@ using StbTrueTypeNext.Hebron.Runtime;
 
 namespace StbTrueTypeNext
 {
-#if !STBSHARP_INTERNAL
-	public
-#else
-	internal
-#endif
-	static partial class StbTrueType
+	public static partial class StbTrueType
 	{
 		internal static bool usedOldRasterizer = false;
 

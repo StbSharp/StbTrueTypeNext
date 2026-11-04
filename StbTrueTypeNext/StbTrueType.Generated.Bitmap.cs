@@ -1,11 +1,10 @@
 using StbTrueTypeNext.Hebron.Runtime;
-using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace StbTrueTypeNext
 {
-	unsafe partial class StbTrueType
+	partial class StbTrueType
 	{
 		public static stbtt__active_edge stbtt__new_active(ref stbtt__edge e, int off_x, float start_point)
 		{
