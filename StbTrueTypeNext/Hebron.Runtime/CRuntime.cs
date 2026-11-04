@@ -4,11 +4,6 @@ namespace StbTrueTypeNext.Hebron.Runtime
 {
 	internal static class CRuntime
 	{
-		public static double floor(double a)
-		{
-			return Math.Floor(a);
-		}
-
 		public static double cos(double value)
 		{
 			return Math.Cos(value);

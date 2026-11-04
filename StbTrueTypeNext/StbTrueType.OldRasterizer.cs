@@ -1,4 +1,4 @@
-﻿using StbTrueTypeNext.Hebron.Runtime;
+﻿using System;
 using System.Collections.Generic;
 
 namespace StbTrueTypeNext
@@ -10,11 +10,11 @@ namespace StbTrueTypeNext
 			var z = new stbtt__active_edge_old_rasterizer();
 			float dxdy = (e.x1 - e.x0) / (e.y1 - e.y0);
 			if ((dxdy) < (0))
-				z.dx = (int)(-((int)(CRuntime.floor((double)((1 << 10) * -dxdy)))));
+				z.dx = (int)(-((int)(Math.Floor((double)((1 << 10) * -dxdy)))));
 			else
-				z.dx = ((int)(CRuntime.floor((double)((1 << 10) * dxdy))));
+				z.dx = ((int)(Math.Floor((double)((1 << 10) * dxdy))));
 
-			z.x = ((int)(CRuntime.floor((double)((1 << 10) * e.x0 + z.dx * (start_point - e.y0)))));
+			z.x = ((int)(Math.Floor((double)((1 << 10) * e.x0 + z.dx * (start_point - e.y0)))));
 			z.x -= (int)(off_x * (1 << 10));
 			z.ey = (float)(e.y1);
 			z.direction = (int)((e.invert) != 0 ? 1 : -1);

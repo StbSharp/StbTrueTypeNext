@@ -1289,8 +1289,8 @@ namespace StbTrueTypeNext
 			}
 			else
 			{
-				ix0 = (int)CRuntime.floor(x0 * scale_x + shift_x);
-				iy0 = (int)CRuntime.floor(-y1 * scale_y + shift_y);
+				ix0 = (int)Math.Floor(x0 * scale_x + shift_x);
+				iy0 = (int)Math.Floor(-y1 * scale_y + shift_y);
 				ix1 = (int)Math.Ceiling(x1 * scale_x + shift_x);
 				iy1 = (int)Math.Ceiling(-y0 * scale_y + shift_y);
 			}

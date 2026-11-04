@@ -818,8 +818,8 @@ namespace StbTrueTypeNext
 			var ipw = 1.0f / pw;
 			var iph = 1.0f / ph;
 			var b = chardata[char_index];
-			var round_x = (int)CRuntime.floor(xpos + b.xoff + 0.5f);
-			var round_y = (int)CRuntime.floor(ypos + b.yoff + 0.5f);
+			var round_x = (int)Math.Floor(xpos + b.xoff + 0.5f);
+			var round_y = (int)Math.Floor(ypos + b.yoff + 0.5f);
 			q.x0 = round_x + d3d_bias;
 			q.y0 = round_y + d3d_bias;
 			q.x1 = round_x + b.x1 - b.x0 + d3d_bias;
@@ -879,8 +879,8 @@ namespace StbTrueTypeNext
 			var b = chardata[char_index];
 			if (align_to_integer != 0)
 			{
-				float x = (int)CRuntime.floor(xpos + b.xoff + 0.5f);
-				float y = (int)CRuntime.floor(ypos + b.yoff + 0.5f);
+				float x = (int)Math.Floor(xpos + b.xoff + 0.5f);
+				float y = (int)Math.Floor(ypos + b.yoff + 0.5f);
 				q.x0 = x;
 				q.y0 = y;
 				q.x1 = x + b.xoff2 - b.xoff;
