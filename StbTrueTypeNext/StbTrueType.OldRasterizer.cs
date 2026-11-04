@@ -5,19 +5,19 @@ namespace StbTrueTypeNext
 {
 	unsafe partial class StbTrueType
 	{
-		public static stbtt__active_edge_old_rasterizer stbtt__new_active_old_rasterizer(stbtt__edge* e, int off_x, float start_point)
+		public static stbtt__active_edge_old_rasterizer stbtt__new_active_old_rasterizer(ref stbtt__edge e, int off_x, float start_point)
 		{
 			var z = new stbtt__active_edge_old_rasterizer();
-			float dxdy = (e->x1 - e->x0) / (e->y1 - e->y0);
+			float dxdy = (e.x1 - e.x0) / (e.y1 - e.y0);
 			if ((dxdy) < (0))
 				z.dx = (int)(-((int)(CRuntime.floor((double)((1 << 10) * -dxdy)))));
 			else
 				z.dx = ((int)(CRuntime.floor((double)((1 << 10) * dxdy))));
 
-			z.x = ((int)(CRuntime.floor((double)((1 << 10) * e->x0 + z.dx * (start_point - e->y0)))));
+			z.x = ((int)(CRuntime.floor((double)((1 << 10) * e.x0 + z.dx * (start_point - e.y0)))));
 			z.x -= (int)(off_x * (1 << 10));
-			z.ey = (float)(e->y1);
-			z.direction = (int)((e->invert) != 0 ? 1 : -1);
+			z.ey = (float)(e.y1);
+			z.direction = (int)((e.invert) != 0 ? 1 : -1);
 
 			return z;
 		}
@@ -70,7 +70,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static void stbtt__rasterize_sorted_edges_old_rasterizer(stbtt__bitmap result, stbtt__edge* e, int n, int vsubsample, int off_x, int off_y)
+		public static void stbtt__rasterize_sorted_edges_old_rasterizer(stbtt__bitmap result, List<stbtt__edge> es, int vsubsample, int off_x, int off_y)
 		{
 			usedOldRasterizer = true;
 
@@ -91,7 +91,12 @@ namespace StbTrueTypeNext
 			}
 
 			y = off_y * vsubsample;
-			e[n].y0 = (off_y + result.h) * (float)(vsubsample) + 1;
+
+			var e = es[es.Count - 1];
+			e.y0 = (off_y + result.h) * (float)(vsubsample) + 1;
+			es[es.Count - 1] = e;
+
+			var ei = 0;
 			while ((j) < (result.h))
 			{
 				scanline.Set((byte)0, result.w);
@@ -119,11 +124,12 @@ namespace StbTrueTypeNext
 					edges.Sort((a, b) => a.x.CompareTo(b.x));
 
 					// insert all edges that start before the center of this scanline -- omit ones that also end on this scanline
-					while ((e->y0) <= (scan_y))
+					for (; (es[ei].y0) <= (scan_y); ++ei)
 					{
-						if ((e->y1) > (scan_y))
+						e = es[ei];
+						if ((e.y1) > (scan_y))
 						{
-							var z = stbtt__new_active_old_rasterizer(e, (int)(off_x), (float)(scan_y));
+							var z = stbtt__new_active_old_rasterizer(ref e, (int)(off_x), (float)(scan_y));
 
 							// find insertion point
 							if (edges.Count == 0)
@@ -145,8 +151,6 @@ namespace StbTrueTypeNext
 								edges.Insert(i, z);
 							}
 						}
-
-						++e;
 					}
 
 					stbtt__fill_active_edges_old_rasterizer(scanline, (int)(result.w), edges, (int)(max_weight));

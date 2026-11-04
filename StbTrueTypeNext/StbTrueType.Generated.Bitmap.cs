@@ -1,4 +1,5 @@
 using StbTrueTypeNext.Hebron.Runtime;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
@@ -6,18 +7,18 @@ namespace StbTrueTypeNext
 {
 	unsafe partial class StbTrueType
 	{
-		public static stbtt__active_edge stbtt__new_active(stbtt__edge* e, int off_x, float start_point)
+		public static stbtt__active_edge stbtt__new_active(ref stbtt__edge e, int off_x, float start_point)
 		{
-			var dxdy = (e->x1 - e->x0) / (e->y1 - e->y0);
+			var dxdy = (e.x1 - e.x0) / (e.y1 - e.y0);
 
 			return new stbtt__active_edge
 			{
 				fdx = dxdy,
 				fdy = dxdy != 0.0f ? 1.0f / dxdy : 0.0f,
-				fx = e->x0 + dxdy * (start_point - e->y0) - off_x,
-				direction = e->invert != 0 ? 1.0f : -1.0f,
-				sy = e->y0,
-				ey = e->y1
+				fx = e.x0 + dxdy * (start_point - e.y0) - off_x,
+				direction = e.invert != 0 ? 1.0f : -1.0f,
+				sy = e.y0,
+				ey = e.y1
 			};
 		}
 
@@ -233,8 +234,6 @@ namespace StbTrueTypeNext
 			float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, bool useOldRasterizer)
 		{
 			var y_scale_inv = invert != 0 ? -scale_y : scale_y;
-			stbtt__edge* e;
-			var n = 0;
 			var i = 0;
 			var j = 0;
 			var k = 0;
@@ -246,15 +245,9 @@ namespace StbTrueTypeNext
 				vsubsample = (result.h) < (8) ? 15 : 5;
 			}
 
-			n = 0;
-
 			var windings = wcount.Length;
-			for (i = 0; i < windings; ++i) n += wcount[i];
 
-			e = (stbtt__edge*)CRuntime.malloc((ulong)(sizeof(stbtt__edge) * (n + 1)));
-			if (e == null)
-				return;
-			n = 0;
+			var es = new List<stbtt__edge>();
 			m = 0;
 			for (i = 0; i < windings; ++i)
 			{
@@ -267,39 +260,42 @@ namespace StbTrueTypeNext
 					var b = j;
 					if (p[j].y == p[k].y)
 						continue;
-					e[n].invert = 0;
+
+					var e = new stbtt__edge();
+					e.invert = 0;
 					if (invert != 0 && p[j].y > p[k].y ||
 						invert == 0 && p[j].y < p[k].y)
 					{
-						e[n].invert = 1;
+						e.invert = 1;
 						a = j;
 						b = k;
 					}
 
-					e[n].x0 = p[a].x * scale_x + shift_x;
-					e[n].y0 = (p[a].y * y_scale_inv + shift_y) * vsubsample;
-					e[n].x1 = p[b].x * scale_x + shift_x;
-					e[n].y1 = (p[b].y * y_scale_inv + shift_y) * vsubsample;
-					++n;
+					e.x0 = p[a].x * scale_x + shift_x;
+					e.y0 = (p[a].y * y_scale_inv + shift_y) * vsubsample;
+					e.x1 = p[b].x * scale_x + shift_x;
+					e.y1 = (p[b].y * y_scale_inv + shift_y) * vsubsample;
+					es.Add(e);
 				}
 			}
 
-			stbtt__sort_edges(e, n);
+			es.Sort((a, b) => a.y0.CompareTo(b.y0));
+
+			// We need to add one additional value after the sorting
+			// It is somehow used by below methods
+			es.Add(new stbtt__edge());
 
 			if (!useOldRasterizer)
 			{
-				stbtt__rasterize_sorted_edges(result, e, n, vsubsample, off_x, off_y);
+				stbtt__rasterize_sorted_edges(result, es, vsubsample, off_x, off_y);
 			}
 			else
 			{
-				stbtt__rasterize_sorted_edges_old_rasterizer(result, e, n, vsubsample, off_x, off_y);
+				stbtt__rasterize_sorted_edges_old_rasterizer(result, es, vsubsample, off_x, off_y);
 			}
-
-			CRuntime.free(e);
 		}
 
-		public static void stbtt__rasterize_sorted_edges(stbtt__bitmap result, stbtt__edge* e, int n, int vsubsample,
-			int off_x, int off_y)
+		public static void stbtt__rasterize_sorted_edges(stbtt__bitmap result, List<stbtt__edge> es, int vsubsample, int off_x, int off_y)
 		{
 			usedOldRasterizer = false;
 
@@ -318,8 +314,12 @@ namespace StbTrueTypeNext
 
 			var scanline2 = scanline + result.w;
 			y = off_y;
-			e[n].y0 = (float)(off_y + result.h) + 1;
 
+			var e = es[es.Count - 1];
+			e.y0 = (float)(off_y + result.h) + 1;
+			es[es.Count - 1] = e;
+
+			var ei = 0;
 			var edges = new List<stbtt__active_edge>();
 			while (j < result.h)
 			{
@@ -342,11 +342,12 @@ namespace StbTrueTypeNext
 				}
 
 				// insert all edges that start before the bottom of this scanline
-				while (e->y0 <= scan_y_bottom)
+				for (; es[ei].y0 <= scan_y_bottom; ++ei)
 				{
-					if (e->y0 != e->y1)
+					e = es[ei];
+					if (e.y0 != e.y1)
 					{
-						var z = stbtt__new_active(e, off_x, scan_y_top);
+						var z = stbtt__new_active(ref e, off_x, scan_y_top);
 						if (j == 0 && off_y != 0)
 						{
 							if (z.ey < scan_y_top)
@@ -359,8 +360,6 @@ namespace StbTrueTypeNext
 						// insert at front
 						edges.Insert(0, z);
 					}
-
-					++e;
 				}
 
 				// now process all active edges
@@ -389,98 +388,6 @@ namespace StbTrueTypeNext
 
 				++y;
 				++j;
-			}
-		}
-
-		public static void stbtt__sort_edges(stbtt__edge* p, int n)
-		{
-			stbtt__sort_edges_quicksort(p, n);
-			stbtt__sort_edges_ins_sort(p, n);
-		}
-
-		public static void stbtt__sort_edges_ins_sort(stbtt__edge* p, int n)
-		{
-			var i = 0;
-			var j = 0;
-			for (i = 1; i < n; ++i)
-			{
-				var t = p[i];
-				var a = &t;
-				j = i;
-				while (j > 0)
-				{
-					var b = &p[j - 1];
-					var c = a->y0 < b->y0 ? 1 : 0;
-					if (c == 0)
-						break;
-					p[j] = p[j - 1];
-					--j;
-				}
-
-				if (i != j)
-					p[j] = t;
-			}
-		}
-
-		public static void stbtt__sort_edges_quicksort(stbtt__edge* p, int n)
-		{
-			while (n > 12)
-			{
-				var t = new stbtt__edge();
-				var c01 = 0;
-				var c12 = 0;
-				var c = 0;
-				var m = 0;
-				var i = 0;
-				var j = 0;
-				m = n >> 1;
-				c01 = (&p[0])->y0 < (&p[m])->y0 ? 1 : 0;
-				c12 = (&p[m])->y0 < (&p[n - 1])->y0 ? 1 : 0;
-				if (c01 != c12)
-				{
-					var z = 0;
-					c = (&p[0])->y0 < (&p[n - 1])->y0 ? 1 : 0;
-					z = c == c12 ? 0 : n - 1;
-					t = p[z];
-					p[z] = p[m];
-					p[m] = t;
-				}
-
-				t = p[0];
-				p[0] = p[m];
-				p[m] = t;
-				i = 1;
-				j = n - 1;
-				for (; ; )
-				{
-					for (; ; ++i)
-						if (!((&p[i])->y0 < (&p[0])->y0))
-							break;
-
-					for (; ; --j)
-						if (!((&p[0])->y0 < (&p[j])->y0))
-							break;
-
-					if (i >= j)
-						break;
-					t = p[i];
-					p[i] = p[j];
-					p[j] = t;
-					++i;
-					--j;
-				}
-
-				if (j < n - i)
-				{
-					stbtt__sort_edges_quicksort(p, j);
-					p = p + i;
-					n = n - i;
-				}
-				else
-				{
-					stbtt__sort_edges_quicksort(p + i, n - i);
-					n = j;
-				}
 			}
 		}
 
