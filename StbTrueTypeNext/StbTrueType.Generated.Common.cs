@@ -1,4 +1,3 @@
-using StbTrueTypeNext.Hebron.Runtime;
 using System;
 using System.Runtime.InteropServices;
 
@@ -138,7 +137,8 @@ namespace StbTrueTypeNext
 
 			float y_frac = 0;
 			var winding = 0;
-			y_frac = (float)CRuntime.fmod(y, 1.0f);
+
+			y_frac = y % 1.0f;
 			if (y_frac < 0.01f)
 				y += 0.01f;
 			else if (y_frac > 0.99f)
