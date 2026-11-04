@@ -1,4 +1,5 @@
 using StbTrueTypeNext.Hebron.Runtime;
+using System;
 using System.Runtime.InteropServices;
 
 namespace StbTrueTypeNext
@@ -209,8 +210,8 @@ namespace StbTrueTypeNext
 		public static float stbtt__cuberoot(float x)
 		{
 			if (x < 0)
-				return -(float)CRuntime.pow(-x, 1.0f / 3.0f);
-			return (float)CRuntime.pow(x, 1.0f / 3.0f);
+				return -(float)Math.Pow(-x, 1.0f / 3.0f);
+			return (float)Math.Pow(x, 1.0f / 3.0f);
 		}
 
 		public static void stbtt__h_prefilter(byte[] pixels, int w, int h, int stride_in_bytes, uint kernel_width)

@@ -4,32 +4,6 @@ namespace StbTrueTypeNext.Hebron.Runtime
 {
 	internal static class CRuntime
 	{
-		public static uint _lrotl(uint x, int y)
-		{
-			return (x << y) | (x >> (32 - y));
-		}
-
-		public static int abs(int v)
-		{
-			return Math.Abs(v);
-		}
-
-		public static double pow(double a, double b)
-		{
-			return Math.Pow(a, b);
-		}
-
-		public static void SetArray<T>(T[] data, T value)
-		{
-			for (var i = 0; i < data.Length; ++i)
-				data[i] = value;
-		}
-
-		public static double ldexp(double number, int exponent)
-		{
-			return number * Math.Pow(2, exponent);
-		}
-
 		public static float fabs(double a)
 		{
 			return (float)Math.Abs(a);
