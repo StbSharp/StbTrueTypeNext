@@ -1,13 +1,10 @@
 ﻿using System;
-using StbTrueTypeNext.Hebron.Runtime;
 
 namespace StbTrueTypeNext
 {
 	public static partial class StbTrueType
 	{
 		internal static bool usedOldRasterizer = false;
-
-		public static int NativeAllocations => MemoryStats.Allocations;
 
 		public class stbtt_fontinfo
 		{
