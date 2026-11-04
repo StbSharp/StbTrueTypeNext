@@ -663,8 +663,8 @@ namespace StbTrueTypeNext
 						comp += 2;
 					}
 
-					m = (float)CRuntime.sqrt(mtx[0] * mtx[0] + mtx[1] * mtx[1]);
-					n = (float)CRuntime.sqrt(mtx[2] * mtx[2] + mtx[3] * mtx[3]);
+					m = (float)Math.Sqrt(mtx[0] * mtx[0] + mtx[1] * mtx[1]);
+					n = (float)Math.Sqrt(mtx[2] * mtx[2] + mtx[3] * mtx[3]);
 					comp_num_verts = stbtt_GetGlyphShape(info, gidx, out comp_verts);
 					if (comp_num_verts > 0)
 					{
@@ -1436,7 +1436,7 @@ namespace StbTrueTypeNext
 						var y0 = verts[i].y * scale_y;
 						var x1 = verts[j].x * scale_x;
 						var y1 = verts[j].y * scale_y;
-						var dist = (float)CRuntime.sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+						var dist = (float)Math.Sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
 						precompute[i] = dist == 0 ? 0.0f : 1.0f / dist;
 					}
 					else if (verts[i].type == STBTT_vcurve)
@@ -1483,7 +1483,7 @@ namespace StbTrueTypeNext
 								float dist = 0;
 								var dist2 = (x0 - sx) * (x0 - sx) + (y0 - sy) * (y0 - sy);
 								if (dist2 < min_dist * min_dist)
-									min_dist = (float)CRuntime.sqrt(dist2);
+									min_dist = (float)Math.Sqrt(dist2);
 								dist = Math.Abs((x1 - x0) * (y0 - sy) - (y1 - y0) * (x0 - sx)) * precompute[i];
 								if (dist < min_dist)
 								{
@@ -1543,7 +1543,7 @@ namespace StbTrueTypeNext
 											}
 											else
 											{
-												var root = (float)CRuntime.sqrt(discriminant);
+												var root = (float)Math.Sqrt(discriminant);
 												res[0] = (-b - root) / (2 * a);
 												res[1] = (-b + root) / (2 * a);
 												num = 2;
@@ -1560,7 +1560,7 @@ namespace StbTrueTypeNext
 
 									dist2 = (x0 - sx) * (x0 - sx) + (y0 - sy) * (y0 - sy);
 									if (dist2 < min_dist * min_dist)
-										min_dist = (float)CRuntime.sqrt(dist2);
+										min_dist = (float)Math.Sqrt(dist2);
 									if (num >= 1 && res[0] >= 0.0f && res[0] <= 1.0f)
 									{
 										t = res[0];
@@ -1569,7 +1569,7 @@ namespace StbTrueTypeNext
 										py = it * it * y0 + 2 * t * it * y1 + t * t * y2;
 										dist2 = (px - sx) * (px - sx) + (py - sy) * (py - sy);
 										if (dist2 < min_dist * min_dist)
-											min_dist = (float)CRuntime.sqrt(dist2);
+											min_dist = (float)Math.Sqrt(dist2);
 									}
 
 									if (num >= 2 && res[1] >= 0.0f && res[1] <= 1.0f)
@@ -1580,7 +1580,7 @@ namespace StbTrueTypeNext
 										py = it * it * y0 + 2 * t * it * y1 + t * t * y2;
 										dist2 = (px - sx) * (px - sx) + (py - sy) * (py - sy);
 										if (dist2 < min_dist * min_dist)
-											min_dist = (float)CRuntime.sqrt(dist2);
+											min_dist = (float)Math.Sqrt(dist2);
 									}
 
 									if (num >= 3 && res[2] >= 0.0f && res[2] <= 1.0f)
@@ -1591,7 +1591,7 @@ namespace StbTrueTypeNext
 										py = it * it * y0 + 2 * t * it * y1 + t * t * y2;
 										dist2 = (px - sx) * (px - sx) + (py - sy) * (py - sy);
 										if (dist2 < min_dist * min_dist)
-											min_dist = (float)CRuntime.sqrt(dist2);
+											min_dist = (float)Math.Sqrt(dist2);
 									}
 								}
 							}

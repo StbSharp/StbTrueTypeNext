@@ -427,7 +427,7 @@ namespace StbTrueTypeNext
 				if (discr > 0.0)
 				{
 					var rcpna = -1 / a;
-					var d = (float)CRuntime.sqrt(discr);
+					var d = (float)Math.Sqrt(discr);
 					s0 = (b + d) * rcpna;
 					s1 = (b - d) * rcpna;
 					if (s0 >= 0.0 && s0 <= 1.0)
@@ -490,7 +490,7 @@ namespace StbTrueTypeNext
 			var d = q * q + 4 * p3 / 27;
 			if (d >= 0)
 			{
-				var z = (float)CRuntime.sqrt(d);
+				var z = (float)Math.Sqrt(d);
 				var u = (-q + z) / 2;
 				var v = (-q - z) / 2;
 				u = stbtt__cuberoot(u);
@@ -500,8 +500,8 @@ namespace StbTrueTypeNext
 			}
 			else
 			{
-				var u = (float)CRuntime.sqrt(-p / 3);
-				var v = (float)Math.Acos(-CRuntime.sqrt(-27 / p3) * q / 2) / 3;
+				var u = (float)Math.Sqrt(-p / 3);
+				var v = (float)Math.Acos(-Math.Sqrt(-27 / p3) * q / 2) / 3;
 				var m = (float)Math.Cos(v);
 				var n = (float)Math.Cos(v - 3.141592 / 2) * 1.732050808f;
 				r[0] = s + u * 2 * m;
@@ -522,9 +522,9 @@ namespace StbTrueTypeNext
 			var dy2 = y3 - y2;
 			var dx = x3 - x0;
 			var dy = y3 - y0;
-			var longlen = (float)(CRuntime.sqrt(dx0 * dx0 + dy0 * dy0) + CRuntime.sqrt(dx1 * dx1 + dy1 * dy1) +
-								   CRuntime.sqrt(dx2 * dx2 + dy2 * dy2));
-			var shortlen = (float)CRuntime.sqrt(dx * dx + dy * dy);
+			var longlen = (float)(Math.Sqrt(dx0 * dx0 + dy0 * dy0) + Math.Sqrt(dx1 * dx1 + dy1 * dy1) +
+								   Math.Sqrt(dx2 * dx2 + dy2 * dy2));
+			var shortlen = (float)Math.Sqrt(dx * dx + dy * dy);
 			var flatness_squared = longlen * longlen - shortlen * shortlen;
 			if (n > 16)
 				return;
