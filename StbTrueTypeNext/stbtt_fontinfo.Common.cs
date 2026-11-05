@@ -350,7 +350,7 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		internal static int stbtt__ray_intersect_bezier(float[] orig, float[] ray, Vector2 q0, Vector2 q1, Vector2 q2, float[] hits)
+		private static int stbtt__ray_intersect_bezier(float[] orig, float[] ray, Vector2 q0, Vector2 q1, Vector2 q2, float[] hits)
 		{
 			var q0perp = q0.y * ray[0] - q0.x * ray[1];
 			var q1perp = q1.y * ray[0] - q1.x * ray[1];
@@ -412,7 +412,7 @@ namespace StbTrueTypeNext
 			return 1;
 		}
 
-		public static int stbtt__solve_cubic(float a, float b, float c, float[] r)
+		private static int stbtt__solve_cubic(float a, float b, float c, float[] r)
 		{
 			var s = -a / 3;
 			var p = b - a * a / 3;
