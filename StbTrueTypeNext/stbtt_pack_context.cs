@@ -84,7 +84,7 @@ namespace StbTrueTypeNext
 
 			stbtt_InitFont(info, fontdata, stbtt_GetFontOffsetForIndex(fontdata, font_index));
 			n = stbtt_PackFontRangesGatherRects(info, ranges, rects);
-			stbtt_PackFontRangesPackRects(this, rects, n);
+			stbtt_PackFontRangesPackRects(rects, n);
 			return_value = stbtt_PackFontRangesRenderIntoRects(this, info, ranges, rects);
 
 			return return_value;
@@ -138,7 +138,7 @@ namespace StbTrueTypeNext
 			return k;
 		}
 
-		private static void stbtt_PackFontRangesPackRects(stbtt_pack_context spc, stbrp_rect[] rects, int num_rects) => spc._pack_info.stbrp_pack_rects(rects, num_rects);
+		private void stbtt_PackFontRangesPackRects(stbrp_rect[] rects, int num_rects) => _pack_info.stbrp_pack_rects(rects, num_rects);
 
 		private static int stbtt_PackFontRangesRenderIntoRects(stbtt_pack_context spc, stbtt_fontinfo info,
 			stbtt_pack_range[] ranges, stbrp_rect[] rects)
