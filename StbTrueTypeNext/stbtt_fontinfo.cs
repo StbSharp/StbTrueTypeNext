@@ -91,26 +91,6 @@ namespace StbTrueTypeNext
 			return Buffer.stbtt__get_subrs(_cff, Buffer.stbtt__cff_index_get(_fontdicts, fdselector));
 		}
 
-		public static int stbtt__close_shape(STTVertex[] vertices, int num_vertices, int was_off, int start_off,
-			int sx, int sy, int scx, int scy, int cx, int cy)
-		{
-			if (start_off != 0)
-			{
-				if (was_off != 0)
-					stbtt_setvertex(ref vertices[num_vertices++], STBTT_vcurve, (cx + scx) >> 1, (cy + scy) >> 1, cx, cy);
-				stbtt_setvertex(ref vertices[num_vertices++], STBTT_vcurve, sx, sy, scx, scy);
-			}
-			else
-			{
-				if (was_off != 0)
-					stbtt_setvertex(ref vertices[num_vertices++], STBTT_vcurve, sx, sy, cx, cy);
-				else
-					stbtt_setvertex(ref vertices[num_vertices++], STBTT_vline, sx, sy, 0, 0);
-			}
-
-			return num_vertices;
-		}
-
 		public static int stbtt__get_svg(stbtt_fontinfo info)
 		{
 			uint t = 0;
@@ -583,7 +563,7 @@ namespace StbTrueTypeNext
 					if (next_move == i)
 					{
 						if (i != 0)
-							num_vertices = stbtt__close_shape(vertices, num_vertices, was_off, start_off, sx, sy, scx,
+							num_vertices = vertices.stbtt__close_shape(num_vertices, was_off, start_off, sx, sy, scx,
 								scy, cx, cy);
 						start_off = (flags & 1) != 0 ? 0 : 1;
 						if (start_off != 0)
@@ -635,7 +615,7 @@ namespace StbTrueTypeNext
 					}
 				}
 
-				num_vertices = stbtt__close_shape(vertices, num_vertices, was_off, start_off, sx, sy, scx, scy, cx, cy);
+				num_vertices = vertices.stbtt__close_shape(num_vertices, was_off, start_off, sx, sy, scx, scy, cx, cy);
 			}
 			else if (numberOfContours < 0)
 			{

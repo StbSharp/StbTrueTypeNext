@@ -27,5 +27,24 @@
 
 			return 0;
 		}
+
+		public static int stbtt__close_shape(this STTVertex[] vertices, int num_vertices, int was_off, int start_off, int sx, int sy, int scx, int scy, int cx, int cy)
+		{
+			if (start_off != 0)
+			{
+				if (was_off != 0)
+					stbtt_fontinfo.stbtt_setvertex(ref vertices[num_vertices++], stbtt_fontinfo.STBTT_vcurve, (cx + scx) >> 1, (cy + scy) >> 1, cx, cy);
+				stbtt_fontinfo.stbtt_setvertex(ref vertices[num_vertices++], stbtt_fontinfo.STBTT_vcurve, sx, sy, scx, scy);
+			}
+			else
+			{
+				if (was_off != 0)
+					stbtt_fontinfo.stbtt_setvertex(ref vertices[num_vertices++], stbtt_fontinfo.STBTT_vcurve, sx, sy, cx, cy);
+				else
+					stbtt_fontinfo.stbtt_setvertex(ref vertices[num_vertices++], stbtt_fontinfo.STBTT_vline, sx, sy, 0, 0);
+			}
+
+			return num_vertices;
+		}
 	}
 }
