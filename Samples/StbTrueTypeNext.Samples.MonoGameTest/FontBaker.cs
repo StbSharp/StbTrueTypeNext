@@ -43,7 +43,7 @@ public class FontBaker
 		var scaleFactor = stbtt_fontinfo.stbtt_ScaleForPixelHeight(fontInfo, fontPixelHeight);
 
 		int ascent, descent, lineGap;
-		stbtt_fontinfo.stbtt_GetFontVMetrics(fontInfo, out ascent, out descent, out lineGap);
+		fontInfo.stbtt_GetFontVMetrics(out ascent, out descent, out lineGap);
 
 		foreach (var range in characterRanges)
 		{

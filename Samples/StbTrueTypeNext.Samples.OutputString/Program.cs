@@ -25,7 +25,7 @@ class Program
 		var info = stbtt_fontinfo.FromMemory(bytes);
 
 		int ascent, descent, lineGap;
-		stbtt_GetFontVMetrics(info, out ascent, out descent, out lineGap);
+		info.stbtt_GetFontVMetrics(out ascent, out descent, out lineGap);
 		var lineHeight = ascent - descent + lineGap;
 
 		var scale = stbtt_ScaleForPixelHeight(info, fontSize);

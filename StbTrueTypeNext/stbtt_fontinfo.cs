@@ -1260,13 +1260,13 @@ namespace StbTrueTypeNext
 			return null;
 		}
 
-		public static void stbtt_GetFontVMetrics(stbtt_fontinfo info, out int ascent, out int descent, out int lineGap)
+		public void stbtt_GetFontVMetrics(out int ascent, out int descent, out int lineGap)
 		{
-			var dataPtr = new FakePtr<byte>(info._data);
+			var dataPtr = new FakePtr<byte>(_data);
 
-			ascent = ttSHORT(dataPtr + info._hhea + 4);
-			descent = ttSHORT(dataPtr + info._hhea + 6);
-			lineGap = ttSHORT(dataPtr + info._hhea + 8);
+			ascent = ttSHORT(dataPtr + _hhea + 4);
+			descent = ttSHORT(dataPtr + _hhea + 6);
+			lineGap = ttSHORT(dataPtr + _hhea + 8);
 		}
 
 		public static int stbtt_GetFontVMetricsOS2(stbtt_fontinfo info, out int typoAscent, out int typoDescent, out int typoLineGap)

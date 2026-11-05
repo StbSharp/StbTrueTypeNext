@@ -877,7 +877,7 @@ namespace StbTrueTypeNext
 			float scale = 0;
 			var info = FromMemory(fontdata, stbtt_GetFontOffsetForIndex(fontdata, index));
 			scale = size > 0 ? stbtt_ScaleForPixelHeight(info, size) : stbtt_ScaleForMappingEmToPixels(info, -size);
-			stbtt_GetFontVMetrics(info, out i_ascent, out i_descent, out i_lineGap);
+			info.stbtt_GetFontVMetrics(out i_ascent, out i_descent, out i_lineGap);
 
 			ascent = i_ascent * scale;
 			descent = i_descent * scale;
