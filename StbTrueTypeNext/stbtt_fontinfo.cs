@@ -1809,11 +1809,9 @@ namespace StbTrueTypeNext
 			return numberOfContours == 0 ? 1 : 0;
 		}
 
-		public static void stbtt_MakeCodepointBitmap(stbtt_fontinfo info, byte[] output, int out_w, int out_h,
-			int out_stride, float scale_x, float scale_y, int codepoint)
+		public void stbtt_MakeCodepointBitmap(byte[] output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, int codepoint)
 		{
-			stbtt_MakeCodepointBitmapSubpixel(info, output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f,
-				codepoint);
+			stbtt_MakeCodepointBitmapSubpixel(this, output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, codepoint);
 		}
 
 		public static void stbtt_MakeCodepointBitmapSubpixel(stbtt_fontinfo info, byte[] output, int out_w, int out_h,
