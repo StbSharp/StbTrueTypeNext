@@ -4,32 +4,32 @@ namespace StbTrueTypeNext
 {
 	public class stbtt_pack_context
 	{
-		private uint h_oversample;
-		private int height;
-		private stbrp_node[] nodes;
-		private stbrp_context pack_info;
-		private int padding;
-		private byte[] pixels;
-		private int skip_missing;
-		private int stride_in_bytes;
-		private uint v_oversample;
-		private int width;
+		private uint _h_oversample;
+		private uint _v_oversample;
+		private int _width;
+		private int _height;
+		private stbrp_node[] _nodes;
+		private stbrp_context _pack_info;
+		private int _padding;
+		private byte[] _pixels;
+		private int _skip_missing;
+		private int _stride_in_bytes;
 
 		public void stbtt_PackBegin(byte[] _pixels, int pw, int ph, int _stride_in_bytes, int _padding)
 		{
 			var context = new stbrp_context();
 			var num_nodes = pw - _padding;
 
-			width = pw;
-			height = ph;
-			pixels = _pixels;
-			pack_info = context;
-			nodes = new stbrp_node[num_nodes];
-			padding = _padding;
-			stride_in_bytes = _stride_in_bytes != 0 ? _stride_in_bytes : pw;
-			h_oversample = 1;
-			v_oversample = 1;
-			skip_missing = 0;
+			_width = pw;
+			_height = ph;
+			this._pixels = _pixels;
+			_pack_info = context;
+			_nodes = new stbrp_node[num_nodes];
+			this._padding = _padding;
+			this._stride_in_bytes = _stride_in_bytes != 0 ? _stride_in_bytes : pw;
+			_h_oversample = 1;
+			_v_oversample = 1;
+			_skip_missing = 0;
 			context.stbrp_init_target(pw - _padding, ph - _padding);
 
 			_pixels.Set((byte)0, pw * ph);
@@ -104,8 +104,8 @@ namespace StbTrueTypeNext
 			{
 				var fh = ranges[i].font_size;
 				var scale = fh > 0 ? stbtt_ScaleForPixelHeight(info, fh) : stbtt_ScaleForMappingEmToPixels(info, -fh);
-				ranges[i].h_oversample = (byte)spc.h_oversample;
-				ranges[i].v_oversample = (byte)spc.v_oversample;
+				ranges[i].h_oversample = (byte)spc._h_oversample;
+				ranges[i].v_oversample = (byte)spc._v_oversample;
 				for (j = 0; j < ranges[i].num_chars; ++j)
 				{
 					var x0 = 0;
@@ -116,16 +116,16 @@ namespace StbTrueTypeNext
 						? ranges[i].first_unicode_codepoint_in_range + j
 						: ranges[i].array_of_unicode_codepoints[j];
 					var glyph = stbtt_FindGlyphIndex(info, codepoint);
-					if (glyph == 0 && (spc.skip_missing != 0 || missing_glyph_added != 0))
+					if (glyph == 0 && (spc._skip_missing != 0 || missing_glyph_added != 0))
 					{
 						rects[k].w = rects[k].h = 0;
 					}
 					else
 					{
-						stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale * spc.h_oversample, scale * spc.v_oversample,
+						stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale * spc._h_oversample, scale * spc._v_oversample,
 							0, 0, out x0, out y0, out x1, out y1);
-						rects[k].w = (int)(x1 - x0 + spc.padding + spc.h_oversample - 1);
-						rects[k].h = (int)(y1 - y0 + spc.padding + spc.v_oversample - 1);
+						rects[k].w = (int)(x1 - x0 + spc._padding + spc._h_oversample - 1);
+						rects[k].h = (int)(y1 - y0 + spc._padding + spc._v_oversample - 1);
 						if (glyph == 0)
 							missing_glyph_added = 1;
 					}
@@ -137,7 +137,7 @@ namespace StbTrueTypeNext
 			return k;
 		}
 
-		private static void stbtt_PackFontRangesPackRects(stbtt_pack_context spc, stbrp_rect[] rects, int num_rects) => spc.pack_info.stbrp_pack_rects(rects, num_rects);
+		private static void stbtt_PackFontRangesPackRects(stbtt_pack_context spc, stbrp_rect[] rects, int num_rects) => spc._pack_info.stbrp_pack_rects(rects, num_rects);
 
 		private static int stbtt_PackFontRangesRenderIntoRects(stbtt_pack_context spc, stbtt_fontinfo info,
 			stbtt_pack_range[] ranges, stbrp_rect[] rects)
@@ -147,8 +147,8 @@ namespace StbTrueTypeNext
 			var k = 0;
 			var missing_glyph = -1;
 			var return_value = 1;
-			var old_h_over = (int)spc.h_oversample;
-			var old_v_over = (int)spc.v_oversample;
+			var old_h_over = (int)spc._h_oversample;
+			var old_v_over = (int)spc._v_oversample;
 			k = 0;
 
 			var num_ranges = ranges.Length;
@@ -160,12 +160,12 @@ namespace StbTrueTypeNext
 				float recip_v = 0;
 				float sub_x = 0;
 				float sub_y = 0;
-				spc.h_oversample = ranges[i].h_oversample;
-				spc.v_oversample = ranges[i].v_oversample;
-				recip_h = 1.0f / spc.h_oversample;
-				recip_v = 1.0f / spc.v_oversample;
-				sub_x = stbtt__oversample_shift((int)spc.h_oversample);
-				sub_y = stbtt__oversample_shift((int)spc.v_oversample);
+				spc._h_oversample = ranges[i].h_oversample;
+				spc._v_oversample = ranges[i].v_oversample;
+				recip_h = 1.0f / spc._h_oversample;
+				recip_v = 1.0f / spc._v_oversample;
+				sub_x = stbtt__oversample_shift((int)spc._h_oversample);
+				sub_y = stbtt__oversample_shift((int)spc._v_oversample);
 				for (j = 0; j < ranges[i].num_chars; ++j)
 				{
 					var r = rects[k];
@@ -181,23 +181,23 @@ namespace StbTrueTypeNext
 							? ranges[i].first_unicode_codepoint_in_range + j
 							: ranges[i].array_of_unicode_codepoints[j];
 						var glyph = stbtt_FindGlyphIndex(info, codepoint);
-						var pad = spc.padding;
+						var pad = spc._padding;
 						r.x += pad;
 						r.y += pad;
 						r.w -= pad;
 						r.h -= pad;
 						stbtt_GetGlyphHMetrics(info, glyph, out advance, out lsb);
-						stbtt_GetGlyphBitmapBox(info, glyph, scale * spc.h_oversample, scale * spc.v_oversample,
+						stbtt_GetGlyphBitmapBox(info, glyph, scale * spc._h_oversample, scale * spc._v_oversample,
 							out x0, out y0, out x1, out y1);
-						stbtt_MakeGlyphBitmapSubpixel(info, new FakePtr<byte>(spc.pixels, r.x + r.y * spc.stride_in_bytes),
-							(int)(r.w - spc.h_oversample + 1), (int)(r.h - spc.v_oversample + 1),
-							spc.stride_in_bytes, scale * spc.h_oversample, scale * spc.v_oversample, 0, 0, glyph);
-						if (spc.h_oversample > 1)
-							stbtt__h_prefilter(new FakePtr<byte>(spc.pixels, r.x + r.y * spc.stride_in_bytes), r.w, r.h,
-								spc.stride_in_bytes, spc.h_oversample);
-						if (spc.v_oversample > 1)
-							stbtt__v_prefilter(new FakePtr<byte>(spc.pixels, r.x + r.y * spc.stride_in_bytes), r.w, r.h,
-								spc.stride_in_bytes, spc.v_oversample);
+						stbtt_MakeGlyphBitmapSubpixel(info, new FakePtr<byte>(spc._pixels, r.x + r.y * spc._stride_in_bytes),
+							(int)(r.w - spc._h_oversample + 1), (int)(r.h - spc._v_oversample + 1),
+							spc._stride_in_bytes, scale * spc._h_oversample, scale * spc._v_oversample, 0, 0, glyph);
+						if (spc._h_oversample > 1)
+							stbtt__h_prefilter(new FakePtr<byte>(spc._pixels, r.x + r.y * spc._stride_in_bytes), r.w, r.h,
+								spc._stride_in_bytes, spc._h_oversample);
+						if (spc._v_oversample > 1)
+							stbtt__v_prefilter(new FakePtr<byte>(spc._pixels, r.x + r.y * spc._stride_in_bytes), r.w, r.h,
+								spc._stride_in_bytes, spc._v_oversample);
 
 						var bc = ranges[i].chardata_for_range[j];
 						bc.x0 = (ushort)(short)r.x;
@@ -213,7 +213,7 @@ namespace StbTrueTypeNext
 						if (glyph == 0)
 							missing_glyph = j;
 					}
-					else if (spc.skip_missing != 0)
+					else if (spc._skip_missing != 0)
 					{
 						return_value = 0;
 					}
@@ -232,22 +232,22 @@ namespace StbTrueTypeNext
 				}
 			}
 
-			spc.h_oversample = (uint)old_h_over;
-			spc.v_oversample = (uint)old_v_over;
+			spc._h_oversample = (uint)old_h_over;
+			spc._v_oversample = (uint)old_v_over;
 			return return_value;
 		}
 
 		public static void stbtt_PackSetOversampling(stbtt_pack_context spc, uint h_oversample, uint v_oversample)
 		{
 			if (h_oversample <= 8)
-				spc.h_oversample = h_oversample;
+				spc._h_oversample = h_oversample;
 			if (v_oversample <= 8)
-				spc.v_oversample = v_oversample;
+				spc._v_oversample = v_oversample;
 		}
 
 		public static void stbtt_PackSetSkipMissingCodepoints(stbtt_pack_context spc, int skip)
 		{
-			spc.skip_missing = skip;
+			spc._skip_missing = skip;
 		}
 
 		private class stbrp_context
