@@ -164,7 +164,7 @@ namespace StbTrueTypeNext
 					++y;
 				}
 
-				var pixelsPtr = result._pixels + j * result._stride;
+				var pixelsPtr = result.Pixels + j * result._stride;
 				pixelsPtr.Copy(scanline, result._width);
 
 				++j;

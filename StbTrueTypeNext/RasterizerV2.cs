@@ -318,7 +318,7 @@ namespace StbTrueTypeNext
 					m = (int)k;
 					if (m > 255)
 						m = 255;
-					result._pixels[j * result._stride + i] = (byte)m;
+					result[j * result._stride + i] = (byte)m;
 				}
 
 				// advance all the edges

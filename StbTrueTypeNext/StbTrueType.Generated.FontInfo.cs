@@ -1304,7 +1304,6 @@ namespace StbTrueTypeNext
 			var iy0 = 0;
 			var ix1 = 0;
 			var iy1 = 0;
-			var gbm = new stbtt__bitmap();
 			stbtt_vertex[] vertices;
 			var num_verts = stbtt_GetGlyphShape(info, glyph, out vertices);
 			if (scale_x == 0)
@@ -1320,22 +1319,21 @@ namespace StbTrueTypeNext
 			}
 
 			stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
-			gbm._width = ix1 - ix0;
-			gbm._height = iy1 - iy0;
-			gbm._pixels = FakePtr<byte>.Null;
 
-			width = gbm._width;
-			height = gbm._height;
+			width = ix1 - ix0;
+			height = iy1 - iy0;
 			xoff = ix0;
 			yoff = iy0;
-			if (gbm._width != 0 && gbm._height != 0)
+
+			if (width <= 0 || height <= 0)
 			{
-				gbm._pixels = new FakePtr<byte>(gbm._width * gbm._height);
-				gbm._stride = gbm._width;
-				gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.useOldRasterizer);
+				return null;
 			}
 
-			return gbm._pixels.Data;
+			var gbm = new stbtt__bitmap(width, height);
+			gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.useOldRasterizer);
+
+			return gbm.Pixels.Data;
 		}
 
 		public static int stbtt_GetGlyphBox(stbtt_fontinfo info, int glyph_index, out int x0, out int y0, out int x1, out int y1)
@@ -1839,14 +1837,11 @@ namespace StbTrueTypeNext
 			var iy1 = 0;
 			stbtt_vertex[] vertices;
 			var num_verts = stbtt_GetGlyphShape(info, glyph, out vertices);
-			var gbm = new stbtt__bitmap();
 			stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
-			gbm._pixels = output;
-			gbm._width = out_w;
-			gbm._height = out_h;
-			gbm._stride = out_stride;
-			if (gbm._width != 0 && gbm._height != 0)
+
+			if (out_w != 0 && out_h != 0)
 			{
+				var gbm = new stbtt__bitmap(out_w, out_h, out_stride, output);
 				gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.useOldRasterizer);
 			}
 		}

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using static StbTrueTypeNext.StbTrueType;
 
@@ -5,10 +6,65 @@ namespace StbTrueTypeNext
 {
 	internal class stbtt__bitmap
 	{
-		public int _width;
-		public int _height;
-		public int _stride;
-		public FakePtr<byte> _pixels;
+		private FakePtr<byte> _pixels;
+
+		public int _width { get; }
+		public int _height { get; }
+		public int _stride { get; }
+
+		public byte this[int index]
+		{
+			get => _pixels[index];
+
+			set =>_pixels[index] = value;
+		}
+
+		public FakePtr<byte> Pixels => _pixels;
+
+		public stbtt__bitmap(int width, int height)
+		{
+			if (width <= 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(width));
+			}
+
+			if (height <= 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(height));
+			}
+
+			_stride = _width = width;
+			_height = height;
+			_pixels = new FakePtr<byte>(width * height);
+		}
+
+		public stbtt__bitmap(int width, int height, int stride, FakePtr<byte> pixels)
+		{
+			if (width <= 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(width));
+			}
+
+			if (height <= 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(height));
+			}
+
+			if (stride <= 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(stride));
+			}
+
+			if (pixels.IsNull)
+			{
+				throw new ArgumentNullException(nameof(pixels));
+			}
+
+			_width = width;
+			_height = height;
+			_stride = stride;
+			_pixels = pixels;
+		}
 
 		public void stbtt__rasterize(stbtt__point[] pts, int[] wcount,
 			float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, bool useOldRasterizer)
