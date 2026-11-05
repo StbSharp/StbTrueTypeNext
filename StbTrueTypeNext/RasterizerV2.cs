@@ -245,32 +245,32 @@ namespace StbTrueTypeNext
 			var j = 0;
 
 			FakePtr<float> scanline;
-			if (result._width > 64)
+			if (result.Width > 64)
 			{
-				scanline = new FakePtr<float>(result._width * 2 + 1);
+				scanline = new FakePtr<float>(result.Width * 2 + 1);
 			}
 			else
 			{
 				scanline = new FakePtr<float>(129);
 			}
 
-			var scanline2 = scanline + result._width;
+			var scanline2 = scanline + result.Width;
 			y = off_y;
 
 			var e = es[es.Count - 1];
-			e.y0 = (float)(off_y + result._height) + 1;
+			e.y0 = (float)(off_y + result.Height) + 1;
 			es[es.Count - 1] = e;
 
 			var ei = 0;
 			var edges = new List<stbtt__active_edge>();
-			while (j < result._height)
+			while (j < result.Height)
 			{
 				// find center of pixel for this scanline
 				var scan_y_top = y + 0.0f;
 				var scan_y_bottom = y + 1.0f;
 
-				scanline.Set(0, result._width);
-				scanline2.Set(0, result._width + 1);
+				scanline.Set(0, result.Width);
+				scanline2.Set(0, result.Width + 1);
 
 				// update all active edges;
 				// remove all active edges that terminate before the top of this scanline
@@ -305,10 +305,10 @@ namespace StbTrueTypeNext
 				}
 
 				// now process all active edges
-				stbtt__fill_active_edges_new(scanline, scanline2 + 1, result._width, edges, scan_y_top);
+				stbtt__fill_active_edges_new(scanline, scanline2 + 1, result.Width, edges, scan_y_top);
 
 				float sum = 0;
-				for (var i = 0; i < result._width; ++i)
+				for (var i = 0; i < result.Width; ++i)
 				{
 					float k = 0;
 					var m = 0;
@@ -318,7 +318,7 @@ namespace StbTrueTypeNext
 					m = (int)k;
 					if (m > 255)
 						m = 255;
-					result[j * result._stride + i] = (byte)m;
+					result[j * result.Stride + i] = (byte)m;
 				}
 
 				// advance all the edges

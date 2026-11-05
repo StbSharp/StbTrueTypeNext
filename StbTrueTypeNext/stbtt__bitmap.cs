@@ -8,9 +8,11 @@ namespace StbTrueTypeNext
 	{
 		private FakePtr<byte> _pixels;
 
-		public int _width { get; }
-		public int _height { get; }
-		public int _stride { get; }
+		public int Width { get; }
+		public int Height { get; }
+		public int Stride { get; }
+
+		public FakePtr<byte> Pixels => _pixels;
 
 		public byte this[int index]
 		{
@@ -18,8 +20,6 @@ namespace StbTrueTypeNext
 
 			set =>_pixels[index] = value;
 		}
-
-		public FakePtr<byte> Pixels => _pixels;
 
 		public stbtt__bitmap(int width, int height)
 		{
@@ -33,8 +33,8 @@ namespace StbTrueTypeNext
 				throw new ArgumentOutOfRangeException(nameof(height));
 			}
 
-			_stride = _width = width;
-			_height = height;
+			Stride = Width = width;
+			Height = height;
 			_pixels = new FakePtr<byte>(width * height);
 		}
 
@@ -60,9 +60,9 @@ namespace StbTrueTypeNext
 				throw new ArgumentNullException(nameof(pixels));
 			}
 
-			_width = width;
-			_height = height;
-			_stride = stride;
+			Width = width;
+			Height = height;
+			Stride = stride;
 			_pixels = pixels;
 		}
 
@@ -78,7 +78,7 @@ namespace StbTrueTypeNext
 			var vsubsample = 1;
 			if (useOldRasterizer)
 			{
-				vsubsample = (_height) < (8) ? 15 : 5;
+				vsubsample = (Height) < (8) ? 15 : 5;
 			}
 
 			var windings = wcount.Length;
