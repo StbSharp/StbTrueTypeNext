@@ -1,6 +1,6 @@
 ﻿namespace StbTrueTypeNext
 {
-	partial class stbtt_fontinfo
+	public static class FontCollection
 	{
 		private static int stbtt_CompareUTF8toUTF16_bigendian_internal(FakePtr<byte> s1, int len1, FakePtr<byte> s2, int len2)
 		{
