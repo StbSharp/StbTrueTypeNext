@@ -887,7 +887,7 @@ namespace StbTrueTypeNext
 						clear_stack = 0;
 						break;
 					case 0x0E:
-						stbtt__csctx.stbtt__csctx_close_shape(c);
+						c.stbtt__csctx_close_shape();
 						return 1;
 					case 0x0C:
 						{

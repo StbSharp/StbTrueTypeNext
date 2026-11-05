@@ -15,10 +15,10 @@
 		public STTVertex[] pvertices;
 		public int num_vertices;
 
-		public static void stbtt__csctx_close_shape(stbtt__csctx ctx)
+		public void stbtt__csctx_close_shape()
 		{
-			if (ctx.first_x != ctx.x || ctx.first_y != ctx.y)
-				stbtt__csctx_v(ctx, StbTrueType.STBTT_vline, (int)ctx.first_x, (int)ctx.first_y, 0, 0, 0, 0);
+			if (first_x != x || first_y != y)
+				stbtt__csctx_v(this, StbTrueType.STBTT_vline, (int)first_x, (int)first_y, 0, 0, 0, 0);
 		}
 
 		public static void stbtt__csctx_rccurve_to(stbtt__csctx ctx, float dx1, float dy1, float dx2, float dy2,
@@ -42,7 +42,7 @@
 
 		public static void stbtt__csctx_rmove_to(stbtt__csctx ctx, float dx, float dy)
 		{
-			stbtt__csctx_close_shape(ctx);
+			ctx.stbtt__csctx_close_shape();
 			ctx.first_x = ctx.x = ctx.x + dx;
 			ctx.first_y = ctx.y = ctx.y + dy;
 			stbtt__csctx_v(ctx, StbTrueType.STBTT_vmove, (int)ctx.x, (int)ctx.y, 0, 0, 0, 0);
