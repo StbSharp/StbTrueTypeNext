@@ -12,8 +12,9 @@ namespace StbTrueTypeNext
 		private stbrp_context _pack_info;
 		private int _padding;
 		private byte[] _pixels;
-		private int _skip_missing;
 		private int _stride_in_bytes;
+
+		public bool SkipMissing { get; set; }
 
 		public void stbtt_PackBegin(byte[] pixels, int width, int height, int stride_in_bytes, int padding)
 		{
@@ -29,7 +30,7 @@ namespace StbTrueTypeNext
 			_stride_in_bytes = stride_in_bytes != 0 ? stride_in_bytes : width;
 			_h_oversample = 1;
 			_v_oversample = 1;
-			_skip_missing = 0;
+			SkipMissing = false;
 			context.stbrp_init_target(width - padding, height - padding);
 
 			pixels.Set((byte)0, width * height);
@@ -113,7 +114,7 @@ namespace StbTrueTypeNext
 						? ranges[i].first_unicode_codepoint_in_range + j
 						: ranges[i].array_of_unicode_codepoints[j];
 					var glyph = stbtt_FindGlyphIndex(info, codepoint);
-					if (glyph == 0 && (_skip_missing != 0 || missing_glyph_added != 0))
+					if (glyph == 0 && (SkipMissing || missing_glyph_added != 0))
 					{
 						rects[k].w = rects[k].h = 0;
 					}
@@ -211,7 +212,7 @@ namespace StbTrueTypeNext
 						if (glyph == 0)
 							missing_glyph = j;
 					}
-					else if (_skip_missing != 0)
+					else if (SkipMissing)
 					{
 						return_value = 0;
 					}
@@ -235,17 +236,17 @@ namespace StbTrueTypeNext
 			return return_value;
 		}
 
-		public static void stbtt_PackSetOversampling(stbtt_pack_context spc, uint h_oversample, uint v_oversample)
+		public void stbtt_PackSetOversampling(uint h_oversample, uint v_oversample)
 		{
 			if (h_oversample <= 8)
-				spc._h_oversample = h_oversample;
-			if (v_oversample <= 8)
-				spc._v_oversample = v_oversample;
-		}
+			{
+				_h_oversample = h_oversample;
+			}
 
-		public static void stbtt_PackSetSkipMissingCodepoints(stbtt_pack_context spc, int skip)
-		{
-			spc._skip_missing = skip;
+			if (v_oversample <= 8)
+			{
+				_v_oversample = v_oversample;
+			}
 		}
 
 		private class stbrp_context
