@@ -1817,7 +1817,7 @@ namespace StbTrueTypeNext
 		public void stbtt_MakeCodepointBitmapSubpixel(byte[] output, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int codepoint)
 		{
-			stbtt_MakeGlyphBitmapSubpixel(this, new FakePtr<byte>(output), out_w, out_h, out_stride,
+			stbtt_MakeGlyphBitmapSubpixel(new FakePtr<byte>(output), out_w, out_h, out_stride,
 				scale_x, scale_y, shift_x, shift_y, stbtt_FindGlyphIndex(codepoint));
 		}
 
@@ -1838,16 +1838,16 @@ namespace StbTrueTypeNext
 		public void stbtt_MakeGlyphBitmap(FakePtr<byte> output, int out_w, int out_h, int out_stride,
 			float scale_x, float scale_y, int glyph)
 		{
-			stbtt_MakeGlyphBitmapSubpixel(this, output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, glyph);
+			stbtt_MakeGlyphBitmapSubpixel(output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, glyph);
 		}
 
 		public void stbtt_MakeGlyphBitmapSubpixel(byte[] output, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int glyph)
 		{
-			stbtt_MakeGlyphBitmapSubpixel(this, new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, glyph);
+			stbtt_MakeGlyphBitmapSubpixel(new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, glyph);
 		}
 
-		public static void stbtt_MakeGlyphBitmapSubpixel(stbtt_fontinfo info, FakePtr<byte> output, int out_w, int out_h,
+		public void stbtt_MakeGlyphBitmapSubpixel(FakePtr<byte> output, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int glyph)
 		{
 			var ix0 = 0;
@@ -1855,13 +1855,13 @@ namespace StbTrueTypeNext
 			var ix1 = 0;
 			var iy1 = 0;
 			STTVertex[] vertices;
-			var num_verts = info.stbtt_GetGlyphShape(glyph, out vertices);
-			info.stbtt_GetGlyphBitmapBoxSubpixel(glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
+			var num_verts = stbtt_GetGlyphShape(glyph, out vertices);
+			stbtt_GetGlyphBitmapBoxSubpixel(glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
 
 			if (out_w != 0 && out_h != 0)
 			{
 				var gbm = new Bitmap(out_w, out_h, out_stride, output);
-				gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.RasterizerVersion);
+				gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, RasterizerVersion);
 			}
 		}
 
