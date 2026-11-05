@@ -4,18 +4,9 @@ namespace StbTrueTypeNext.Packing
 {
 	public class Packer
 	{
-		private struct stbrp_rect
-		{
-			public int x;
-			public int y;
-			public int w;
-			public int h;
-			public int was_packed;
-		}
-
 		private uint _h_oversample;
 		private uint _v_oversample;
-		private stbrp_context _pack_info;
+		private RectPackContext _pack_info;
 		private int _padding;
 		private byte[] _pixels;
 		private int _stride_in_bytes;
@@ -27,7 +18,7 @@ namespace StbTrueTypeNext.Packing
 
 		public void stbtt_PackBegin(byte[] pixels, int width, int height, int stride_in_bytes, int padding)
 		{
-			var context = new stbrp_context();
+			var context = new RectPackContext();
 			var num_nodes = width - padding;
 
 			Width = width;
@@ -88,7 +79,7 @@ namespace StbTrueTypeNext.Packing
 				n += ranges[i].num_chars;
 			}
 
-			var rects = new stbrp_rect[n];
+			var rects = new PackRect[n];
 
 			stbtt_InitFont(info, fontdata, stbtt_GetFontOffsetForIndex(fontdata, font_index));
 			n = stbtt_PackFontRangesGatherRects(info, ranges, rects);
@@ -97,7 +88,7 @@ namespace StbTrueTypeNext.Packing
 			return stbtt_PackFontRangesRenderIntoRects(info, ranges, rects);
 		}
 
-		private int stbtt_PackFontRangesGatherRects(stbtt_fontinfo info, PackRange[] ranges, stbrp_rect[] rects)
+		private int stbtt_PackFontRangesGatherRects(stbtt_fontinfo info, PackRange[] ranges, PackRect[] rects)
 		{
 			var i = 0;
 			var j = 0;
@@ -145,9 +136,9 @@ namespace StbTrueTypeNext.Packing
 			return k;
 		}
 
-		private void stbtt_PackFontRangesPackRects(stbrp_rect[] rects, int num_rects) => _pack_info.stbrp_pack_rects(rects, num_rects);
+		private void stbtt_PackFontRangesPackRects(PackRect[] rects, int num_rects) => _pack_info.stbrp_pack_rects(rects, num_rects);
 
-		private int stbtt_PackFontRangesRenderIntoRects(stbtt_fontinfo info, PackRange[] ranges, stbrp_rect[] rects)
+		private int stbtt_PackFontRangesRenderIntoRects(stbtt_fontinfo info, PackRange[] ranges, PackRect[] rects)
 		{
 			var i = 0;
 			var j = 0;
@@ -254,48 +245,6 @@ namespace StbTrueTypeNext.Packing
 			if (v_oversample <= 8)
 			{
 				_v_oversample = v_oversample;
-			}
-		}
-
-		private class stbrp_context
-		{
-			public int width;
-			public int height;
-			public int x;
-			public int y;
-			public int bottom_y;
-
-			public void stbrp_init_target(int pw, int ph)
-			{
-				width = pw;
-				height = ph;
-				x = 0;
-				y = 0;
-				bottom_y = 0;
-			}
-
-			public void stbrp_pack_rects(stbrp_rect[] rects, int num_rects)
-			{
-				var i = 0;
-				for (i = 0; i < num_rects; ++i)
-				{
-					if (x + rects[i].w > width)
-					{
-						x = 0;
-						y = bottom_y;
-					}
-
-					if (y + rects[i].h > height)
-						break;
-					rects[i].x = x;
-					rects[i].y = y;
-					rects[i].was_packed = 1;
-					x += rects[i].w;
-					if (y + rects[i].h > bottom_y)
-						bottom_y = y + rects[i].h;
-				}
-
-				for (; i < num_rects; ++i) rects[i].was_packed = 0;
 			}
 		}
 	}
