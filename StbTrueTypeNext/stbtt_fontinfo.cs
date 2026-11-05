@@ -43,7 +43,7 @@ namespace StbTrueTypeNext
 
 		public static stbtt_fontinfo FromStream(Stream s)
 		{
-			using(var ms = new MemoryStream())
+			using (var ms = new MemoryStream())
 			{
 				s.CopyTo(ms);
 
@@ -1136,11 +1136,11 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static FakePtr<byte> stbtt_FindSVGDoc(stbtt_fontinfo info, int gl)
+		private FakePtr<byte> stbtt_FindSVGDoc(int gl)
 		{
 			var i = 0;
-			var data = new FakePtr<byte>(info._data);
-			var svg_doc_list = data + info.stbtt__get_svg();
+			var data = new FakePtr<byte>(_data);
+			var svg_doc_list = data + stbtt__get_svg();
 			int numEntries = ttUSHORT(svg_doc_list);
 			var svg_docs = svg_doc_list + 2;
 			for (i = 0; i < numEntries; i++)
@@ -1649,7 +1649,7 @@ namespace StbTrueTypeNext
 			var data = new FakePtr<byte>(info._data);
 			if (info._svg == 0)
 				return 0;
-			var svg_doc = stbtt_FindSVGDoc(info, gl);
+			var svg_doc = info.stbtt_FindSVGDoc(gl);
 			if (!svg_doc.IsNull)
 			{
 				svg = data + info._svg + ttULONG(svg_doc + 4);
