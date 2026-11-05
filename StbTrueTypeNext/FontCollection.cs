@@ -211,17 +211,13 @@
 
 		public static int stbtt_GetNumberOfFonts(byte[] data)
 		{
-			return stbtt_GetNumberOfFonts_internal(new FakePtr<byte>(data));
-		}
-
-		public static int stbtt_GetNumberOfFonts_internal(FakePtr<byte> font_collection)
-		{
-			if (stbtt__isfont(font_collection) != 0)
+			var dataPtr = new FakePtr<byte>(data);
+			if (stbtt__isfont(dataPtr) != 0)
 				return 1;
-			if (font_collection[0] == "ttcf"[0] && font_collection[1] == "ttcf"[1] && font_collection[2] == "ttcf"[2] &&
-				font_collection[3] == "ttcf"[3])
-				if (Utility.ttULONG(font_collection + 4) == 0x00010000 || Utility.ttULONG(font_collection + 4) == 0x00020000)
-					return Utility.ttLONG(font_collection + 8);
+			if (dataPtr[0] == "ttcf"[0] && dataPtr[1] == "ttcf"[1] && dataPtr[2] == "ttcf"[2] &&
+				dataPtr[3] == "ttcf"[3])
+				if (Utility.ttULONG(dataPtr + 4) == 0x00010000 || Utility.ttULONG(dataPtr + 4) == 0x00020000)
+					return Utility.ttLONG(dataPtr + 8);
 
 			return 0;
 		}
