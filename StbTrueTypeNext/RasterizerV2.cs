@@ -342,5 +342,10 @@ namespace StbTrueTypeNext
 		{
 			return (top_width + bottom_width) / 2.0f * height;
 		}
+
+		private static float stbtt__sized_triangle_area(float height, float width)
+		{
+			return height * width / 2;
+		}
 	}
 }

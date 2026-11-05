@@ -412,11 +412,6 @@ namespace StbTrueTypeNext
 			return 1;
 		}
 
-		public static float stbtt__sized_triangle_area(float height, float width)
-		{
-			return height * width / 2;
-		}
-
 		public static int stbtt__solve_cubic(float a, float b, float c, float[] r)
 		{
 			var s = -a / 3;
