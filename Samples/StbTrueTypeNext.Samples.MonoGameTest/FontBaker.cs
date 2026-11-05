@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace StbTrueTypeNext.Samples;
 
-public unsafe class FontBaker
+public class FontBaker
 {
 	private byte[] _bitmap;
 	private StbTrueType.stbtt_pack_context _context;

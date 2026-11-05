@@ -6,7 +6,7 @@ namespace StbTrueTypeNext
 {
 	partial class StbTrueType
 	{
-		public static stbtt__buf stbtt__cid_get_glyph_subrs(stbtt_fontinfo info, int glyph_index)
+		internal static stbtt__buf stbtt__cid_get_glyph_subrs(stbtt_fontinfo info, int glyph_index)
 		{
 			var fdselect = info.fdselect;
 			var nranges = 0;

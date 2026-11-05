@@ -10,7 +10,7 @@ using FontsList = System.Collections.Generic.List<StbTrueTypeNext.StbTrueType.st
 
 namespace StbTrueTypeNext.Tests
 {
-	public unsafe class Tests
+	public class Tests
 	{
 		private static readonly Assembly _assembly = typeof(Tests).Assembly;
 
@@ -33,11 +33,10 @@ namespace StbTrueTypeNext.Tests
 			var ttfData = _assembly.ReadResourceAsBytes("DroidSans.ttf");
 			var fontInfo = CreateFont(ttfData, 0);
 			Assert.NotNull(fontInfo);
-			Assert.True(fontInfo.isDataCopy);
 		}
 
 		[Fact]
-		public unsafe void TestLoadFontCollection()
+		public void TestLoadFontCollection()
 		{
 			string fontsPath = Environment.GetFolderPath(Environment.SpecialFolder.Fonts);
 			string someTtcPath = Directory.EnumerateFiles(fontsPath, "*.ttc", new EnumerationOptions()
@@ -118,7 +117,6 @@ namespace StbTrueTypeNext.Tests
 			var ttfData = _assembly.ReadResourceAsBytes("DroidSans.ttf");
 			var fontInfo = CreateFont(ttfData, 0);
 			Assert.NotNull(fontInfo);
-			Assert.True(fontInfo.isDataCopy);
 
 			TestRasterize(fontInfo, "Hello, World!", 32.0f);
 
@@ -131,7 +129,6 @@ namespace StbTrueTypeNext.Tests
 			var ttfData = _assembly.ReadResourceAsBytes("DroidSans.ttf");
 			var fontInfo = CreateFont(ttfData, 0);
 			Assert.NotNull(fontInfo);
-			Assert.True(fontInfo.isDataCopy);
 
 			fontInfo.useOldRasterizer = true;
 

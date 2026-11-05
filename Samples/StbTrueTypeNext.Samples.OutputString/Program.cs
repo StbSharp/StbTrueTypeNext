@@ -5,7 +5,7 @@ using static StbTrueTypeNext.StbTrueType;
 
 namespace StbTrueTypeNext.Samples;
 
-unsafe class Program
+class Program
 {
 	static void Main(string[] args)
 	{
