@@ -430,19 +430,19 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static int stbtt__GetGlyphShapeT2(stbtt_fontinfo info, int glyph_index, out STTVertex[] pvertices)
+		private int stbtt__GetGlyphShapeT2(int glyph_index, out STTVertex[] pvertices)
 		{
 			var count_ctx = new CharStringContext
 			{
 				bounds = 1
 			};
 
-			if (stbtt__run_charstring(info, glyph_index, count_ctx) != 0)
+			if (stbtt__run_charstring(this, glyph_index, count_ctx) != 0)
 			{
 				var output_ctx = new CharStringContext();
 				pvertices = new STTVertex[count_ctx.num_vertices];
 				output_ctx.pvertices = pvertices;
-				if (stbtt__run_charstring(info, glyph_index, output_ctx) != 0)
+				if (stbtt__run_charstring(this, glyph_index, output_ctx) != 0)
 				{
 					return output_ctx.num_vertices;
 				}
@@ -1641,7 +1641,7 @@ namespace StbTrueTypeNext
 				return stbtt__GetGlyphShapeTT(info, glyph_index, out pvertices);
 			}
 
-			return stbtt__GetGlyphShapeT2(info, glyph_index, out pvertices);
+			return info.stbtt__GetGlyphShapeT2(glyph_index, out pvertices);
 		}
 
 		public static int stbtt_GetGlyphSVG(stbtt_fontinfo info, int gl, ref FakePtr<byte> svg)
