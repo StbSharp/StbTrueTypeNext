@@ -137,7 +137,7 @@ namespace StbTrueTypeNext
 			return g1 == g2 ? -1 : g1;
 		}
 
-		public static int stbtt__GetGlyphClass(FakePtr<byte> classDefTable, int glyph)
+		private static int stbtt__GetGlyphClass(FakePtr<byte> classDefTable, int glyph)
 		{
 			var classDefFormat = ttUSHORT(classDefTable);
 			switch (classDefFormat)
@@ -258,16 +258,16 @@ namespace StbTrueTypeNext
 			return -1;
 		}
 
-		public static int stbtt__GetGlyphGPOSInfoAdvance(stbtt_fontinfo info, int glyph1, int glyph2)
+		private int stbtt__GetGlyphGPOSInfoAdvance(int glyph1, int glyph2)
 		{
 			ushort lookupListOffset = 0;
 			ushort lookupCount = 0;
 			var i = 0;
 			var sti = 0;
-			if (info._gpos == 0)
+			if (_gpos == 0)
 				return 0;
 
-			var data = new FakePtr<byte>(info._data, info._gpos);
+			var data = new FakePtr<byte>(_data, _gpos);
 			if (ttUSHORT(data + 0) != 1)
 				return 0;
 			if (ttUSHORT(data + 2) != 0)
@@ -1405,7 +1405,7 @@ namespace StbTrueTypeNext
 		{
 			var xAdvance = 0;
 			if (info._gpos != 0)
-				xAdvance += stbtt__GetGlyphGPOSInfoAdvance(info, g1, g2);
+				xAdvance += info.stbtt__GetGlyphGPOSInfoAdvance(g1, g2);
 			else if (info._kern != 0)
 				xAdvance += stbtt__GetGlyphKernInfoAdvance(info, g1, g2);
 			return xAdvance;
