@@ -382,7 +382,7 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public int stbtt__GetGlyphInfoT2(int glyph_index, out int x0, out int y0, out int x1, out int y1)
+		private int stbtt__GetGlyphInfoT2(int glyph_index, out int x0, out int y0, out int x1, out int y1)
 		{
 			var c = new CharStringContext
 			{
@@ -452,12 +452,12 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static int stbtt__GetGlyphShapeTT(stbtt_fontinfo info, int glyph_index, out STTVertex[] pvertices)
+		private int stbtt__GetGlyphShapeTT(int glyph_index, out STTVertex[] pvertices)
 		{
 			short numberOfContours = 0;
-			var data = new FakePtr<byte>(info._data);
+			var data = new FakePtr<byte>(_data);
 			var num_vertices = 0;
-			var g = info.stbtt__GetGlyfOffset(glyph_index);
+			var g = stbtt__GetGlyfOffset(glyph_index);
 			pvertices = null;
 			if (g < 0)
 				return 0;
@@ -689,7 +689,7 @@ namespace StbTrueTypeNext
 
 					m = (float)Math.Sqrt(mtx[0] * mtx[0] + mtx[1] * mtx[1]);
 					n = (float)Math.Sqrt(mtx[2] * mtx[2] + mtx[3] * mtx[3]);
-					comp_num_verts = stbtt_GetGlyphShape(info, gidx, out comp_verts);
+					comp_num_verts = stbtt_GetGlyphShape(this, gidx, out comp_verts);
 					if (comp_num_verts > 0)
 					{
 						for (i = 0; i < comp_num_verts; ++i)
@@ -1638,7 +1638,7 @@ namespace StbTrueTypeNext
 		{
 			if (info._cff.size == 0)
 			{
-				return stbtt__GetGlyphShapeTT(info, glyph_index, out pvertices);
+				return info.stbtt__GetGlyphShapeTT(glyph_index, out pvertices);
 			}
 
 			return info.stbtt__GetGlyphShapeT2(glyph_index, out pvertices);
