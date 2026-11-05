@@ -81,6 +81,7 @@ public class FontBaker
 
 	public FontBakerResult End()
 	{
+		_context.stbtt_PackEnd();
 		return new FontBakerResult(_glyphs, _bitmap, bitmapWidth, bitmapHeight);
 	}
 }

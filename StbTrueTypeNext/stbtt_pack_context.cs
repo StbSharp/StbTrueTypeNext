@@ -4,11 +4,17 @@ namespace StbTrueTypeNext
 {
 	public class stbtt_pack_context
 	{
+		private struct stbrp_rect
+		{
+			public int x;
+			public int y;
+			public int w;
+			public int h;
+			public int was_packed;
+		}
+
 		private uint _h_oversample;
 		private uint _v_oversample;
-		private int _width;
-		private int _height;
-		private stbrp_node[] _nodes;
 		private stbrp_context _pack_info;
 		private int _padding;
 		private byte[] _pixels;
@@ -16,16 +22,18 @@ namespace StbTrueTypeNext
 
 		public bool SkipMissing { get; set; }
 
+		public int Width { get; private set; }
+		public int Height { get; private set; }
+
 		public void stbtt_PackBegin(byte[] pixels, int width, int height, int stride_in_bytes, int padding)
 		{
 			var context = new stbrp_context();
 			var num_nodes = width - padding;
 
-			_width = width;
-			_height = height;
+			Width = width;
+			Height = height;
 			_pixels = pixels;
 			_pack_info = context;
-			_nodes = new stbrp_node[num_nodes];
 			_padding = padding;
 			_stride_in_bytes = stride_in_bytes != 0 ? stride_in_bytes : width;
 			_h_oversample = 1;
@@ -289,21 +297,6 @@ namespace StbTrueTypeNext
 
 				for (; i < num_rects; ++i) rects[i].was_packed = 0;
 			}
-		}
-
-		private struct stbrp_node
-		{
-			public byte x;
-		}
-
-		private struct stbrp_rect
-		{
-			public int x;
-			public int y;
-			public int id;
-			public int w;
-			public int h;
-			public int was_packed;
 		}
 	}
 }
