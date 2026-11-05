@@ -178,12 +178,7 @@
 			return 0;
 		}
 
-		public static int stbtt_FindMatchingFont(byte[] fontdata, byte[] name, int flags)
-		{
-			return stbtt_FindMatchingFont_internal(fontdata, name, flags);
-		}
-
-		public static int stbtt_FindMatchingFont_internal(byte[] font_collection, byte[] name_utf8, int flags)
+		public static int stbtt_FindMatchingFont(byte[] font_collection, byte[] name_utf8, int flags)
 		{
 			var i = 0;
 			for (i = 0; ; ++i)
