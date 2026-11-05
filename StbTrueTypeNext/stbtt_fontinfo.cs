@@ -1156,7 +1156,7 @@ namespace StbTrueTypeNext
 		public byte[] stbtt_GetCodepointBitmap(float scale_x, float scale_y, int codepoint,
 			out int width, out int height, out int xoff, out int yoff)
 		{
-			return stbtt_GetCodepointBitmapSubpixel(this, scale_x, scale_y, 0.0f, 0.0f, codepoint,
+			return stbtt_GetCodepointBitmapSubpixel(scale_x, scale_y, 0.0f, 0.0f, codepoint,
 				out width, out height, out xoff, out yoff);
 		}
 
@@ -1180,9 +1180,9 @@ namespace StbTrueTypeNext
 				stbtt_FindGlyphIndex(codepoint), out width, out height, out xoff, out yoff);
 		}
 
-		public static int stbtt_GetCodepointBox(stbtt_fontinfo info, int codepoint, out int x0, out int y0, out int x1, out int y1)
+		public int stbtt_GetCodepointBox(int codepoint, out int x0, out int y0, out int x1, out int y1)
 		{
-			return stbtt_GetGlyphBox(info, info.stbtt_FindGlyphIndex(codepoint), out x0, out y0, out x1, out y1);
+			return stbtt_GetGlyphBox(this, stbtt_FindGlyphIndex(codepoint), out x0, out y0, out x1, out y1);
 		}
 
 		public static void stbtt_GetCodepointHMetrics(stbtt_fontinfo info, int codepoint, out int advanceWidth,
