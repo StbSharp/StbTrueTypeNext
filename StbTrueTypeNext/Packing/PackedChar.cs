@@ -2,14 +2,14 @@
 {
 	public struct PackedChar
 	{
-		public ushort x0;
-		public ushort y0;
-		public ushort x1;
-		public ushort y1;
-		public float xoff;
-		public float yoff;
-		public float xadvance;
-		public float xoff2;
-		public float yoff2;
+		public ushort X0;
+		public ushort Y0;
+		public ushort X1;
+		public ushort Y1;
+		public float XOff;
+		public float YOff;
+		public float XAdvance;
+		public float XOff2;
+		public float YOff2;
 	}
 }

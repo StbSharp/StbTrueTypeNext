@@ -67,8 +67,8 @@ namespace StbTrueTypeNext.Packing
 			{
 				for (j = 0; j < ranges[i].num_chars; ++j)
 				{
-					ranges[i].chardata_for_range[j].x0 = ranges[i].chardata_for_range[j].y0 =
-						ranges[i].chardata_for_range[j].x1 = ranges[i].chardata_for_range[j].y1 = 0;
+					ranges[i].chardata_for_range[j].X0 = ranges[i].chardata_for_range[j].Y0 =
+						ranges[i].chardata_for_range[j].X1 = ranges[i].chardata_for_range[j].Y1 = 0;
 				}
 			}
 
@@ -197,15 +197,15 @@ namespace StbTrueTypeNext.Packing
 								_stride_in_bytes, _v_oversample);
 
 						var bc = ranges[i].chardata_for_range[j];
-						bc.x0 = (ushort)(short)r.x;
-						bc.y0 = (ushort)(short)r.y;
-						bc.x1 = (ushort)(short)(r.x + r.w);
-						bc.y1 = (ushort)(short)(r.y + r.h);
-						bc.xadvance = scale * advance;
-						bc.xoff = x0 * recip_h + sub_x;
-						bc.yoff = y0 * recip_v + sub_y;
-						bc.xoff2 = (x0 + r.w) * recip_h + sub_x;
-						bc.yoff2 = (y0 + r.h) * recip_v + sub_y;
+						bc.X0 = (ushort)(short)r.x;
+						bc.Y0 = (ushort)(short)r.y;
+						bc.X1 = (ushort)(short)(r.x + r.w);
+						bc.Y1 = (ushort)(short)(r.y + r.h);
+						bc.XAdvance = scale * advance;
+						bc.XOff = x0 * recip_h + sub_x;
+						bc.YOff = y0 * recip_v + sub_y;
+						bc.XOff2 = (x0 + r.w) * recip_h + sub_x;
+						bc.YOff2 = (y0 + r.h) * recip_v + sub_y;
 						ranges[i].chardata_for_range[j] = bc;
 						if (glyph == 0)
 							missing_glyph = j;

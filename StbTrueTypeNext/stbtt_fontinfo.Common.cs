@@ -533,26 +533,26 @@ namespace StbTrueTypeNext
 			var b = chardata[char_index];
 			if (align_to_integer != 0)
 			{
-				float x = (int)Math.Floor(xpos + b.xoff + 0.5f);
-				float y = (int)Math.Floor(ypos + b.yoff + 0.5f);
+				float x = (int)Math.Floor(xpos + b.XOff + 0.5f);
+				float y = (int)Math.Floor(ypos + b.YOff + 0.5f);
 				q.x0 = x;
 				q.y0 = y;
-				q.x1 = x + b.xoff2 - b.xoff;
-				q.y1 = y + b.yoff2 - b.yoff;
+				q.x1 = x + b.XOff2 - b.XOff;
+				q.y1 = y + b.YOff2 - b.YOff;
 			}
 			else
 			{
-				q.x0 = xpos + b.xoff;
-				q.y0 = ypos + b.yoff;
-				q.x1 = xpos + b.xoff2;
-				q.y1 = ypos + b.yoff2;
+				q.x0 = xpos + b.XOff;
+				q.y0 = ypos + b.YOff;
+				q.x1 = xpos + b.XOff2;
+				q.y1 = ypos + b.YOff2;
 			}
 
-			q.s0 = b.x0 * ipw;
-			q.t0 = b.y0 * iph;
-			q.s1 = b.x1 * ipw;
-			q.t1 = b.y1 * iph;
-			xpos += b.xadvance;
+			q.s0 = b.X0 * ipw;
+			q.t0 = b.Y0 * iph;
+			q.s1 = b.X1 * ipw;
+			q.t1 = b.Y1 * iph;
+			xpos += b.XAdvance;
 		}
 
 		public static void stbtt_GetScaledFontVMetrics(byte[] fontdata, int index, float size,
@@ -598,19 +598,6 @@ namespace StbTrueTypeNext
 		public static ushort ttUSHORT(FakePtr<byte> p)
 		{
 			return (ushort)(p[0] * 256 + p[1]);
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct stbtt_aligned_quad
-		{
-			public float x0;
-			public float y0;
-			public float s0;
-			public float t0;
-			public float x1;
-			public float y1;
-			public float s1;
-			public float t1;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]

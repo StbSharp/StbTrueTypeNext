@@ -58,18 +58,18 @@ public class FontBaker
 
 			for (var i = 0; i < cd.Length; ++i)
 			{
-				var yOff = cd[i].yoff;
+				var yOff = cd[i].YOff;
 				yOff += ascent * scaleFactor;
 
 				var glyphInfo = new GlyphInfo
 				{
-					X = cd[i].x0,
-					Y = cd[i].y0,
-					Width = cd[i].x1 - cd[i].x0,
-					Height = cd[i].y1 - cd[i].y0,
-					XOffset = (int)cd[i].xoff,
+					X = cd[i].X0,
+					Y = cd[i].Y0,
+					Width = cd[i].X1 - cd[i].X0,
+					Height = cd[i].Y1 - cd[i].Y0,
+					XOffset = (int)cd[i].XOff,
 					YOffset = (int)Math.Round(yOff),
-					XAdvance = (int)Math.Round(cd[i].xadvance)
+					XAdvance = (int)Math.Round(cd[i].XAdvance)
 				};
 
 				_glyphs[i + range.Start] = glyphInfo;
