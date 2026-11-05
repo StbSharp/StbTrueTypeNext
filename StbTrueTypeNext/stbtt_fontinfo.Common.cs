@@ -270,22 +270,6 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static void stbtt_GetScaledFontVMetrics(byte[] fontdata, int index, float size,
-			out float ascent, out float descent, out float lineGap)
-		{
-			var i_ascent = 0;
-			var i_descent = 0;
-			var i_lineGap = 0;
-			float scale = 0;
-			var info = FromMemory(fontdata, stbtt_GetFontOffsetForIndex(fontdata, index));
-			scale = size > 0 ? info.stbtt_ScaleForPixelHeight(size) : info.stbtt_ScaleForMappingEmToPixels(-size);
-			info.stbtt_GetFontVMetrics(out i_ascent, out i_descent, out i_lineGap);
-
-			ascent = i_ascent * scale;
-			descent = i_descent * scale;
-			lineGap = i_lineGap * scale;
-		}
-
 		public static int ttLONG(FakePtr<byte> p)
 		{
 			return (p[0] << 24) + (p[1] << 16) + (p[2] << 8) + p[3];

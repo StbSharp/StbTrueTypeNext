@@ -1893,6 +1893,20 @@ namespace StbTrueTypeNext
 			return height / fheight;
 		}
 
+		public void stbtt_GetScaledFontVMetrics(float size, out float ascent, out float descent, out float lineGap)
+		{
+			var i_ascent = 0;
+			var i_descent = 0;
+			var i_lineGap = 0;
+			float scale = 0;
+			scale = size > 0 ? stbtt_ScaleForPixelHeight(size) : stbtt_ScaleForMappingEmToPixels(-size);
+			stbtt_GetFontVMetrics(out i_ascent, out i_descent, out i_lineGap);
+
+			ascent = i_ascent * scale;
+			descent = i_descent * scale;
+			lineGap = i_lineGap * scale;
+		}
+
 		public int stbtt_BakeFontBitmap(float pixel_height, byte[] pixels, int pw, int ph, int first_char, int num_chars, stbtt_bakedchar[] chardata)
 		{
 			float scale = 0;
