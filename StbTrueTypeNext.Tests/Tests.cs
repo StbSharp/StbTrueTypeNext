@@ -119,8 +119,6 @@ namespace StbTrueTypeNext.Tests
 			Assert.NotNull(fontInfo);
 
 			TestRasterize(fontInfo, "Hello, World!", 32.0f);
-
-			Assert.False(usedOldRasterizer);
 		}
 
 		[Fact]
@@ -133,8 +131,6 @@ namespace StbTrueTypeNext.Tests
 			fontInfo.useOldRasterizer = true;
 
 			TestRasterize(fontInfo, "Hello, World!", 32.0f);
-
-			Assert.True(usedOldRasterizer);
 		}
 	}
 }

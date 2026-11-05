@@ -4,8 +4,6 @@ namespace StbTrueTypeNext
 {
 	public static partial class StbTrueType
 	{
-		internal static bool usedOldRasterizer = false;
-
 		public class stbtt_fontinfo
 		{
 			internal Buffer cff;

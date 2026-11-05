@@ -1,11 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using static StbTrueTypeNext.StbTrueType;
 
 namespace StbTrueTypeNext
 {
-	partial class StbTrueType
+	internal static class RasterizerV1
 	{
-		public static stbtt__active_edge_old_rasterizer stbtt__new_active_old_rasterizer(ref stbtt__edge e, int off_x, float start_point)
+		private class stbtt__active_edge_old_rasterizer
+		{
+			public int x;
+			public int dx;
+			public float ey;
+			public int direction;
+		}
+
+		private static stbtt__active_edge_old_rasterizer stbtt__new_active_old_rasterizer(ref stbtt__edge e, int off_x, float start_point)
 		{
 			var z = new stbtt__active_edge_old_rasterizer();
 			float dxdy = (e.x1 - e.x0) / (e.y1 - e.y0);
@@ -22,7 +31,7 @@ namespace StbTrueTypeNext
 			return z;
 		}
 
-		public static void stbtt__fill_active_edges_old_rasterizer(byte[] scanline, int len, List<stbtt__active_edge_old_rasterizer> edges, int max_weight)
+		private static void stbtt__fill_active_edges_old_rasterizer(byte[] scanline, int len, List<stbtt__active_edge_old_rasterizer> edges, int max_weight)
 		{
 			int x0 = 0;
 			int w = 0;
@@ -70,10 +79,8 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static void stbtt__rasterize_sorted_edges_old_rasterizer(stbtt__bitmap result, List<stbtt__edge> es, int vsubsample, int off_x, int off_y)
+		public static void Rasterize(stbtt__bitmap result, List<stbtt__edge> es, int vsubsample, int off_x, int off_y)
 		{
-			usedOldRasterizer = true;
-
 			var edges = new List<stbtt__active_edge_old_rasterizer>();
 			int y = 0; int j = 0;
 			int max_weight = (255 / vsubsample); // weight per vertical scanline
@@ -162,14 +169,6 @@ namespace StbTrueTypeNext
 
 				++j;
 			}
-		}
-
-		public class stbtt__active_edge_old_rasterizer
-		{
-			public int x;
-			public int dx;
-			public float ey;
-			public int direction;
 		}
 	}
 }
