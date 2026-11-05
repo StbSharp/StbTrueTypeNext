@@ -525,36 +525,6 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static void stbtt_GetPackedQuad(PackedChar[] chardata, int pw, int ph, int char_index,
-			ref float xpos, ref float ypos, ref stbtt_aligned_quad q, int align_to_integer)
-		{
-			var ipw = 1.0f / pw;
-			var iph = 1.0f / ph;
-			var b = chardata[char_index];
-			if (align_to_integer != 0)
-			{
-				float x = (int)Math.Floor(xpos + b.XOff + 0.5f);
-				float y = (int)Math.Floor(ypos + b.YOff + 0.5f);
-				q.x0 = x;
-				q.y0 = y;
-				q.x1 = x + b.XOff2 - b.XOff;
-				q.y1 = y + b.YOff2 - b.YOff;
-			}
-			else
-			{
-				q.x0 = xpos + b.XOff;
-				q.y0 = ypos + b.YOff;
-				q.x1 = xpos + b.XOff2;
-				q.y1 = ypos + b.YOff2;
-			}
-
-			q.s0 = b.X0 * ipw;
-			q.t0 = b.Y0 * iph;
-			q.s1 = b.X1 * ipw;
-			q.t1 = b.Y1 * iph;
-			xpos += b.XAdvance;
-		}
-
 		public static void stbtt_GetScaledFontVMetrics(byte[] fontdata, int index, float size,
 			out float ascent, out float descent, out float lineGap)
 		{
