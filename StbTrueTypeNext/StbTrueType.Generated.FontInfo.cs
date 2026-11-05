@@ -703,7 +703,7 @@ namespace StbTrueTypeNext
 			return num_vertices;
 		}
 
-		public static int stbtt__run_charstring(stbtt_fontinfo info, int glyph_index, stbtt__csctx c)
+		internal static int stbtt__run_charstring(stbtt_fontinfo info, int glyph_index, stbtt__csctx c)
 		{
 			var in_header = 1;
 			var maskbits = 0;
@@ -744,24 +744,24 @@ namespace StbTrueTypeNext
 						in_header = 0;
 						if (sp < 2)
 							return 0;
-						stbtt__csctx_rmove_to(c, s[sp - 2], s[sp - 1]);
+						stbtt__csctx.stbtt__csctx_rmove_to(c, s[sp - 2], s[sp - 1]);
 						break;
 					case 0x04:
 						in_header = 0;
 						if (sp < 1)
 							return 0;
-						stbtt__csctx_rmove_to(c, 0, s[sp - 1]);
+						stbtt__csctx.stbtt__csctx_rmove_to(c, 0, s[sp - 1]);
 						break;
 					case 0x16:
 						in_header = 0;
 						if (sp < 1)
 							return 0;
-						stbtt__csctx_rmove_to(c, s[sp - 1], 0);
+						stbtt__csctx.stbtt__csctx_rmove_to(c, s[sp - 1], 0);
 						break;
 					case 0x05:
 						if (sp < 2)
 							return 0;
-						for (; i + 1 < sp; i += 2) stbtt__csctx_rline_to(c, s[i], s[i + 1]);
+						for (; i + 1 < sp; i += 2) stbtt__csctx.stbtt__csctx_rline_to(c, s[i], s[i + 1]);
 
 						break;
 					case 0x07:
@@ -775,14 +775,14 @@ namespace StbTrueTypeNext
 							{
 								if (i >= sp)
 									break;
-								stbtt__csctx_rline_to(c, s[i], 0);
+								stbtt__csctx.stbtt__csctx_rline_to(c, s[i], 0);
 								i++;
 							}
 
 							goto_vlineto = 0;
 							if (i >= sp)
 								break;
-							stbtt__csctx_rline_to(c, 0, s[i]);
+							stbtt__csctx.stbtt__csctx_rline_to(c, 0, s[i]);
 							i++;
 						}
 
@@ -798,7 +798,7 @@ namespace StbTrueTypeNext
 							{
 								if (i + 3 >= sp)
 									break;
-								stbtt__csctx_rccurve_to(c, 0, s[i], s[i + 1], s[i + 2], s[i + 3],
+								stbtt__csctx.stbtt__csctx_rccurve_to(c, 0, s[i], s[i + 1], s[i + 2], s[i + 3],
 									sp - i == 5 ? s[i + 4] : 0.0f);
 								i += 4;
 							}
@@ -806,7 +806,7 @@ namespace StbTrueTypeNext
 							goto_hvcurveto = 0;
 							if (i + 3 >= sp)
 								break;
-							stbtt__csctx_rccurve_to(c, s[i], 0, s[i + 1], s[i + 2], sp - i == 5 ? s[i + 4] : 0.0f,
+							stbtt__csctx.stbtt__csctx_rccurve_to(c, s[i], 0, s[i + 1], s[i + 2], sp - i == 5 ? s[i + 4] : 0.0f,
 								s[i + 3]);
 							i += 4;
 						}
@@ -816,27 +816,27 @@ namespace StbTrueTypeNext
 						if (sp < 6)
 							return 0;
 						for (; i + 5 < sp; i += 6)
-							stbtt__csctx_rccurve_to(c, s[i], s[i + 1], s[i + 2], s[i + 3], s[i + 4], s[i + 5]);
+							stbtt__csctx.stbtt__csctx_rccurve_to(c, s[i], s[i + 1], s[i + 2], s[i + 3], s[i + 4], s[i + 5]);
 
 						break;
 					case 0x18:
 						if (sp < 8)
 							return 0;
 						for (; i + 5 < sp - 2; i += 6)
-							stbtt__csctx_rccurve_to(c, s[i], s[i + 1], s[i + 2], s[i + 3], s[i + 4], s[i + 5]);
+							stbtt__csctx.stbtt__csctx_rccurve_to(c, s[i], s[i + 1], s[i + 2], s[i + 3], s[i + 4], s[i + 5]);
 
 						if (i + 1 >= sp)
 							return 0;
-						stbtt__csctx_rline_to(c, s[i], s[i + 1]);
+						stbtt__csctx.stbtt__csctx_rline_to(c, s[i], s[i + 1]);
 						break;
 					case 0x19:
 						if (sp < 8)
 							return 0;
-						for (; i + 1 < sp - 6; i += 2) stbtt__csctx_rline_to(c, s[i], s[i + 1]);
+						for (; i + 1 < sp - 6; i += 2) stbtt__csctx.stbtt__csctx_rline_to(c, s[i], s[i + 1]);
 
 						if (i + 5 >= sp)
 							return 0;
-						stbtt__csctx_rccurve_to(c, s[i], s[i + 1], s[i + 2], s[i + 3], s[i + 4], s[i + 5]);
+						stbtt__csctx.stbtt__csctx_rccurve_to(c, s[i], s[i + 1], s[i + 2], s[i + 3], s[i + 4], s[i + 5]);
 						break;
 					case 0x1A:
 					case 0x1B:
@@ -852,9 +852,9 @@ namespace StbTrueTypeNext
 						for (; i + 3 < sp; i += 4)
 						{
 							if (b0 == 0x1B)
-								stbtt__csctx_rccurve_to(c, s[i], f, s[i + 1], s[i + 2], s[i + 3], (float)0.0);
+								stbtt__csctx.stbtt__csctx_rccurve_to(c, s[i], f, s[i + 1], s[i + 2], s[i + 3], (float)0.0);
 							else
-								stbtt__csctx_rccurve_to(c, f, s[i], s[i + 1], s[i + 2], (float)0.0, s[i + 3]);
+								stbtt__csctx.stbtt__csctx_rccurve_to(c, f, s[i], s[i + 1], s[i + 2], (float)0.0, s[i + 3]);
 							f = (float)0.0;
 						}
 
@@ -887,7 +887,7 @@ namespace StbTrueTypeNext
 						clear_stack = 0;
 						break;
 					case 0x0E:
-						stbtt__csctx_close_shape(c);
+						stbtt__csctx.stbtt__csctx_close_shape(c);
 						return 1;
 					case 0x0C:
 						{
@@ -918,8 +918,8 @@ namespace StbTrueTypeNext
 									dx4 = s[4];
 									dx5 = s[5];
 									dx6 = s[6];
-									stbtt__csctx_rccurve_to(c, dx1, 0, dx2, dy2, dx3, 0);
-									stbtt__csctx_rccurve_to(c, dx4, 0, dx5, -dy2, dx6, 0);
+									stbtt__csctx.stbtt__csctx_rccurve_to(c, dx1, 0, dx2, dy2, dx3, 0);
+									stbtt__csctx.stbtt__csctx_rccurve_to(c, dx4, 0, dx5, -dy2, dx6, 0);
 									break;
 								case 0x23:
 									if (sp < 13)
@@ -936,8 +936,8 @@ namespace StbTrueTypeNext
 									dy5 = s[9];
 									dx6 = s[10];
 									dy6 = s[11];
-									stbtt__csctx_rccurve_to(c, dx1, dy1, dx2, dy2, dx3, dy3);
-									stbtt__csctx_rccurve_to(c, dx4, dy4, dx5, dy5, dx6, dy6);
+									stbtt__csctx.stbtt__csctx_rccurve_to(c, dx1, dy1, dx2, dy2, dx3, dy3);
+									stbtt__csctx.stbtt__csctx_rccurve_to(c, dx4, dy4, dx5, dy5, dx6, dy6);
 									break;
 								case 0x24:
 									if (sp < 9)
@@ -951,8 +951,8 @@ namespace StbTrueTypeNext
 									dx5 = s[6];
 									dy5 = s[7];
 									dx6 = s[8];
-									stbtt__csctx_rccurve_to(c, dx1, dy1, dx2, dy2, dx3, 0);
-									stbtt__csctx_rccurve_to(c, dx4, 0, dx5, dy5, dx6, -(dy1 + dy2 + dy5));
+									stbtt__csctx.stbtt__csctx_rccurve_to(c, dx1, dy1, dx2, dy2, dx3, 0);
+									stbtt__csctx.stbtt__csctx_rccurve_to(c, dx4, 0, dx5, dy5, dx6, -(dy1 + dy2 + dy5));
 									break;
 								case 0x25:
 									if (sp < 11)
@@ -974,8 +974,8 @@ namespace StbTrueTypeNext
 										dy6 = -dy;
 									else
 										dx6 = -dx;
-									stbtt__csctx_rccurve_to(c, dx1, dy1, dx2, dy2, dx3, dy3);
-									stbtt__csctx_rccurve_to(c, dx4, dy4, dx5, dy5, dx6, dy6);
+									stbtt__csctx.stbtt__csctx_rccurve_to(c, dx1, dy1, dx2, dy2, dx3, dy3);
+									stbtt__csctx.stbtt__csctx_rccurve_to(c, dx4, dy4, dx5, dy5, dx6, dy6);
 									break;
 								default:
 									return 0;
