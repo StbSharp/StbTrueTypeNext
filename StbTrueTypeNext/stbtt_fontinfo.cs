@@ -507,13 +507,13 @@ namespace StbTrueTypeNext
 						--flagcount;
 					}
 
-					vertices[off + i].type = flags;
+					vertices[off + i].Type = flags;
 				}
 
 				x = 0;
 				for (i = 0; i < n; ++i)
 				{
-					flags = vertices[off + i].type;
+					flags = vertices[off + i].Type;
 					if ((flags & 2) != 0)
 					{
 						short dx = points.Read();
@@ -528,13 +528,13 @@ namespace StbTrueTypeNext
 						}
 					}
 
-					vertices[off + i].x = (short)x;
+					vertices[off + i].X = (short)x;
 				}
 
 				y = 0;
 				for (i = 0; i < n; ++i)
 				{
-					flags = vertices[off + i].type;
+					flags = vertices[off + i].Type;
 					if ((flags & 4) != 0)
 					{
 						short dy = points.Read();
@@ -549,16 +549,16 @@ namespace StbTrueTypeNext
 						}
 					}
 
-					vertices[off + i].y = (short)y;
+					vertices[off + i].Y = (short)y;
 				}
 
 				num_vertices = 0;
 				sx = sy = cx = cy = scx = scy = 0;
 				for (i = 0; i < n; ++i)
 				{
-					flags = vertices[off + i].type;
-					x = vertices[off + i].x;
-					y = vertices[off + i].y;
+					flags = vertices[off + i].Type;
+					x = vertices[off + i].X;
+					y = vertices[off + i].Y;
 					if (next_move == i)
 					{
 						if (i != 0)
@@ -569,15 +569,15 @@ namespace StbTrueTypeNext
 						{
 							scx = x;
 							scy = y;
-							if ((vertices[off + i + 1].type & 1) == 0)
+							if ((vertices[off + i + 1].Type & 1) == 0)
 							{
-								sx = (x + vertices[off + i + 1].x) >> 1;
-								sy = (y + vertices[off + i + 1].y) >> 1;
+								sx = (x + vertices[off + i + 1].X) >> 1;
+								sy = (y + vertices[off + i + 1].Y) >> 1;
 							}
 							else
 							{
-								sx = vertices[off + i + 1].x;
-								sy = vertices[off + i + 1].y;
+								sx = vertices[off + i + 1].X;
+								sy = vertices[off + i + 1].Y;
 								++i;
 							}
 						}
@@ -696,14 +696,14 @@ namespace StbTrueTypeNext
 							var v = comp_verts[i];
 							short x = 0;
 							short y = 0;
-							x = v.x;
-							y = v.y;
-							v.x = (short)(m * (mtx[0] * x + mtx[2] * y + mtx[4]));
-							v.y = (short)(n * (mtx[1] * x + mtx[3] * y + mtx[5]));
-							x = v.cx;
-							y = v.cy;
-							v.cx = (short)(m * (mtx[0] * x + mtx[2] * y + mtx[4]));
-							v.cy = (short)(n * (mtx[1] * x + mtx[3] * y + mtx[5]));
+							x = v.X;
+							y = v.Y;
+							v.X = (short)(m * (mtx[0] * x + mtx[2] * y + mtx[4]));
+							v.Y = (short)(n * (mtx[1] * x + mtx[3] * y + mtx[5]));
+							x = v.CX;
+							y = v.CY;
+							v.CX = (short)(m * (mtx[0] * x + mtx[2] * y + mtx[4]));
+							v.CY = (short)(n * (mtx[1] * x + mtx[3] * y + mtx[5]));
 
 							comp_verts[i] = v;
 						}
@@ -1453,23 +1453,23 @@ namespace StbTrueTypeNext
 				data = new byte[w * h];
 				var precompute = new float[num_verts];
 				for (i = 0, j = num_verts - 1; i < num_verts; j = i++)
-					if (verts[i].type == STBTT_vline)
+					if (verts[i].Type == STBTT_vline)
 					{
-						var x0 = verts[i].x * scale_x;
-						var y0 = verts[i].y * scale_y;
-						var x1 = verts[j].x * scale_x;
-						var y1 = verts[j].y * scale_y;
+						var x0 = verts[i].X * scale_x;
+						var y0 = verts[i].Y * scale_y;
+						var x1 = verts[j].X * scale_x;
+						var y1 = verts[j].Y * scale_y;
 						var dist = (float)Math.Sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
 						precompute[i] = dist == 0 ? 0.0f : 1.0f / dist;
 					}
-					else if (verts[i].type == STBTT_vcurve)
+					else if (verts[i].Type == STBTT_vcurve)
 					{
-						var x2 = verts[j].x * scale_x;
-						var y2 = verts[j].y * scale_y;
-						var x1 = verts[i].cx * scale_x;
-						var y1 = verts[i].cy * scale_y;
-						var x0 = verts[i].x * scale_x;
-						var y0 = verts[i].y * scale_y;
+						var x2 = verts[j].X * scale_x;
+						var y2 = verts[j].Y * scale_y;
+						var x1 = verts[i].CX * scale_x;
+						var y1 = verts[i].CY * scale_y;
+						var x0 = verts[i].X * scale_x;
+						var y0 = verts[i].Y * scale_y;
 						var bx = x0 - 2 * x1 + x2;
 						var by = y0 - 2 * y1 + y2;
 						var len2 = bx * bx + by * by;
@@ -1497,12 +1497,12 @@ namespace StbTrueTypeNext
 						var winding = stbtt__compute_crossings_x(x_gspace, y_gspace, num_verts, verts);
 						for (i = 0; i < num_verts; ++i)
 						{
-							var x0 = verts[i].x * scale_x;
-							var y0 = verts[i].y * scale_y;
-							if (verts[i].type == STBTT_vline && precompute[i] != 0.0f)
+							var x0 = verts[i].X * scale_x;
+							var y0 = verts[i].Y * scale_y;
+							if (verts[i].Type == STBTT_vline && precompute[i] != 0.0f)
 							{
-								var x1 = verts[i - 1].x * scale_x;
-								var y1 = verts[i - 1].y * scale_y;
+								var x1 = verts[i - 1].X * scale_x;
+								var y1 = verts[i - 1].Y * scale_y;
 								float dist = 0;
 								var dist2 = (x0 - sx) * (x0 - sx) + (y0 - sy) * (y0 - sy);
 								if (dist2 < min_dist * min_dist)
@@ -1519,12 +1519,12 @@ namespace StbTrueTypeNext
 										min_dist = dist;
 								}
 							}
-							else if (verts[i].type == STBTT_vcurve)
+							else if (verts[i].Type == STBTT_vcurve)
 							{
-								var x2 = verts[i - 1].x * scale_x;
-								var y2 = verts[i - 1].y * scale_y;
-								var x1 = verts[i].cx * scale_x;
-								var y1 = verts[i].cy * scale_y;
+								var x2 = verts[i - 1].X * scale_x;
+								var y2 = verts[i - 1].Y * scale_y;
+								var x1 = verts[i].CX * scale_x;
+								var y1 = verts[i].CY * scale_y;
 								var box_x0 = (x0 < x1 ? x0 : x1) < x2 ? x0 < x1 ? x0 : x1 : x2;
 								var box_y0 = (y0 < y1 ? y0 : y1) < y2 ? y0 < y1 ? y0 : y1 : y2;
 								var box_x1 = (x0 < x1 ? x1 : x0) < x2 ? x2 : x0 < x1 ? x1 : x0;

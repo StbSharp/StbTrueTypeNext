@@ -2,13 +2,13 @@
 {
 	public struct STTVertex
 	{
-		public short x;
-		public short y;
-		public short cx;
-		public short cy;
-		public short cx1;
-		public short cy1;
-		public byte type;
-		public byte padding;
+		public short X;
+		public short Y;
+		public short CX;
+		public short CY;
+		public short CX1;
+		public short CY1;
+		public byte Type;
+		public byte Padding;
 	}
 }

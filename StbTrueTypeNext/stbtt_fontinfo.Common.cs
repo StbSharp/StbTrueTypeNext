@@ -180,12 +180,12 @@ namespace StbTrueTypeNext
 			orig[1] = y;
 			for (i = 0; i < nverts; ++i)
 			{
-				if (verts[i].type == STBTT_vline)
+				if (verts[i].Type == STBTT_vline)
 				{
-					int x0 = verts[i - 1].x;
-					int y0 = verts[i - 1].y;
-					int x1 = verts[i].x;
-					int y1 = verts[i].y;
+					int x0 = verts[i - 1].X;
+					int y0 = verts[i - 1].Y;
+					int x1 = verts[i].X;
+					int y1 = verts[i].Y;
 					if (y > (y0 < y1 ? y0 : y1) && y < (y0 < y1 ? y1 : y0) && x > (x0 < x1 ? x0 : x1))
 					{
 						var x_inter = (y - y0) / (y1 - y0) * (x1 - x0) + x0;
@@ -194,14 +194,14 @@ namespace StbTrueTypeNext
 					}
 				}
 
-				if (verts[i].type == STBTT_vcurve)
+				if (verts[i].Type == STBTT_vcurve)
 				{
-					int x0 = verts[i - 1].x;
-					int y0 = verts[i - 1].y;
-					int x1 = verts[i].cx;
-					int y1 = verts[i].cy;
-					int x2 = verts[i].x;
-					int y2 = verts[i].y;
+					int x0 = verts[i - 1].X;
+					int y0 = verts[i - 1].Y;
+					int x1 = verts[i].CX;
+					int y1 = verts[i].CY;
+					int x2 = verts[i].X;
+					int y2 = verts[i].Y;
 					var ax = x0 < (x1 < x2 ? x1 : x2) ? x0 : x1 < x2 ? x1 : x2;
 					var ay = y0 < (y1 < y2 ? y1 : y2) ? y0 : y1 < y2 ? y1 : y2;
 					var by = y0 < (y1 < y2 ? y2 : y1) ? y1 < y2 ? y2 : y1 : y0;
@@ -212,10 +212,10 @@ namespace StbTrueTypeNext
 						var q2 = new Vector2(x2, y2);
 						if (q0.Equals(q1) || q1.Equals(q2))
 						{
-							x0 = verts[i - 1].x;
-							y0 = verts[i - 1].y;
-							x1 = verts[i].x;
-							y1 = verts[i].y;
+							x0 = verts[i - 1].X;
+							y0 = verts[i - 1].Y;
+							x1 = verts[i].X;
+							y1 = verts[i].Y;
 							if (y > (y0 < y1 ? y0 : y1) && y < (y0 < y1 ? y1 : y0) && x > (x0 < x1 ? x0 : x1))
 							{
 								var x_inter = (y - y0) / (y1 - y0) * (x1 - x0) + x0;
@@ -523,11 +523,11 @@ namespace StbTrueTypeNext
 
 		public static void stbtt_setvertex(ref STTVertex v, byte type, int x, int y, int cx, int cy)
 		{
-			v.type = type;
-			v.x = (short)x;
-			v.y = (short)y;
-			v.cx = (short)cx;
-			v.cy = (short)cy;
+			v.Type = type;
+			v.X = (short)x;
+			v.Y = (short)y;
+			v.CX = (short)cx;
+			v.CY = (short)cy;
 		}
 
 		public static int ttLONG(FakePtr<byte> p)

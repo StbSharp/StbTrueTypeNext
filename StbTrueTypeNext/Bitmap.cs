@@ -142,7 +142,7 @@ namespace StbTrueTypeNext
 			var start = 0;
 			var pass = 0;
 			for (i = 0; i < num_verts; ++i)
-				if (vertices[i].type == STBTT_vmove)
+				if (vertices[i].Type == STBTT_vmove)
 					++n;
 
 			contour_lengths = null;
@@ -162,34 +162,34 @@ namespace StbTrueTypeNext
 				num_points = 0;
 				n = -1;
 				for (i = 0; i < num_verts; ++i)
-					switch (vertices[i].type)
+					switch (vertices[i].Type)
 					{
 						case STBTT_vmove:
 							if (n >= 0)
 								contour_lengths[n] = num_points - start;
 							++n;
 							start = num_points;
-							x = vertices[i].x;
-							y = vertices[i].y;
+							x = vertices[i].X;
+							y = vertices[i].Y;
 							stbtt__add_point(points, num_points++, x, y);
 							break;
 						case STBTT_vline:
-							x = vertices[i].x;
-							y = vertices[i].y;
+							x = vertices[i].X;
+							y = vertices[i].Y;
 							stbtt__add_point(points, num_points++, x, y);
 							break;
 						case STBTT_vcurve:
-							stbtt__tesselate_curve(points, ref num_points, x, y, vertices[i].cx, vertices[i].cy,
-								vertices[i].x, vertices[i].y, objspace_flatness_squared, 0);
-							x = vertices[i].x;
-							y = vertices[i].y;
+							stbtt__tesselate_curve(points, ref num_points, x, y, vertices[i].CX, vertices[i].CY,
+								vertices[i].X, vertices[i].Y, objspace_flatness_squared, 0);
+							x = vertices[i].X;
+							y = vertices[i].Y;
 							break;
 						case STBTT_vcubic:
-							stbtt__tesselate_cubic(points, ref num_points, x, y, vertices[i].cx, vertices[i].cy,
-								vertices[i].cx1, vertices[i].cy1, vertices[i].x, vertices[i].y,
+							stbtt__tesselate_cubic(points, ref num_points, x, y, vertices[i].CX, vertices[i].CY,
+								vertices[i].CX1, vertices[i].CY1, vertices[i].X, vertices[i].Y,
 								objspace_flatness_squared, 0);
-							x = vertices[i].x;
-							y = vertices[i].y;
+							x = vertices[i].X;
+							y = vertices[i].Y;
 							break;
 					}
 
