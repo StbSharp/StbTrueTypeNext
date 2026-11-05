@@ -39,19 +39,21 @@ namespace StbTrueTypeNext
 		{
 		}
 
-		public static int stbtt_PackFontRange(stbtt_pack_context spc, byte[] fontdata, int font_index, float font_size,
+		public int stbtt_PackFontRange(byte[] fontdata, int font_index, float font_size,
 			int first_unicode_codepoint_in_range, int num_chars_in_range, stbtt_packedchar[] chardata_for_range)
 		{
-			var range = new stbtt_pack_range();
-			range.first_unicode_codepoint_in_range = first_unicode_codepoint_in_range;
-			range.array_of_unicode_codepoints = null;
-			range.num_chars = num_chars_in_range;
-			range.chardata_for_range = chardata_for_range;
-			range.font_size = font_size;
+			var range = new stbtt_pack_range
+			{
+				first_unicode_codepoint_in_range = first_unicode_codepoint_in_range,
+				array_of_unicode_codepoints = null,
+				num_chars = num_chars_in_range,
+				chardata_for_range = chardata_for_range,
+				font_size = font_size
+			};
 
 			var ranges = new stbtt_pack_range[] { range };
 
-			return stbtt_PackFontRanges(spc, fontdata, font_index, ranges);
+			return stbtt_PackFontRanges(this, fontdata, font_index, ranges);
 		}
 
 		public static int stbtt_PackFontRanges(stbtt_pack_context spc, byte[] fontdata, int font_index, stbtt_pack_range[] ranges)

@@ -53,7 +53,7 @@ public class FontBaker
 				continue;
 
 			var cd = new stbtt_packedchar[range.End - range.Start + 1];
-			stbtt_pack_context.stbtt_PackFontRange(_context, fontInfo.data, 0, fontPixelHeight,
+			_context.stbtt_PackFontRange(fontInfo.data, 0, fontPixelHeight,
 				range.Start,
 				range.End - range.Start + 1,
 				cd);
