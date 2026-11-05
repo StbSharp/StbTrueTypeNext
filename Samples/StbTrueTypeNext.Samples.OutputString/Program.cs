@@ -1,7 +1,7 @@
 ﻿using StbImageWriteSharp;
 using System;
 using System.IO;
-using static StbTrueTypeNext.StbTrueType;
+using static StbTrueTypeNext.stbtt_fontinfo;
 
 namespace StbTrueTypeNext.Samples;
 

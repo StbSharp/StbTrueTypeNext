@@ -3,10 +3,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using StbTrueTypeNext.Tests.Utility;
-using static StbTrueTypeNext.StbTrueType;
+using static StbTrueTypeNext.stbtt_fontinfo;
 using Xunit;
 using Xunit.Sdk;
-using FontsList = System.Collections.Generic.List<StbTrueTypeNext.StbTrueType.stbtt_fontinfo>;
+using FontsList = System.Collections.Generic.List<StbTrueTypeNext.stbtt_fontinfo>;
 
 namespace StbTrueTypeNext.Tests
 {
@@ -128,7 +128,7 @@ namespace StbTrueTypeNext.Tests
 			var fontInfo = CreateFont(ttfData, 0);
 			Assert.NotNull(fontInfo);
 
-			fontInfo.useOldRasterizer = true;
+			fontInfo.RasterizerVersion = RasterizerVersion.V1;
 
 			TestRasterize(fontInfo, "Hello, World!", 32.0f);
 		}
