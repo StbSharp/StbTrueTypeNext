@@ -113,25 +113,25 @@ namespace StbTrueTypeNext
 			return _svg;
 		}
 
-		public static int stbtt__GetGlyfOffset(stbtt_fontinfo info, int glyph_index)
+		private int stbtt__GetGlyfOffset(int glyph_index)
 		{
 			var g1 = 0;
 			var g2 = 0;
-			if (glyph_index >= info._numGlyphs)
+			if (glyph_index >= _numGlyphs)
 				return -1;
-			if (info._indexToLocFormat >= 2)
+			if (_indexToLocFormat >= 2)
 				return -1;
 
-			var dataPtr = new FakePtr<byte>(info._data);
-			if (info._indexToLocFormat == 0)
+			var dataPtr = new FakePtr<byte>(_data);
+			if (_indexToLocFormat == 0)
 			{
-				g1 = info._glyf + ttUSHORT(dataPtr + info._loca + glyph_index * 2) * 2;
-				g2 = info._glyf + ttUSHORT(dataPtr + info._loca + glyph_index * 2 + 2) * 2;
+				g1 = _glyf + ttUSHORT(dataPtr + _loca + glyph_index * 2) * 2;
+				g2 = _glyf + ttUSHORT(dataPtr + _loca + glyph_index * 2 + 2) * 2;
 			}
 			else
 			{
-				g1 = (int)(info._glyf + ttULONG(dataPtr + info._loca + glyph_index * 4));
-				g2 = (int)(info._glyf + ttULONG(dataPtr + info._loca + glyph_index * 4 + 4));
+				g1 = (int)(_glyf + ttULONG(dataPtr + _loca + glyph_index * 4));
+				g2 = (int)(_glyf + ttULONG(dataPtr + _loca + glyph_index * 4 + 4));
 			}
 
 			return g1 == g2 ? -1 : g1;
@@ -457,7 +457,7 @@ namespace StbTrueTypeNext
 			short numberOfContours = 0;
 			var data = new FakePtr<byte>(info._data);
 			var num_vertices = 0;
-			var g = stbtt__GetGlyfOffset(info, glyph_index);
+			var g = info.stbtt__GetGlyfOffset(glyph_index);
 			pvertices = null;
 			if (g < 0)
 				return 0;
@@ -1370,7 +1370,7 @@ namespace StbTrueTypeNext
 			}
 			else
 			{
-				var g = stbtt__GetGlyfOffset(info, glyph_index);
+				var g = info.stbtt__GetGlyfOffset(glyph_index);
 				if (g < 0)
 					return 0;
 
@@ -1801,7 +1801,7 @@ namespace StbTrueTypeNext
 				int x0, y0, x1, y1;
 				return stbtt__GetGlyphInfoT2(info, glyph_index, out x0, out y0, out x1, out y1) == 0 ? 1 : 0;
 			}
-			g = stbtt__GetGlyfOffset(info, glyph_index);
+			g = info.stbtt__GetGlyfOffset(glyph_index);
 			if (g < 0)
 				return 1;
 			numberOfContours = ttSHORT(new FakePtr<byte>(info._data, g));
