@@ -1284,10 +1284,10 @@ namespace StbTrueTypeNext
 			return 1;
 		}
 
-		public static byte[] stbtt_GetGlyphBitmap(stbtt_fontinfo info, float scale_x, float scale_y, int glyph,
+		public byte[] stbtt_GetGlyphBitmap(float scale_x, float scale_y, int glyph,
 			out int width, out int height, out int xoff, out int yoff)
 		{
-			return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y, 0.0f, 0.0f, glyph, out width, out height, out xoff, out yoff);
+			return stbtt_GetGlyphBitmapSubpixel(this, scale_x, scale_y, 0.0f, 0.0f, glyph, out width, out height, out xoff, out yoff);
 		}
 
 		public static void stbtt_GetGlyphBitmapBox(stbtt_fontinfo font, int glyph, float scale_x, float scale_y,
