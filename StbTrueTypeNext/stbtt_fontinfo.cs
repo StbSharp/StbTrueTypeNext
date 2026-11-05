@@ -689,7 +689,7 @@ namespace StbTrueTypeNext
 
 					m = (float)Math.Sqrt(mtx[0] * mtx[0] + mtx[1] * mtx[1]);
 					n = (float)Math.Sqrt(mtx[2] * mtx[2] + mtx[3] * mtx[3]);
-					comp_num_verts = stbtt_GetGlyphShape(this, gidx, out comp_verts);
+					comp_num_verts = stbtt_GetGlyphShape(gidx, out comp_verts);
 					if (comp_num_verts > 0)
 					{
 						for (i = 0; i < comp_num_verts; ++i)
@@ -1206,7 +1206,7 @@ namespace StbTrueTypeNext
 
 		public int stbtt_GetCodepointShape(int unicode_codepoint, out STTVertex[] vertices)
 		{
-			return stbtt_GetGlyphShape(this, stbtt_FindGlyphIndex(unicode_codepoint), out vertices);
+			return stbtt_GetGlyphShape(stbtt_FindGlyphIndex(unicode_codepoint), out vertices);
 		}
 
 		public int stbtt_GetCodepointSVG(int unicode_codepoint, ref FakePtr<byte> svg)
@@ -1329,7 +1329,7 @@ namespace StbTrueTypeNext
 			var ix1 = 0;
 			var iy1 = 0;
 			STTVertex[] vertices;
-			var num_verts = stbtt_GetGlyphShape(this, glyph, out vertices);
+			var num_verts = stbtt_GetGlyphShape(glyph, out vertices);
 			if (scale_x == 0)
 				scale_x = scale_y;
 			if (scale_y == 0)
@@ -1413,7 +1413,7 @@ namespace StbTrueTypeNext
 			return xAdvance;
 		}
 
-		public byte[] stbtt_GetGlyphSDF(float scale, int glyph, int padding, byte onedge_value, float pixel_dist_scale, 
+		public byte[] stbtt_GetGlyphSDF(float scale, int glyph, int padding, byte onedge_value, float pixel_dist_scale,
 			out int width, out int height, out int xoff, out int yoff)
 		{
 			width = height = xoff = yoff = 0;
@@ -1450,7 +1450,7 @@ namespace StbTrueTypeNext
 				var i = 0;
 				var j = 0;
 				STTVertex[] verts;
-				var num_verts = stbtt_GetGlyphShape(this, glyph, out verts);
+				var num_verts = stbtt_GetGlyphShape(glyph, out verts);
 				data = new byte[w * h];
 				var precompute = new float[num_verts];
 				for (i = 0, j = num_verts - 1; i < num_verts; j = i++)
@@ -1636,14 +1636,14 @@ namespace StbTrueTypeNext
 			return data;
 		}
 
-		public static int stbtt_GetGlyphShape(stbtt_fontinfo info, int glyph_index, out STTVertex[] pvertices)
+		public int stbtt_GetGlyphShape(int glyph_index, out STTVertex[] pvertices)
 		{
-			if (info._cff.size == 0)
+			if (_cff.size == 0)
 			{
-				return info.stbtt__GetGlyphShapeTT(glyph_index, out pvertices);
+				return stbtt__GetGlyphShapeTT(glyph_index, out pvertices);
 			}
 
-			return info.stbtt__GetGlyphShapeT2(glyph_index, out pvertices);
+			return stbtt__GetGlyphShapeT2(glyph_index, out pvertices);
 		}
 
 		public static int stbtt_GetGlyphSVG(stbtt_fontinfo info, int gl, ref FakePtr<byte> svg)
@@ -1858,7 +1858,7 @@ namespace StbTrueTypeNext
 			var ix1 = 0;
 			var iy1 = 0;
 			STTVertex[] vertices;
-			var num_verts = stbtt_GetGlyphShape(info, glyph, out vertices);
+			var num_verts = info.stbtt_GetGlyphShape(glyph, out vertices);
 			info.stbtt_GetGlyphBitmapBoxSubpixel(glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
 
 			if (out_w != 0 && out_h != 0)
@@ -1903,6 +1903,5 @@ namespace StbTrueTypeNext
 			public int glyph2;
 			public int advance;
 		}
-
 	}
 }
