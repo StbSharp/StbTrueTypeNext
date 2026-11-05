@@ -1661,12 +1661,12 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static stbtt_kerningentry[] stbtt_GetKerningTable(stbtt_fontinfo info)
+		public stbtt_kerningentry[] stbtt_GetKerningTable()
 		{
-			var data = new FakePtr<byte>(info._data, info._kern);
+			var data = new FakePtr<byte>(_data, _kern);
 			var k = 0;
 			var length = 0;
-			if (info._kern == 0)
+			if (_kern == 0)
 				return null;
 			if (ttUSHORT(data + 2) < 1)
 				return null;
@@ -1894,14 +1894,6 @@ namespace StbTrueTypeNext
 			var dataPtr = new FakePtr<byte>(info._data);
 			var fheight = ttSHORT(dataPtr + info._hhea + 4) - ttSHORT(dataPtr + info._hhea + 6);
 			return height / fheight;
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct stbtt_kerningentry
-		{
-			public int glyph1;
-			public int glyph2;
-			public int advance;
 		}
 	}
 }
