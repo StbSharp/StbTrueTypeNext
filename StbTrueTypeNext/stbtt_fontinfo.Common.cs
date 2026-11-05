@@ -442,11 +442,6 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static int stbtt_CompareUTF8toUTF16_bigendian(FakePtr<byte> s1, int len1, FakePtr<byte> s2, int len2)
-		{
-			return stbtt_CompareUTF8toUTF16_bigendian_internal(s1, len1, s2, len2);
-		}
-
 		public static int stbtt_CompareUTF8toUTF16_bigendian_internal(FakePtr<byte> s1, int len1, FakePtr<byte> s2, int len2)
 		{
 			return len1 == stbtt__CompareUTF8toUTF16_bigendian_prefix(s1, len1, s2, len2) ? 1 : 0;
