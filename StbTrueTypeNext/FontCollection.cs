@@ -193,17 +193,17 @@
 
 		public static int stbtt_GetFontOffsetForIndex(byte[] data, int index)
 		{
-			var font_collection = new FakePtr<byte>(data);
-			if (stbtt__isfont(font_collection) != 0)
+			var dataPtr = new FakePtr<byte>(data);
+			if (stbtt__isfont(dataPtr) != 0)
 				return index == 0 ? 0 : -1;
-			if (font_collection[0] == "ttcf"[0] && font_collection[1] == "ttcf"[1] && font_collection[2] == "ttcf"[2] &&
-				font_collection[3] == "ttcf"[3])
-				if (Utility.ttULONG(font_collection + 4) == 0x00010000 || Utility.ttULONG(font_collection + 4) == 0x00020000)
+			if (dataPtr[0] == "ttcf"[0] && dataPtr[1] == "ttcf"[1] && dataPtr[2] == "ttcf"[2] &&
+				dataPtr[3] == "ttcf"[3])
+				if (Utility.ttULONG(dataPtr + 4) == 0x00010000 || Utility.ttULONG(dataPtr + 4) == 0x00020000)
 				{
-					var n = Utility.ttLONG(font_collection + 8);
+					var n = Utility.ttLONG(dataPtr + 8);
 					if (index >= n)
 						return -1;
-					return (int)Utility.ttULONG(font_collection + 12 + index * 4);
+					return (int)Utility.ttULONG(dataPtr + 12 + index * 4);
 				}
 
 			return -1;
