@@ -62,7 +62,6 @@ namespace StbTrueTypeNext
 			var i = 0;
 			var j = 0;
 			var n = 0;
-			var return_value = 1;
 
 			var num_ranges = ranges.Length;
 			for (i = 0; i < num_ranges; ++i)
@@ -85,9 +84,8 @@ namespace StbTrueTypeNext
 			stbtt_InitFont(info, fontdata, stbtt_GetFontOffsetForIndex(fontdata, font_index));
 			n = stbtt_PackFontRangesGatherRects(info, ranges, rects);
 			stbtt_PackFontRangesPackRects(rects, n);
-			return_value = stbtt_PackFontRangesRenderIntoRects(this, info, ranges, rects);
 
-			return return_value;
+			return stbtt_PackFontRangesRenderIntoRects(info, ranges, rects);
 		}
 
 		private int stbtt_PackFontRangesGatherRects(stbtt_fontinfo info, stbtt_pack_range[] ranges, stbrp_rect[] rects)
@@ -140,16 +138,15 @@ namespace StbTrueTypeNext
 
 		private void stbtt_PackFontRangesPackRects(stbrp_rect[] rects, int num_rects) => _pack_info.stbrp_pack_rects(rects, num_rects);
 
-		private static int stbtt_PackFontRangesRenderIntoRects(stbtt_pack_context spc, stbtt_fontinfo info,
-			stbtt_pack_range[] ranges, stbrp_rect[] rects)
+		private int stbtt_PackFontRangesRenderIntoRects(stbtt_fontinfo info, stbtt_pack_range[] ranges, stbrp_rect[] rects)
 		{
 			var i = 0;
 			var j = 0;
 			var k = 0;
 			var missing_glyph = -1;
 			var return_value = 1;
-			var old_h_over = (int)spc._h_oversample;
-			var old_v_over = (int)spc._v_oversample;
+			var old_h_over = (int)_h_oversample;
+			var old_v_over = (int)_v_oversample;
 			k = 0;
 
 			var num_ranges = ranges.Length;
@@ -161,12 +158,12 @@ namespace StbTrueTypeNext
 				float recip_v = 0;
 				float sub_x = 0;
 				float sub_y = 0;
-				spc._h_oversample = ranges[i].h_oversample;
-				spc._v_oversample = ranges[i].v_oversample;
-				recip_h = 1.0f / spc._h_oversample;
-				recip_v = 1.0f / spc._v_oversample;
-				sub_x = stbtt__oversample_shift((int)spc._h_oversample);
-				sub_y = stbtt__oversample_shift((int)spc._v_oversample);
+				_h_oversample = ranges[i].h_oversample;
+				_v_oversample = ranges[i].v_oversample;
+				recip_h = 1.0f / _h_oversample;
+				recip_v = 1.0f / _v_oversample;
+				sub_x = stbtt__oversample_shift((int)_h_oversample);
+				sub_y = stbtt__oversample_shift((int)_v_oversample);
 				for (j = 0; j < ranges[i].num_chars; ++j)
 				{
 					var r = rects[k];
@@ -182,23 +179,23 @@ namespace StbTrueTypeNext
 							? ranges[i].first_unicode_codepoint_in_range + j
 							: ranges[i].array_of_unicode_codepoints[j];
 						var glyph = stbtt_FindGlyphIndex(info, codepoint);
-						var pad = spc._padding;
+						var pad = _padding;
 						r.x += pad;
 						r.y += pad;
 						r.w -= pad;
 						r.h -= pad;
 						stbtt_GetGlyphHMetrics(info, glyph, out advance, out lsb);
-						stbtt_GetGlyphBitmapBox(info, glyph, scale * spc._h_oversample, scale * spc._v_oversample,
+						stbtt_GetGlyphBitmapBox(info, glyph, scale * _h_oversample, scale * _v_oversample,
 							out x0, out y0, out x1, out y1);
-						stbtt_MakeGlyphBitmapSubpixel(info, new FakePtr<byte>(spc._pixels, r.x + r.y * spc._stride_in_bytes),
-							(int)(r.w - spc._h_oversample + 1), (int)(r.h - spc._v_oversample + 1),
-							spc._stride_in_bytes, scale * spc._h_oversample, scale * spc._v_oversample, 0, 0, glyph);
-						if (spc._h_oversample > 1)
-							stbtt__h_prefilter(new FakePtr<byte>(spc._pixels, r.x + r.y * spc._stride_in_bytes), r.w, r.h,
-								spc._stride_in_bytes, spc._h_oversample);
-						if (spc._v_oversample > 1)
-							stbtt__v_prefilter(new FakePtr<byte>(spc._pixels, r.x + r.y * spc._stride_in_bytes), r.w, r.h,
-								spc._stride_in_bytes, spc._v_oversample);
+						stbtt_MakeGlyphBitmapSubpixel(info, new FakePtr<byte>(_pixels, r.x + r.y * _stride_in_bytes),
+							(int)(r.w - _h_oversample + 1), (int)(r.h - _v_oversample + 1),
+							_stride_in_bytes, scale * _h_oversample, scale * _v_oversample, 0, 0, glyph);
+						if (_h_oversample > 1)
+							stbtt__h_prefilter(new FakePtr<byte>(_pixels, r.x + r.y * _stride_in_bytes), r.w, r.h,
+								_stride_in_bytes, _h_oversample);
+						if (_v_oversample > 1)
+							stbtt__v_prefilter(new FakePtr<byte>(_pixels, r.x + r.y * _stride_in_bytes), r.w, r.h,
+								_stride_in_bytes, _v_oversample);
 
 						var bc = ranges[i].chardata_for_range[j];
 						bc.x0 = (ushort)(short)r.x;
@@ -214,7 +211,7 @@ namespace StbTrueTypeNext
 						if (glyph == 0)
 							missing_glyph = j;
 					}
-					else if (spc._skip_missing != 0)
+					else if (_skip_missing != 0)
 					{
 						return_value = 0;
 					}
@@ -233,8 +230,8 @@ namespace StbTrueTypeNext
 				}
 			}
 
-			spc._h_oversample = (uint)old_h_over;
-			spc._v_oversample = (uint)old_v_over;
+			_h_oversample = (uint)old_h_over;
+			_v_oversample = (uint)old_v_over;
 			return return_value;
 		}
 
