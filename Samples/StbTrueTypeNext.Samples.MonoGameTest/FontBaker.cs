@@ -39,14 +39,14 @@ public class FontBaker
 		if (!characterRanges.Any())
 			throw new ArgumentException("characterRanges must have a least one value.");
 
-		var fontInfo = StbTrueType.CreateFont(ttf, 0);
+		var fontInfo = stbtt_fontinfo.CreateFont(ttf, 0);
 		if (fontInfo == null)
 			throw new Exception("Failed to init font.");
 
-		var scaleFactor = StbTrueType.stbtt_ScaleForPixelHeight(fontInfo, fontPixelHeight);
+		var scaleFactor = stbtt_fontinfo.stbtt_ScaleForPixelHeight(fontInfo, fontPixelHeight);
 
 		int ascent, descent, lineGap;
-		StbTrueType.stbtt_GetFontVMetrics(fontInfo, out ascent, out descent, out lineGap);
+		stbtt_fontinfo.stbtt_GetFontVMetrics(fontInfo, out ascent, out descent, out lineGap);
 
 		foreach (var range in characterRanges)
 		{

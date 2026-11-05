@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace StbTrueTypeNext
 {
-	partial class StbTrueType
+	partial class stbtt_fontinfo
 	{
 		public const int STBTT_MAC_EID_ARABIC = 4;
 		public const int STBTT_MAC_EID_CHINESE_TRAD = 2;

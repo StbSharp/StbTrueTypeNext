@@ -1,4 +1,4 @@
-﻿using static StbTrueTypeNext.StbTrueType;
+﻿using static StbTrueTypeNext.stbtt_fontinfo;
 
 namespace StbTrueTypeNext.Packing
 {
