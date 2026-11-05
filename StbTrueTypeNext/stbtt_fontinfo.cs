@@ -1182,7 +1182,7 @@ namespace StbTrueTypeNext
 
 		public int stbtt_GetCodepointBox(int codepoint, out int x0, out int y0, out int x1, out int y1)
 		{
-			return stbtt_GetGlyphBox(this, stbtt_FindGlyphIndex(codepoint), out x0, out y0, out x1, out y1);
+			return stbtt_GetGlyphBox(stbtt_FindGlyphIndex(codepoint), out x0, out y0, out x1, out y1);
 		}
 
 		public void stbtt_GetCodepointHMetrics(int codepoint, out int advanceWidth, out int leftSideBearing)
@@ -1303,7 +1303,7 @@ namespace StbTrueTypeNext
 			var y0 = 0;
 			var x1 = 0;
 			var y1 = 0;
-			if (stbtt_GetGlyphBox(this, glyph, out x0, out y0, out x1, out y1) == 0)
+			if (stbtt_GetGlyphBox(glyph, out x0, out y0, out x1, out y1) == 0)
 			{
 				ix0 = 0;
 				iy0 = 0;
@@ -1360,20 +1360,20 @@ namespace StbTrueTypeNext
 			return gbm.Pixels.Data;
 		}
 
-		public static int stbtt_GetGlyphBox(stbtt_fontinfo info, int glyph_index, out int x0, out int y0, out int x1, out int y1)
+		public int stbtt_GetGlyphBox(int glyph_index, out int x0, out int y0, out int x1, out int y1)
 		{
 			x0 = y0 = x1 = y1 = 0;
-			if (info._cff.size != 0)
+			if (_cff.size != 0)
 			{
-				info.stbtt__GetGlyphInfoT2(glyph_index, out x0, out y0, out x1, out y1);
+				stbtt__GetGlyphInfoT2(glyph_index, out x0, out y0, out x1, out y1);
 			}
 			else
 			{
-				var g = info.stbtt__GetGlyfOffset(glyph_index);
+				var g = stbtt__GetGlyfOffset(glyph_index);
 				if (g < 0)
 					return 0;
 
-				var dataPtr = new FakePtr<byte>(info._data);
+				var dataPtr = new FakePtr<byte>(_data);
 				x0 = ttSHORT(dataPtr + g + 2);
 				y0 = ttSHORT(dataPtr + g + 4);
 				x1 = ttSHORT(dataPtr + g + 6);
