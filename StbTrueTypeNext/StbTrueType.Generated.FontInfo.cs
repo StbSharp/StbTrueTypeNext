@@ -744,19 +744,19 @@ namespace StbTrueTypeNext
 						in_header = 0;
 						if (sp < 2)
 							return 0;
-						stbtt__csctx.stbtt__csctx_rmove_to(c, s[sp - 2], s[sp - 1]);
+						c.stbtt__csctx_rmove_to(s[sp - 2], s[sp - 1]);
 						break;
 					case 0x04:
 						in_header = 0;
 						if (sp < 1)
 							return 0;
-						stbtt__csctx.stbtt__csctx_rmove_to(c, 0, s[sp - 1]);
+						c.stbtt__csctx_rmove_to(0, s[sp - 1]);
 						break;
 					case 0x16:
 						in_header = 0;
 						if (sp < 1)
 							return 0;
-						stbtt__csctx.stbtt__csctx_rmove_to(c, s[sp - 1], 0);
+						c.stbtt__csctx_rmove_to(s[sp - 1], 0);
 						break;
 					case 0x05:
 						if (sp < 2)

@@ -39,12 +39,12 @@
 			stbtt__csctx_v(this, StbTrueType.STBTT_vline, (int)x, (int)y, 0, 0, 0, 0);
 		}
 
-		public static void stbtt__csctx_rmove_to(stbtt__csctx ctx, float dx, float dy)
+		public void stbtt__csctx_rmove_to(float dx, float dy)
 		{
-			ctx.stbtt__csctx_close_shape();
-			ctx.first_x = ctx.x = ctx.x + dx;
-			ctx.first_y = ctx.y = ctx.y + dy;
-			stbtt__csctx_v(ctx, StbTrueType.STBTT_vmove, (int)ctx.x, (int)ctx.y, 0, 0, 0, 0);
+			stbtt__csctx_close_shape();
+			first_x = x = x + dx;
+			first_y = y = y + dy;
+			stbtt__csctx_v(this, StbTrueType.STBTT_vmove, (int)x, (int)y, 0, 0, 0, 0);
 		}
 
 		public static void stbtt__csctx_v(stbtt__csctx c, byte type, int x, int y, int cx, int cy, int cx1, int cy1)
