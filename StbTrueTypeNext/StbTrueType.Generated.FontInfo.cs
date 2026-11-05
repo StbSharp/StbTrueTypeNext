@@ -46,7 +46,7 @@ namespace StbTrueTypeNext
 			return Buffer.stbtt__get_subrs(info.cff, Buffer.stbtt__cff_index_get(info.fontdicts, fdselector));
 		}
 
-		public static int stbtt__close_shape(stbtt_vertex[] vertices, int num_vertices, int was_off, int start_off,
+		public static int stbtt__close_shape(Vertex[] vertices, int num_vertices, int was_off, int start_off,
 			int sx, int sy, int scx, int scy, int cx, int cy)
 		{
 			if (start_off != 0)
@@ -405,7 +405,7 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static int stbtt__GetGlyphShapeT2(stbtt_fontinfo info, int glyph_index, out stbtt_vertex[] pvertices)
+		public static int stbtt__GetGlyphShapeT2(stbtt_fontinfo info, int glyph_index, out Vertex[] pvertices)
 		{
 			var count_ctx = new stbtt__csctx
 			{
@@ -415,7 +415,7 @@ namespace StbTrueTypeNext
 			if (stbtt__run_charstring(info, glyph_index, count_ctx) != 0)
 			{
 				var output_ctx = new stbtt__csctx();
-				pvertices = new stbtt_vertex[count_ctx.num_vertices];
+				pvertices = new Vertex[count_ctx.num_vertices];
 				output_ctx.pvertices = pvertices;
 				if (stbtt__run_charstring(info, glyph_index, output_ctx) != 0)
 				{
@@ -427,7 +427,7 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static int stbtt__GetGlyphShapeTT(stbtt_fontinfo info, int glyph_index, out stbtt_vertex[] pvertices)
+		public static int stbtt__GetGlyphShapeTT(stbtt_fontinfo info, int glyph_index, out Vertex[] pvertices)
 		{
 			short numberOfContours = 0;
 			var data = new FakePtr<byte>(info.data);
@@ -437,7 +437,7 @@ namespace StbTrueTypeNext
 			if (g < 0)
 				return 0;
 
-			stbtt_vertex[] vertices = null;
+			Vertex[] vertices = null;
 
 			numberOfContours = ttSHORT(data + g);
 			if (numberOfContours > 0)
@@ -466,7 +466,7 @@ namespace StbTrueTypeNext
 				var points = data + g + 10 + numberOfContours * 2 + 2 + ins;
 				n = 1 + ttUSHORT(endPtsOfContours + numberOfContours * 2 - 2);
 				m = n + 2 * numberOfContours;
-				vertices = new stbtt_vertex[m];
+				vertices = new Vertex[m];
 				next_move = 0;
 				flagcount = 0;
 				off = m - n;
@@ -607,8 +607,8 @@ namespace StbTrueTypeNext
 					ushort gidx = 0;
 					var comp_num_verts = 0;
 					var i = 0;
-					stbtt_vertex[] comp_verts = null;
-					stbtt_vertex[] tmp = null;
+					Vertex[] comp_verts = null;
+					Vertex[] tmp = null;
 
 					mtx[0] = mtx[3] = 1;
 					mtx[1] = mtx[2] = mtx[4] = mtx[5] = 0;
@@ -684,7 +684,7 @@ namespace StbTrueTypeNext
 							comp_verts[i] = v;
 						}
 
-						tmp = new stbtt_vertex[num_vertices + comp_num_verts];
+						tmp = new Vertex[num_vertices + comp_num_verts];
 						if (num_vertices > 0 && vertices != null)
 						{
 							Array.Copy(vertices, tmp, num_vertices);
@@ -1180,7 +1180,7 @@ namespace StbTrueTypeNext
 				pixel_dist_scale, out width, out height, out xoff, out yoff);
 		}
 
-		public static int stbtt_GetCodepointShape(stbtt_fontinfo info, int unicode_codepoint, out stbtt_vertex[] vertices)
+		public static int stbtt_GetCodepointShape(stbtt_fontinfo info, int unicode_codepoint, out Vertex[] vertices)
 		{
 			return stbtt_GetGlyphShape(info, stbtt_FindGlyphIndex(info, unicode_codepoint), out vertices);
 		}
@@ -1304,7 +1304,7 @@ namespace StbTrueTypeNext
 			var iy0 = 0;
 			var ix1 = 0;
 			var iy1 = 0;
-			stbtt_vertex[] vertices;
+			Vertex[] vertices;
 			var num_verts = stbtt_GetGlyphShape(info, glyph, out vertices);
 			if (scale_x == 0)
 				scale_x = scale_y;
@@ -1330,7 +1330,7 @@ namespace StbTrueTypeNext
 				return null;
 			}
 
-			var gbm = new stbtt__bitmap(width, height);
+			var gbm = new Bitmap(width, height);
 			gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.useOldRasterizer);
 
 			return gbm.Pixels.Data;
@@ -1422,7 +1422,7 @@ namespace StbTrueTypeNext
 				var y = 0;
 				var i = 0;
 				var j = 0;
-				stbtt_vertex[] verts;
+				Vertex[] verts;
 				var num_verts = stbtt_GetGlyphShape(info, glyph, out verts);
 				data = new byte[w * h];
 				var precompute = new float[num_verts];
@@ -1609,7 +1609,7 @@ namespace StbTrueTypeNext
 			return data;
 		}
 
-		public static int stbtt_GetGlyphShape(stbtt_fontinfo info, int glyph_index, out stbtt_vertex[] pvertices)
+		public static int stbtt_GetGlyphShape(stbtt_fontinfo info, int glyph_index, out Vertex[] pvertices)
 		{
 			if (info.cff.size == 0)
 			{
@@ -1835,13 +1835,13 @@ namespace StbTrueTypeNext
 			var iy0 = 0;
 			var ix1 = 0;
 			var iy1 = 0;
-			stbtt_vertex[] vertices;
+			Vertex[] vertices;
 			var num_verts = stbtt_GetGlyphShape(info, glyph, out vertices);
 			stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
 
 			if (out_w != 0 && out_h != 0)
 			{
-				var gbm = new stbtt__bitmap(out_w, out_h, out_stride, output);
+				var gbm = new Bitmap(out_w, out_h, out_stride, output);
 				gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.useOldRasterizer);
 			}
 		}

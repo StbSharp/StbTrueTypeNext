@@ -14,7 +14,7 @@ namespace StbTrueTypeNext
 			public int direction;
 		}
 
-		private static stbtt__active_edge_old_rasterizer stbtt__new_active_old_rasterizer(ref stbtt__edge e, int off_x, float start_point)
+		private static stbtt__active_edge_old_rasterizer stbtt__new_active_old_rasterizer(ref Edge e, int off_x, float start_point)
 		{
 			var z = new stbtt__active_edge_old_rasterizer();
 			float dxdy = (e.x1 - e.x0) / (e.y1 - e.y0);
@@ -79,7 +79,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static void Rasterize(stbtt__bitmap result, List<stbtt__edge> es, int vsubsample, int off_x, int off_y)
+		public static void Rasterize(Bitmap result, List<Edge> es, int vsubsample, int off_x, int off_y)
 		{
 			var edges = new List<stbtt__active_edge_old_rasterizer>();
 			int y = 0; int j = 0;

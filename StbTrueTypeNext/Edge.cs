@@ -1,6 +1,6 @@
 ﻿namespace StbTrueTypeNext
 {
-	internal struct stbtt__edge
+	internal struct Edge
 	{
 		public float x0;
 		public float y0;

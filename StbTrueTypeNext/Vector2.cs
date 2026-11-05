@@ -1,17 +1,17 @@
 ﻿namespace StbTrueTypeNext
 {
-	internal struct stbtt__point
+	internal struct Vector2
 	{
 		public float x;
 		public float y;
 
-		public stbtt__point(float _x, float _y)
+		public Vector2(float _x, float _y)
 		{
 			x = _x;
 			y = _y;
 		}
 
-		public bool Equals(stbtt__point other)
+		public bool Equals(Vector2 other)
 		{
 			return x == other.x && y == other.y;
 		}

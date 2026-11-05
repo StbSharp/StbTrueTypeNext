@@ -57,7 +57,7 @@ namespace StbTrueTypeNext
 		public const int STBTT_vline = 2;
 		public const int STBTT_vmove = 1;
 
-		internal static void stbtt__add_point(stbtt__point[] points, int n, float x, float y)
+		internal static void stbtt__add_point(Vector2[] points, int n, float x, float y)
 		{
 			if (points == null)
 				return;
@@ -128,7 +128,7 @@ namespace StbTrueTypeNext
 			return i;
 		}
 
-		public static int stbtt__compute_crossings_x(float x, float y, int nverts, stbtt_vertex[] verts)
+		public static int stbtt__compute_crossings_x(float x, float y, int nverts, Vertex[] verts)
 		{
 			var i = 0;
 			var orig = new float[2];
@@ -174,9 +174,9 @@ namespace StbTrueTypeNext
 					var by = y0 < (y1 < y2 ? y2 : y1) ? y1 < y2 ? y2 : y1 : y0;
 					if (y > ay && y < by && x > ax)
 					{
-						var q0 = new stbtt__point(x0, y0);
-						var q1 = new stbtt__point(x1, y1);
-						var q2 = new stbtt__point(x2, y2);
+						var q0 = new Vector2(x0, y0);
+						var q1 = new Vector2(x1, y1);
+						var q2 = new Vector2(x2, y2);
 						if (q0.Equals(q1) || q1.Equals(q2))
 						{
 							x0 = verts[i - 1].x;
@@ -409,7 +409,7 @@ namespace StbTrueTypeNext
 			return stbtt__sized_trapezoid_area(height, tx1 - tx0, bx1 - bx0);
 		}
 
-		internal static int stbtt__ray_intersect_bezier(float[] orig, float[] ray, stbtt__point q0, stbtt__point q1, stbtt__point q2, float[] hits)
+		internal static int stbtt__ray_intersect_bezier(float[] orig, float[] ray, Vector2 q0, Vector2 q1, Vector2 q2, float[] hits)
 		{
 			var q0perp = q0.y * ray[0] - q0.x * ray[1];
 			var q1perp = q1.y * ray[0] - q1.x * ray[1];
@@ -511,7 +511,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		internal static void stbtt__tesselate_cubic(stbtt__point[] points, ref int num_points, float x0, float y0, float x1,
+		internal static void stbtt__tesselate_cubic(Vector2[] points, ref int num_points, float x0, float y0, float x1,
 			float y1, float x2, float y2, float x3, float y3, float objspace_flatness_squared, int n)
 		{
 			var dx0 = x1 - x0;
@@ -554,7 +554,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		internal static int stbtt__tesselate_curve(stbtt__point[] points, ref int num_points, float x0, float y0, float x1,
+		internal static int stbtt__tesselate_curve(Vector2[] points, ref int num_points, float x0, float y0, float x1,
 			float y1, float x2, float y2, float objspace_flatness_squared, int n)
 		{
 			var mx = (x0 + 2 * x1 + x2) / 4;
@@ -851,7 +851,7 @@ namespace StbTrueTypeNext
 			lineGap = i_lineGap * scale;
 		}
 
-		public static void stbtt_setvertex(ref stbtt_vertex v, byte type, int x, int y, int cx, int cy)
+		public static void stbtt_setvertex(ref Vertex v, byte type, int x, int y, int cx, int cy)
 		{
 			v.type = type;
 			v.x = (short)x;

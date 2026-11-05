@@ -4,7 +4,7 @@ using static StbTrueTypeNext.StbTrueType;
 
 namespace StbTrueTypeNext
 {
-	internal class stbtt__bitmap
+	internal class Bitmap
 	{
 		private FakePtr<byte> _pixels;
 
@@ -21,7 +21,7 @@ namespace StbTrueTypeNext
 			set =>_pixels[index] = value;
 		}
 
-		public stbtt__bitmap(int width, int height)
+		public Bitmap(int width, int height)
 		{
 			if (width <= 0)
 			{
@@ -38,7 +38,7 @@ namespace StbTrueTypeNext
 			_pixels = new FakePtr<byte>(width * height);
 		}
 
-		public stbtt__bitmap(int width, int height, int stride, FakePtr<byte> pixels)
+		public Bitmap(int width, int height, int stride, FakePtr<byte> pixels)
 		{
 			if (width <= 0)
 			{
@@ -66,7 +66,7 @@ namespace StbTrueTypeNext
 			_pixels = pixels;
 		}
 
-		public void stbtt__rasterize(stbtt__point[] pts, int[] wcount,
+		public void stbtt__rasterize(Vector2[] pts, int[] wcount,
 			float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, bool useOldRasterizer)
 		{
 			var y_scale_inv = invert != 0 ? -scale_y : scale_y;
@@ -83,11 +83,11 @@ namespace StbTrueTypeNext
 
 			var windings = wcount.Length;
 
-			var es = new List<stbtt__edge>();
+			var es = new List<Edge>();
 			m = 0;
 			for (i = 0; i < windings; ++i)
 			{
-				var p = new FakePtr<stbtt__point>(pts, m);
+				var p = new FakePtr<Vector2>(pts, m);
 				m += wcount[i];
 				j = wcount[i] - 1;
 				for (k = 0; k < wcount[i]; j = k++)
@@ -97,7 +97,7 @@ namespace StbTrueTypeNext
 					if (p[j].y == p[k].y)
 						continue;
 
-					var e = new stbtt__edge();
+					var e = new Edge();
 					e.invert = 0;
 					if (invert != 0 && p[j].y > p[k].y ||
 						invert == 0 && p[j].y < p[k].y)
@@ -119,7 +119,7 @@ namespace StbTrueTypeNext
 
 			// We need to add one additional value after the sorting
 			// It is somehow used by below methods
-			es.Add(new stbtt__edge());
+			es.Add(new Edge());
 
 			if (!useOldRasterizer)
 			{
@@ -131,9 +131,9 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		private static stbtt__point[] stbtt_FlattenCurves(stbtt_vertex[] vertices, int num_verts, float objspace_flatness, out int[] contour_lengths)
+		private static Vector2[] stbtt_FlattenCurves(Vertex[] vertices, int num_verts, float objspace_flatness, out int[] contour_lengths)
 		{
-			stbtt__point[] points = null;
+			Vector2[] points = null;
 			var num_points = 0;
 			var objspace_flatness_squared = objspace_flatness * objspace_flatness;
 			var i = 0;
@@ -155,7 +155,7 @@ namespace StbTrueTypeNext
 				float y = 0;
 				if (pass == 1)
 				{
-					points = new stbtt__point[num_points];
+					points = new Vector2[num_points];
 				}
 
 				num_points = 0;
@@ -198,7 +198,7 @@ namespace StbTrueTypeNext
 			return points;
 		}
 
-		public void stbtt_Rasterize(float flatness_in_pixels, stbtt_vertex[] vertices,
+		public void stbtt_Rasterize(float flatness_in_pixels, Vertex[] vertices,
 			int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, bool useOldRasterizer)
 		{
 			var scale = scale_x > scale_y ? scale_y : scale_x;
