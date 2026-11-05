@@ -193,7 +193,7 @@ namespace StbTrueTypeNext.Packing
 							Utility.stbtt__h_prefilter(new FakePtr<byte>(_pixels, r.x + r.y * _stride_in_bytes), r.w, r.h,
 								_stride_in_bytes, _h_oversample);
 						if (_v_oversample > 1)
-							stbtt__v_prefilter(new FakePtr<byte>(_pixels, r.x + r.y * _stride_in_bytes), r.w, r.h,
+							Utility.stbtt__v_prefilter(new FakePtr<byte>(_pixels, r.x + r.y * _stride_in_bytes), r.w, r.h,
 								_stride_in_bytes, _v_oversample);
 
 						var bc = ranges[i].chardata_for_range[j];
