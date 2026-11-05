@@ -60,7 +60,7 @@
 			}
 			else
 			{
-				stbtt_fontinfo.stbtt_setvertex(ref pvertices[num_vertices], type, x, y, cx, cy);
+				pvertices[num_vertices].Set(type, x, y, cx, cy);
 				pvertices[num_vertices].CX1 = (short)cx1;
 				pvertices[num_vertices].CY1 = (short)cy1;
 			}

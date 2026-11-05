@@ -79,15 +79,16 @@ namespace StbTrueTypeNext
 			if (start_off != 0)
 			{
 				if (was_off != 0)
-					stbtt_setvertex(ref vertices[num_vertices++], STBTT_vcurve, (cx + scx) >> 1, (cy + scy) >> 1, cx, cy);
-				stbtt_setvertex(ref vertices[num_vertices++], STBTT_vcurve, sx, sy, scx, scy);
+					vertices[num_vertices++].Set(STBTT_vcurve, (cx + scx) >> 1, (cy + scy) >> 1, cx, cy);
+
+				vertices[num_vertices++].Set(STBTT_vcurve, sx, sy, scx, scy);
 			}
 			else
 			{
 				if (was_off != 0)
-					stbtt_setvertex(ref vertices[num_vertices++], STBTT_vcurve, sx, sy, cx, cy);
+					vertices[num_vertices++].Set(STBTT_vcurve, sx, sy, cx, cy);
 				else
-					stbtt_setvertex(ref vertices[num_vertices++], STBTT_vline, sx, sy, 0, 0);
+					vertices[num_vertices++].Set(STBTT_vline, sx, sy, 0, 0);
 			}
 
 			return num_vertices;
@@ -519,15 +520,6 @@ namespace StbTrueTypeNext
 			ascent = i_ascent * scale;
 			descent = i_descent * scale;
 			lineGap = i_lineGap * scale;
-		}
-
-		public static void stbtt_setvertex(ref STTVertex v, byte type, int x, int y, int cx, int cy)
-		{
-			v.Type = type;
-			v.X = (short)x;
-			v.Y = (short)y;
-			v.CX = (short)cx;
-			v.CY = (short)cy;
 		}
 
 		public static int ttLONG(FakePtr<byte> p)

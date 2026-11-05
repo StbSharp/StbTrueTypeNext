@@ -587,7 +587,7 @@ namespace StbTrueTypeNext
 							sy = y;
 						}
 
-						stbtt_setvertex(ref vertices[num_vertices++], STBTT_vmove, sx, sy, 0, 0);
+						vertices[num_vertices++].Set(STBTT_vmove, sx, sy, 0, 0);
 						was_off = 0;
 						next_move = 1 + ttUSHORT(endPtsOfContours + j * 2);
 						++j;
@@ -597,7 +597,7 @@ namespace StbTrueTypeNext
 						if ((flags & 1) == 0)
 						{
 							if (was_off != 0)
-								stbtt_setvertex(ref vertices[num_vertices++], STBTT_vcurve, (cx + x) >> 1, (cy + y) >> 1,
+								vertices[num_vertices++].Set(STBTT_vcurve, (cx + x) >> 1, (cy + y) >> 1,
 									cx, cy);
 							cx = x;
 							cy = y;
@@ -606,9 +606,9 @@ namespace StbTrueTypeNext
 						else
 						{
 							if (was_off != 0)
-								stbtt_setvertex(ref vertices[num_vertices++], STBTT_vcurve, x, y, cx, cy);
+								vertices[num_vertices++].Set(STBTT_vcurve, x, y, cx, cy);
 							else
-								stbtt_setvertex(ref vertices[num_vertices++], STBTT_vline, x, y, 0, 0);
+								vertices[num_vertices++].Set(STBTT_vline, x, y, 0, 0);
 							was_off = 0;
 						}
 					}
