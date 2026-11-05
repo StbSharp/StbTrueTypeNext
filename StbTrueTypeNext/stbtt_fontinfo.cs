@@ -398,15 +398,15 @@ namespace StbTrueTypeNext
 			return r != 0 ? c.num_vertices : 0;
 		}
 
-		public static int stbtt__GetGlyphKernInfoAdvance(stbtt_fontinfo info, int glyph1, int glyph2)
+		private int stbtt__GetGlyphKernInfoAdvance(int glyph1, int glyph2)
 		{
-			var data = new FakePtr<byte>(info._data, info._kern);
+			var data = new FakePtr<byte>(_data, _kern);
 			uint needle = 0;
 			uint straw = 0;
 			var l = 0;
 			var r = 0;
 			var m = 0;
-			if (info._kern == 0)
+			if (_kern == 0)
 				return 0;
 			if (ttUSHORT(data + 2) < 1)
 				return 0;
@@ -1407,7 +1407,7 @@ namespace StbTrueTypeNext
 			if (info._gpos != 0)
 				xAdvance += info.stbtt__GetGlyphGPOSInfoAdvance(g1, g2);
 			else if (info._kern != 0)
-				xAdvance += stbtt__GetGlyphKernInfoAdvance(info, g1, g2);
+				xAdvance += info.stbtt__GetGlyphKernInfoAdvance(g1, g2);
 			return xAdvance;
 		}
 
