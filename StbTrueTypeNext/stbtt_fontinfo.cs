@@ -1173,11 +1173,11 @@ namespace StbTrueTypeNext
 				shift_y, out ix0, out iy0, out ix1, out iy1);
 		}
 
-		public static byte[] stbtt_GetCodepointBitmapSubpixel(stbtt_fontinfo info, float scale_x, float scale_y,
+		public byte[] stbtt_GetCodepointBitmapSubpixel(float scale_x, float scale_y,
 			float shift_x, float shift_y, int codepoint, out int width, out int height, out int xoff, out int yoff)
 		{
-			return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y, shift_x, shift_y,
-				info.stbtt_FindGlyphIndex(codepoint), out width, out height, out xoff, out yoff);
+			return stbtt_GetGlyphBitmapSubpixel(this, scale_x, scale_y, shift_x, shift_y,
+				stbtt_FindGlyphIndex(codepoint), out width, out height, out xoff, out yoff);
 		}
 
 		public static int stbtt_GetCodepointBox(stbtt_fontinfo info, int codepoint, out int x0, out int y0, out int x1, out int y1)
