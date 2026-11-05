@@ -332,5 +332,15 @@ namespace StbTrueTypeNext
 				++j;
 			}
 		}
+
+		private static float stbtt__position_trapezoid_area(float height, float tx0, float tx1, float bx0, float bx1)
+		{
+			return stbtt__sized_trapezoid_area(height, tx1 - tx0, bx1 - bx0);
+		}
+
+		private static float stbtt__sized_trapezoid_area(float height, float top_width, float bottom_width)
+		{
+			return (top_width + bottom_width) / 2.0f * height;
+		}
 	}
 }

@@ -350,11 +350,6 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static float stbtt__position_trapezoid_area(float height, float tx0, float tx1, float bx0, float bx1)
-		{
-			return stbtt__sized_trapezoid_area(height, tx1 - tx0, bx1 - bx0);
-		}
-
 		internal static int stbtt__ray_intersect_bezier(float[] orig, float[] ray, Vector2 q0, Vector2 q1, Vector2 q2, float[] hits)
 		{
 			var q0perp = q0.y * ray[0] - q0.x * ray[1];
@@ -415,11 +410,6 @@ namespace StbTrueTypeNext
 			}
 
 			return 1;
-		}
-
-		public static float stbtt__sized_trapezoid_area(float height, float top_width, float bottom_width)
-		{
-			return (top_width + bottom_width) / 2.0f * height;
 		}
 
 		public static float stbtt__sized_triangle_area(float height, float width)
