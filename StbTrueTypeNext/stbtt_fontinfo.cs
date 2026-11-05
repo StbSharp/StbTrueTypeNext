@@ -1817,16 +1817,16 @@ namespace StbTrueTypeNext
 		public void stbtt_MakeCodepointBitmapSubpixel(byte[] output, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int codepoint)
 		{
-			stbtt_MakeGlyphBitmapSubpixel(this, new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y,
-				this.stbtt_FindGlyphIndex(codepoint));
+			stbtt_MakeGlyphBitmapSubpixel(this, new FakePtr<byte>(output), out_w, out_h, out_stride, 
+				scale_x, scale_y, shift_x, shift_y, stbtt_FindGlyphIndex(codepoint));
 		}
 
-		public static void stbtt_MakeCodepointBitmapSubpixelPrefilter(stbtt_fontinfo info, byte[] output, int out_w,
+		public  void stbtt_MakeCodepointBitmapSubpixelPrefilter(byte[] output, int out_w,
 			int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int oversample_x,
 			int oversample_y, out float sub_x, out float sub_y, int codepoint)
 		{
-			stbtt_MakeGlyphBitmapSubpixelPrefilter(info, output, out_w, out_h, out_stride, scale_x, scale_y, shift_x,
-				shift_y, oversample_x, oversample_y, out sub_x, out sub_y, info.stbtt_FindGlyphIndex(codepoint));
+			stbtt_MakeGlyphBitmapSubpixelPrefilter(this, output, out_w, out_h, out_stride, scale_x, scale_y, shift_x,
+				shift_y, oversample_x, oversample_y, out sub_x, out sub_y, stbtt_FindGlyphIndex(codepoint));
 		}
 
 		public static void stbtt_MakeGlyphBitmap(stbtt_fontinfo info, byte[] output, int out_w, int out_h,
