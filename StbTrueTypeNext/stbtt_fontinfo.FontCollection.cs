@@ -94,12 +94,12 @@
 				return 0;
 			if (flags != 0)
 			{
-				hd = stbtt__find_table(fc, offset, "head");
-				if ((ttUSHORT(fc + hd + 44) & 7) != (flags & 7))
+				hd = Utility.stbtt__find_table(fc, offset, "head");
+				if ((Utility.ttUSHORT(fc + hd + 44) & 7) != (flags & 7))
 					return 0;
 			}
 
-			nm = stbtt__find_table(fc, offset, "name");
+			nm = Utility.stbtt__find_table(fc, offset, "name");
 			if (nm == 0)
 				return 0;
 			if (flags != 0)
@@ -127,31 +127,31 @@
 		private static int stbtt__matchpair(FakePtr<byte> fc, uint nm, byte[] name, int nlen, int target_id, int next_id)
 		{
 			var i = 0;
-			int count = ttUSHORT(fc + nm + 2);
-			var stringOffset = (int)(nm + ttUSHORT(fc + nm + 4));
+			int count = Utility.ttUSHORT(fc + nm + 2);
+			var stringOffset = (int)(nm + Utility.ttUSHORT(fc + nm + 4));
 			for (i = 0; i < count; ++i)
 			{
 				var loc = (uint)(nm + 6 + 12 * i);
-				int id = ttUSHORT(fc + loc + 6);
+				int id = Utility.ttUSHORT(fc + loc + 6);
 				if (id == target_id)
 				{
-					int platform = ttUSHORT(fc + loc + 0);
-					int encoding = ttUSHORT(fc + loc + 2);
-					int language = ttUSHORT(fc + loc + 4);
+					int platform = Utility.ttUSHORT(fc + loc + 0);
+					int encoding = Utility.ttUSHORT(fc + loc + 2);
+					int language = Utility.ttUSHORT(fc + loc + 4);
 					if (platform == 0 || platform == 3 && encoding == 1 || platform == 3 && encoding == 10)
 					{
-						int slen = ttUSHORT(fc + loc + 8);
-						int off = ttUSHORT(fc + loc + 10);
+						int slen = Utility.ttUSHORT(fc + loc + 8);
+						int off = Utility.ttUSHORT(fc + loc + 10);
 						var matchlen =
 							stbtt__CompareUTF8toUTF16_bigendian_prefix(new FakePtr<byte>(name), nlen, fc + stringOffset + off, slen);
 						if (matchlen >= 0)
 						{
-							if (i + 1 < count && ttUSHORT(fc + loc + 12 + 6) == next_id &&
-								ttUSHORT(fc + loc + 12) == platform && ttUSHORT(fc + loc + 12 + 2) == encoding &&
-								ttUSHORT(fc + loc + 12 + 4) == language)
+							if (i + 1 < count && Utility.ttUSHORT(fc + loc + 12 + 6) == next_id &&
+								Utility.ttUSHORT(fc + loc + 12) == platform && Utility.ttUSHORT(fc + loc + 12 + 2) == encoding &&
+								Utility.ttUSHORT(fc + loc + 12 + 4) == language)
 							{
-								slen = ttUSHORT(fc + loc + 12 + 8);
-								off = ttUSHORT(fc + loc + 12 + 10);
+								slen = Utility.ttUSHORT(fc + loc + 12 + 8);
+								off = Utility.ttUSHORT(fc + loc + 12 + 10);
 								if (slen == 0)
 								{
 									if (matchlen == nlen)
@@ -208,12 +208,12 @@
 				return index == 0 ? 0 : -1;
 			if (font_collection[0] == "ttcf"[0] && font_collection[1] == "ttcf"[1] && font_collection[2] == "ttcf"[2] &&
 				font_collection[3] == "ttcf"[3])
-				if (ttULONG(font_collection + 4) == 0x00010000 || ttULONG(font_collection + 4) == 0x00020000)
+				if (Utility.ttULONG(font_collection + 4) == 0x00010000 || Utility.ttULONG(font_collection + 4) == 0x00020000)
 				{
-					var n = ttLONG(font_collection + 8);
+					var n = Utility.ttLONG(font_collection + 8);
 					if (index >= n)
 						return -1;
-					return (int)ttULONG(font_collection + 12 + index * 4);
+					return (int)Utility.ttULONG(font_collection + 12 + index * 4);
 				}
 
 			return -1;
@@ -230,8 +230,8 @@
 				return 1;
 			if (font_collection[0] == "ttcf"[0] && font_collection[1] == "ttcf"[1] && font_collection[2] == "ttcf"[2] &&
 				font_collection[3] == "ttcf"[3])
-				if (ttULONG(font_collection + 4) == 0x00010000 || ttULONG(font_collection + 4) == 0x00020000)
-					return ttLONG(font_collection + 8);
+				if (Utility.ttULONG(font_collection + 4) == 0x00010000 || Utility.ttULONG(font_collection + 4) == 0x00020000)
+					return Utility.ttLONG(font_collection + 8);
 
 			return 0;
 		}

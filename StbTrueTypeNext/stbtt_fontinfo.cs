@@ -97,10 +97,10 @@ namespace StbTrueTypeNext
 			var dataPtr = new FakePtr<byte>(_data);
 			if (_svg < 0)
 			{
-				t = stbtt__find_table(dataPtr, (uint)_fontstart, "SVG ");
+				t = Utility.stbtt__find_table(dataPtr, (uint)_fontstart, "SVG ");
 				if (t != 0)
 				{
-					var offset = ttULONG(dataPtr + t + 2);
+					var offset = Utility.ttULONG(dataPtr + t + 2);
 					_svg = (int)(t + offset);
 				}
 				else
@@ -124,13 +124,13 @@ namespace StbTrueTypeNext
 			var dataPtr = new FakePtr<byte>(_data);
 			if (_indexToLocFormat == 0)
 			{
-				g1 = _glyf + ttUSHORT(dataPtr + _loca + glyph_index * 2) * 2;
-				g2 = _glyf + ttUSHORT(dataPtr + _loca + glyph_index * 2 + 2) * 2;
+				g1 = _glyf + Utility.ttUSHORT(dataPtr + _loca + glyph_index * 2) * 2;
+				g2 = _glyf + Utility.ttUSHORT(dataPtr + _loca + glyph_index * 2 + 2) * 2;
 			}
 			else
 			{
-				g1 = (int)(_glyf + ttULONG(dataPtr + _loca + glyph_index * 4));
-				g2 = (int)(_glyf + ttULONG(dataPtr + _loca + glyph_index * 4 + 4));
+				g1 = (int)(_glyf + Utility.ttULONG(dataPtr + _loca + glyph_index * 4));
+				g2 = (int)(_glyf + Utility.ttULONG(dataPtr + _loca + glyph_index * 4 + 4));
 			}
 
 			return g1 == g2 ? -1 : g1;
@@ -138,22 +138,22 @@ namespace StbTrueTypeNext
 
 		private static int stbtt__GetGlyphClass(FakePtr<byte> classDefTable, int glyph)
 		{
-			var classDefFormat = ttUSHORT(classDefTable);
+			var classDefFormat = Utility.ttUSHORT(classDefTable);
 			switch (classDefFormat)
 			{
 				case 1:
 					{
-						var startGlyphID = ttUSHORT(classDefTable + 2);
-						var glyphCount = ttUSHORT(classDefTable + 4);
+						var startGlyphID = Utility.ttUSHORT(classDefTable + 2);
+						var glyphCount = Utility.ttUSHORT(classDefTable + 4);
 						var classDef1ValueArray = classDefTable + 6;
 						if (glyph >= startGlyphID && glyph < startGlyphID + glyphCount)
-							return ttUSHORT(classDef1ValueArray + 2 * (glyph - startGlyphID));
+							return Utility.ttUSHORT(classDef1ValueArray + 2 * (glyph - startGlyphID));
 						break;
 					}
 
 				case 2:
 					{
-						var classRangeCount = ttUSHORT(classDefTable + 2);
+						var classRangeCount = Utility.ttUSHORT(classDefTable + 2);
 						var classRangeRecords = classDefTable + 4;
 						var l = 0;
 						var r = classRangeCount - 1;
@@ -165,14 +165,14 @@ namespace StbTrueTypeNext
 						{
 							m = (l + r) >> 1;
 							var classRangeRecord = classRangeRecords + 6 * m;
-							strawStart = ttUSHORT(classRangeRecord);
-							strawEnd = ttUSHORT(classRangeRecord + 2);
+							strawStart = Utility.ttUSHORT(classRangeRecord);
+							strawEnd = Utility.ttUSHORT(classRangeRecord + 2);
 							if (needle < strawStart)
 								r = m - 1;
 							else if (needle > strawEnd)
 								l = m + 1;
 							else
-								return ttUSHORT(classRangeRecord + 4);
+								return Utility.ttUSHORT(classRangeRecord + 4);
 						}
 
 						break;
@@ -187,12 +187,12 @@ namespace StbTrueTypeNext
 
 		private static int stbtt__GetCoverageIndex(FakePtr<byte> coverageTable, int glyph)
 		{
-			var coverageFormat = ttUSHORT(coverageTable);
+			var coverageFormat = Utility.ttUSHORT(coverageTable);
 			switch (coverageFormat)
 			{
 				case 1:
 					{
-						var glyphCount = ttUSHORT(coverageTable + 2);
+						var glyphCount = Utility.ttUSHORT(coverageTable + 2);
 						var l = 0;
 						var r = glyphCount - 1;
 						var m = 0;
@@ -203,7 +203,7 @@ namespace StbTrueTypeNext
 							var glyphArray = coverageTable + 4;
 							ushort glyphID = 0;
 							m = (l + r) >> 1;
-							glyphID = ttUSHORT(glyphArray + 2 * m);
+							glyphID = Utility.ttUSHORT(glyphArray + 2 * m);
 							straw = glyphID;
 							if (needle < straw)
 								r = m - 1;
@@ -218,7 +218,7 @@ namespace StbTrueTypeNext
 
 				case 2:
 					{
-						var rangeCount = ttUSHORT(coverageTable + 2);
+						var rangeCount = Utility.ttUSHORT(coverageTable + 2);
 						var rangeArray = coverageTable + 4;
 						var l = 0;
 						var r = rangeCount - 1;
@@ -230,8 +230,8 @@ namespace StbTrueTypeNext
 						{
 							m = (l + r) >> 1;
 							var rangeRecord = rangeArray + 6 * m;
-							strawStart = ttUSHORT(rangeRecord);
-							strawEnd = ttUSHORT(rangeRecord + 2);
+							strawStart = Utility.ttUSHORT(rangeRecord);
+							strawEnd = Utility.ttUSHORT(rangeRecord + 2);
 							if (needle < strawStart)
 							{
 								r = m - 1;
@@ -242,7 +242,7 @@ namespace StbTrueTypeNext
 							}
 							else
 							{
-								var startCoverageIndex = ttUSHORT(rangeRecord + 4);
+								var startCoverageIndex = Utility.ttUSHORT(rangeRecord + 4);
 								return startCoverageIndex + glyph - strawStart;
 							}
 						}
@@ -267,28 +267,28 @@ namespace StbTrueTypeNext
 				return 0;
 
 			var data = new FakePtr<byte>(_data, _gpos);
-			if (ttUSHORT(data + 0) != 1)
+			if (Utility.ttUSHORT(data + 0) != 1)
 				return 0;
-			if (ttUSHORT(data + 2) != 0)
+			if (Utility.ttUSHORT(data + 2) != 0)
 				return 0;
-			lookupListOffset = ttUSHORT(data + 8);
+			lookupListOffset = Utility.ttUSHORT(data + 8);
 			var lookupList = data + lookupListOffset;
-			lookupCount = ttUSHORT(lookupList);
+			lookupCount = Utility.ttUSHORT(lookupList);
 			for (i = 0; i < lookupCount; ++i)
 			{
-				var lookupOffset = ttUSHORT(lookupList + 2 + 2 * i);
+				var lookupOffset = Utility.ttUSHORT(lookupList + 2 + 2 * i);
 				var lookupTable = lookupList + lookupOffset;
-				var lookupType = ttUSHORT(lookupTable);
-				var subTableCount = ttUSHORT(lookupTable + 4);
+				var lookupType = Utility.ttUSHORT(lookupTable);
+				var subTableCount = Utility.ttUSHORT(lookupTable + 4);
 				var subTableOffsets = lookupTable + 6;
 				if (lookupType != 2)
 					continue;
 				for (sti = 0; sti < subTableCount; sti++)
 				{
-					var subtableOffset = ttUSHORT(subTableOffsets + 2 * sti);
+					var subtableOffset = Utility.ttUSHORT(subTableOffsets + 2 * sti);
 					var table = lookupTable + subtableOffset;
-					var posFormat = ttUSHORT(table);
-					var coverageOffset = ttUSHORT(table + 2);
+					var posFormat = Utility.ttUSHORT(table);
+					var coverageOffset = Utility.ttUSHORT(table + 2);
 					var coverageIndex = stbtt__GetCoverageIndex(table + coverageOffset, glyph1);
 					if (coverageIndex == -1)
 						continue;
@@ -301,15 +301,15 @@ namespace StbTrueTypeNext
 								var m = 0;
 								var straw = 0;
 								var needle = 0;
-								var valueFormat1 = ttUSHORT(table + 4);
-								var valueFormat2 = ttUSHORT(table + 6);
+								var valueFormat1 = Utility.ttUSHORT(table + 4);
+								var valueFormat2 = Utility.ttUSHORT(table + 6);
 								if (valueFormat1 == 4 && valueFormat2 == 0)
 								{
 									var valueRecordPairSizeInBytes = 2;
-									var pairSetCount = ttUSHORT(table + 8);
-									var pairPosOffset = ttUSHORT(table + 10 + 2 * coverageIndex);
+									var pairSetCount = Utility.ttUSHORT(table + 8);
+									var pairPosOffset = Utility.ttUSHORT(table + 10 + 2 * coverageIndex);
 									var pairValueTable = table + pairPosOffset;
-									var pairValueCount = ttUSHORT(pairValueTable);
+									var pairValueCount = Utility.ttUSHORT(pairValueTable);
 									var pairValueArray = pairValueTable + 2;
 									if (coverageIndex >= pairSetCount)
 										return 0;
@@ -321,7 +321,7 @@ namespace StbTrueTypeNext
 										ushort secondGlyph = 0;
 										m = (l + r) >> 1;
 										var pairValue = pairValueArray + (2 + valueRecordPairSizeInBytes) * m;
-										secondGlyph = ttUSHORT(pairValue);
+										secondGlyph = Utility.ttUSHORT(pairValue);
 										straw = secondGlyph;
 										if (needle < straw)
 										{
@@ -333,7 +333,7 @@ namespace StbTrueTypeNext
 										}
 										else
 										{
-											var xAdvance = ttSHORT(pairValue + 2);
+											var xAdvance = Utility.ttSHORT(pairValue + 2);
 											return xAdvance;
 										}
 									}
@@ -348,16 +348,16 @@ namespace StbTrueTypeNext
 
 						case 2:
 							{
-								var valueFormat1 = ttUSHORT(table + 4);
-								var valueFormat2 = ttUSHORT(table + 6);
+								var valueFormat1 = Utility.ttUSHORT(table + 4);
+								var valueFormat2 = Utility.ttUSHORT(table + 6);
 								if (valueFormat1 == 4 && valueFormat2 == 0)
 								{
-									var classDef1Offset = ttUSHORT(table + 8);
-									var classDef2Offset = ttUSHORT(table + 10);
+									var classDef1Offset = Utility.ttUSHORT(table + 8);
+									var classDef2Offset = Utility.ttUSHORT(table + 10);
 									var glyph1class = stbtt__GetGlyphClass(table + classDef1Offset, glyph1);
 									var glyph2class = stbtt__GetGlyphClass(table + classDef2Offset, glyph2);
-									var class1Count = ttUSHORT(table + 12);
-									var class2Count = ttUSHORT(table + 14);
+									var class1Count = Utility.ttUSHORT(table + 12);
+									var class2Count = Utility.ttUSHORT(table + 14);
 									short xAdvance = 0;
 									if (glyph1class < 0 || glyph1class >= class1Count)
 										return 0;
@@ -365,7 +365,7 @@ namespace StbTrueTypeNext
 										return 0;
 									var class1Records = table + 16;
 									var class2Records = class1Records + 2 * glyph1class * class2Count;
-									xAdvance = ttSHORT(class2Records + 2 * glyph2class);
+									xAdvance = Utility.ttSHORT(class2Records + 2 * glyph2class);
 									return xAdvance;
 								}
 
@@ -407,23 +407,23 @@ namespace StbTrueTypeNext
 			var m = 0;
 			if (_kern == 0)
 				return 0;
-			if (ttUSHORT(data + 2) < 1)
+			if (Utility.ttUSHORT(data + 2) < 1)
 				return 0;
-			if (ttUSHORT(data + 8) != 1)
+			if (Utility.ttUSHORT(data + 8) != 1)
 				return 0;
 			l = 0;
-			r = ttUSHORT(data + 10) - 1;
+			r = Utility.ttUSHORT(data + 10) - 1;
 			needle = (uint)((glyph1 << 16) | glyph2);
 			while (l <= r)
 			{
 				m = (l + r) >> 1;
-				straw = ttULONG(data + 18 + m * 6);
+				straw = Utility.ttULONG(data + 18 + m * 6);
 				if (needle < straw)
 					r = m - 1;
 				else if (needle > straw)
 					l = m + 1;
 				else
-					return ttSHORT(data + 22 + m * 6);
+					return Utility.ttSHORT(data + 22 + m * 6);
 			}
 
 			return 0;
@@ -463,7 +463,7 @@ namespace StbTrueTypeNext
 
 			STTVertex[] vertices = null;
 
-			numberOfContours = ttSHORT(data + g);
+			numberOfContours = Utility.ttSHORT(data + g);
 			if (numberOfContours > 0)
 			{
 				byte flags = 0;
@@ -486,9 +486,9 @@ namespace StbTrueTypeNext
 				var scx = 0;
 				var scy = 0;
 				var endPtsOfContours = data + g + 10;
-				ins = ttUSHORT(data + g + 10 + numberOfContours * 2);
+				ins = Utility.ttUSHORT(data + g + 10 + numberOfContours * 2);
 				var points = data + g + 10 + numberOfContours * 2 + 2 + ins;
-				n = 1 + ttUSHORT(endPtsOfContours + numberOfContours * 2 - 2);
+				n = 1 + Utility.ttUSHORT(endPtsOfContours + numberOfContours * 2 - 2);
 				m = n + 2 * numberOfContours;
 				vertices = new STTVertex[m];
 				next_move = 0;
@@ -589,7 +589,7 @@ namespace StbTrueTypeNext
 
 						vertices[num_vertices++].Set(STBTT_vmove, sx, sy, 0, 0);
 						was_off = 0;
-						next_move = 1 + ttUSHORT(endPtsOfContours + j * 2);
+						next_move = 1 + Utility.ttUSHORT(endPtsOfContours + j * 2);
 						++j;
 					}
 					else
@@ -638,17 +638,17 @@ namespace StbTrueTypeNext
 					mtx[1] = mtx[2] = mtx[4] = mtx[5] = 0;
 					float m = 0;
 					float n = 0;
-					flags = (ushort)ttSHORT(comp);
+					flags = (ushort)Utility.ttSHORT(comp);
 					comp += 2;
-					gidx = (ushort)ttSHORT(comp);
+					gidx = (ushort)Utility.ttSHORT(comp);
 					comp += 2;
 					if ((flags & 2) != 0)
 					{
 						if ((flags & 1) != 0)
 						{
-							mtx[4] = ttSHORT(comp);
+							mtx[4] = Utility.ttSHORT(comp);
 							comp += 2;
-							mtx[5] = ttSHORT(comp);
+							mtx[5] = Utility.ttSHORT(comp);
 							comp += 2;
 						}
 						else
@@ -662,27 +662,27 @@ namespace StbTrueTypeNext
 
 					if ((flags & (1 << 3)) != 0)
 					{
-						mtx[0] = mtx[3] = ttSHORT(comp) / 16384.0f;
+						mtx[0] = mtx[3] = Utility.ttSHORT(comp) / 16384.0f;
 						comp += 2;
 						mtx[1] = mtx[2] = 0;
 					}
 					else if ((flags & (1 << 6)) != 0)
 					{
-						mtx[0] = ttSHORT(comp) / 16384.0f;
+						mtx[0] = Utility.ttSHORT(comp) / 16384.0f;
 						comp += 2;
 						mtx[1] = mtx[2] = 0;
-						mtx[3] = ttSHORT(comp) / 16384.0f;
+						mtx[3] = Utility.ttSHORT(comp) / 16384.0f;
 						comp += 2;
 					}
 					else if ((flags & (1 << 7)) != 0)
 					{
-						mtx[0] = ttSHORT(comp) / 16384.0f;
+						mtx[0] = Utility.ttSHORT(comp) / 16384.0f;
 						comp += 2;
-						mtx[1] = ttSHORT(comp) / 16384.0f;
+						mtx[1] = Utility.ttSHORT(comp) / 16384.0f;
 						comp += 2;
-						mtx[2] = ttSHORT(comp) / 16384.0f;
+						mtx[2] = Utility.ttSHORT(comp) / 16384.0f;
 						comp += 2;
-						mtx[3] = ttSHORT(comp) / 16384.0f;
+						mtx[3] = Utility.ttSHORT(comp) / 16384.0f;
 						comp += 2;
 					}
 
@@ -1038,10 +1038,10 @@ namespace StbTrueTypeNext
 		{
 			var data = new FakePtr<byte>(_data);
 			var index_map = (uint)_indexMap;
-			var format = ttUSHORT(data + index_map + 0);
+			var format = Utility.ttUSHORT(data + index_map + 0);
 			if (format == 0)
 			{
-				int bytes = ttUSHORT(data + index_map + 2);
+				int bytes = Utility.ttUSHORT(data + index_map + 2);
 				if (unicode_codepoint < bytes - 6)
 					return (data + index_map + 6 + unicode_codepoint).FirstValue;
 				return 0;
@@ -1049,10 +1049,10 @@ namespace StbTrueTypeNext
 
 			if (format == 6)
 			{
-				uint first = ttUSHORT(data + index_map + 6);
-				uint count = ttUSHORT(data + index_map + 8);
+				uint first = Utility.ttUSHORT(data + index_map + 6);
+				uint count = Utility.ttUSHORT(data + index_map + 8);
 				if ((uint)unicode_codepoint >= first && (uint)unicode_codepoint < first + count)
-					return ttUSHORT(data + index_map + 10 + (unicode_codepoint - first) * 2);
+					return Utility.ttUSHORT(data + index_map + 10 + (unicode_codepoint - first) * 2);
 				return 0;
 			}
 
@@ -1060,22 +1060,22 @@ namespace StbTrueTypeNext
 
 			if (format == 4)
 			{
-				var segcount = (ushort)(ttUSHORT(data + index_map + 6) >> 1);
-				var searchRange = (ushort)(ttUSHORT(data + index_map + 8) >> 1);
-				var entrySelector = ttUSHORT(data + index_map + 10);
-				var rangeShift = (ushort)(ttUSHORT(data + index_map + 12) >> 1);
+				var segcount = (ushort)(Utility.ttUSHORT(data + index_map + 6) >> 1);
+				var searchRange = (ushort)(Utility.ttUSHORT(data + index_map + 8) >> 1);
+				var entrySelector = Utility.ttUSHORT(data + index_map + 10);
+				var rangeShift = (ushort)(Utility.ttUSHORT(data + index_map + 12) >> 1);
 				var endCount = index_map + 14;
 				var search = endCount;
 				if (unicode_codepoint > 0xffff)
 					return 0;
-				if (unicode_codepoint >= ttUSHORT(data + search + rangeShift * 2))
+				if (unicode_codepoint >= Utility.ttUSHORT(data + search + rangeShift * 2))
 					search += (uint)(rangeShift * 2);
 				search -= 2;
 				while (entrySelector != 0)
 				{
 					ushort end = 0;
 					searchRange >>= 1;
-					end = ttUSHORT(data + search + searchRange * 2);
+					end = Utility.ttUSHORT(data + search + searchRange * 2);
 					if (unicode_codepoint > end)
 						search += (uint)(searchRange * 2);
 					--entrySelector;
@@ -1087,22 +1087,22 @@ namespace StbTrueTypeNext
 					ushort start = 0;
 					ushort last = 0;
 					var item = (ushort)((search - endCount) >> 1);
-					start = ttUSHORT(data + index_map + 14 + segcount * 2 + 2 + 2 * item);
-					last = ttUSHORT(data + endCount + 2 * item);
+					start = Utility.ttUSHORT(data + index_map + 14 + segcount * 2 + 2 + 2 * item);
+					last = Utility.ttUSHORT(data + endCount + 2 * item);
 					if (unicode_codepoint < start || unicode_codepoint > last)
 						return 0;
-					offset = ttUSHORT(data + index_map + 14 + segcount * 6 + 2 + 2 * item);
+					offset = Utility.ttUSHORT(data + index_map + 14 + segcount * 6 + 2 + 2 * item);
 					if (offset == 0)
 						return (ushort)(unicode_codepoint +
-										 ttSHORT(data + index_map + 14 + segcount * 4 + 2 + 2 * item));
-					return ttUSHORT(data + offset + (unicode_codepoint - start) * 2 + index_map + 14 + segcount * 6 +
+										 Utility.ttSHORT(data + index_map + 14 + segcount * 4 + 2 + 2 * item));
+					return Utility.ttUSHORT(data + offset + (unicode_codepoint - start) * 2 + index_map + 14 + segcount * 6 +
 									2 + 2 * item);
 				}
 			}
 
 			if (format == 12 || format == 13)
 			{
-				var ngroups = ttULONG(data + index_map + 12);
+				var ngroups = Utility.ttULONG(data + index_map + 12);
 				var low = 0;
 				var high = 0;
 				low = 0;
@@ -1110,8 +1110,8 @@ namespace StbTrueTypeNext
 				while (low < high)
 				{
 					var mid = low + ((high - low) >> 1);
-					var start_char = ttULONG(data + index_map + 16 + mid * 12);
-					var end_char = ttULONG(data + index_map + 16 + mid * 12 + 4);
+					var start_char = Utility.ttULONG(data + index_map + 16 + mid * 12);
+					var end_char = Utility.ttULONG(data + index_map + 16 + mid * 12 + 4);
 					if ((uint)unicode_codepoint < start_char)
 					{
 						high = mid;
@@ -1122,7 +1122,7 @@ namespace StbTrueTypeNext
 					}
 					else
 					{
-						var start_glyph = ttULONG(data + index_map + 16 + mid * 12 + 8);
+						var start_glyph = Utility.ttULONG(data + index_map + 16 + mid * 12 + 8);
 						if (format == 12)
 							return (int)(start_glyph + unicode_codepoint - start_char);
 						return (int)start_glyph;
@@ -1140,12 +1140,12 @@ namespace StbTrueTypeNext
 			var i = 0;
 			var data = new FakePtr<byte>(_data);
 			var svg_doc_list = data + stbtt__get_svg();
-			int numEntries = ttUSHORT(svg_doc_list);
+			int numEntries = Utility.ttUSHORT(svg_doc_list);
 			var svg_docs = svg_doc_list + 2;
 			for (i = 0; i < numEntries; i++)
 			{
 				var svg_doc = svg_docs + 12 * i;
-				if (gl >= ttUSHORT(svg_doc) && gl <= ttUSHORT(svg_doc + 2))
+				if (gl >= Utility.ttUSHORT(svg_doc) && gl <= Utility.ttUSHORT(svg_doc + 2))
 					return svg_doc;
 			}
 
@@ -1216,10 +1216,10 @@ namespace StbTrueTypeNext
 		public void stbtt_GetFontBoundingBox(out int x0, out int y0, out int x1, out int y1)
 		{
 			var dataPtr = new FakePtr<byte>(_data);
-			x0 = ttSHORT(dataPtr + _head + 36);
-			y0 = ttSHORT(dataPtr + _head + 38);
-			x1 = ttSHORT(dataPtr + _head + 40);
-			y1 = ttSHORT(dataPtr + _head + 42);
+			x0 = Utility.ttSHORT(dataPtr + _head + 36);
+			y0 = Utility.ttSHORT(dataPtr + _head + 38);
+			x1 = Utility.ttSHORT(dataPtr + _head + 40);
+			y1 = Utility.ttSHORT(dataPtr + _head + 42);
 		}
 
 		public string stbtt_GetFontNameString(int platformID, int encodingID, int languageID, int nameID)
@@ -1229,24 +1229,24 @@ namespace StbTrueTypeNext
 			var stringOffset = 0;
 			var fc = new FakePtr<byte>(_data);
 			var offset = (uint)_fontstart;
-			var nm = stbtt__find_table(fc, offset, "name");
+			var nm = Utility.stbtt__find_table(fc, offset, "name");
 			if (nm == 0)
 			{
 				return null;
 			}
 
-			count = ttUSHORT(fc + nm + 2);
-			stringOffset = (int)(nm + ttUSHORT(fc + nm + 4));
+			count = Utility.ttUSHORT(fc + nm + 2);
+			stringOffset = (int)(nm + Utility.ttUSHORT(fc + nm + 4));
 			for (i = 0; i < count; ++i)
 			{
 				var loc = (uint)(nm + 6 + 12 * i);
-				if (platformID == ttUSHORT(fc + loc + 0) && encodingID == ttUSHORT(fc + loc + 2) &&
-					languageID == ttUSHORT(fc + loc + 4) && nameID == ttUSHORT(fc + loc + 6))
+				if (platformID == Utility.ttUSHORT(fc + loc + 0) && encodingID == Utility.ttUSHORT(fc + loc + 2) &&
+					languageID == Utility.ttUSHORT(fc + loc + 4) && nameID == Utility.ttUSHORT(fc + loc + 6))
 				{
 					var sb = new StringBuilder();
-					var length = ttUSHORT(fc + loc + 8);
+					var length = Utility.ttUSHORT(fc + loc + 8);
 
-					var ptr = fc + stringOffset + ttUSHORT(fc + loc + 10);
+					var ptr = fc + stringOffset + Utility.ttUSHORT(fc + loc + 10);
 					for (var j = 0; j < length; ++j)
 					{
 						sb.Append((char)ptr[j]);
@@ -1263,22 +1263,22 @@ namespace StbTrueTypeNext
 		{
 			var dataPtr = new FakePtr<byte>(_data);
 
-			ascent = ttSHORT(dataPtr + _hhea + 4);
-			descent = ttSHORT(dataPtr + _hhea + 6);
-			lineGap = ttSHORT(dataPtr + _hhea + 8);
+			ascent = Utility.ttSHORT(dataPtr + _hhea + 4);
+			descent = Utility.ttSHORT(dataPtr + _hhea + 6);
+			lineGap = Utility.ttSHORT(dataPtr + _hhea + 8);
 		}
 
 		public int stbtt_GetFontVMetricsOS2(out int typoAscent, out int typoDescent, out int typoLineGap)
 		{
 			typoAscent = typoDescent = typoLineGap = 0;
 			var dataPtr = new FakePtr<byte>(_data);
-			var tab = (int)stbtt__find_table(dataPtr, (uint)_fontstart, "OS/2");
+			var tab = (int)Utility.stbtt__find_table(dataPtr, (uint)_fontstart, "OS/2");
 			if (tab == 0)
 				return 0;
 
-			typoAscent = ttSHORT(dataPtr + tab + 68);
-			typoDescent = ttSHORT(dataPtr + tab + 70);
-			typoLineGap = ttSHORT(dataPtr + tab + 72);
+			typoAscent = Utility.ttSHORT(dataPtr + tab + 68);
+			typoDescent = Utility.ttSHORT(dataPtr + tab + 70);
+			typoLineGap = Utility.ttSHORT(dataPtr + tab + 72);
 
 			return 1;
 		}
@@ -1373,10 +1373,10 @@ namespace StbTrueTypeNext
 					return 0;
 
 				var dataPtr = new FakePtr<byte>(_data);
-				x0 = ttSHORT(dataPtr + g + 2);
-				y0 = ttSHORT(dataPtr + g + 4);
-				x1 = ttSHORT(dataPtr + g + 6);
-				y1 = ttSHORT(dataPtr + g + 8);
+				x0 = Utility.ttSHORT(dataPtr + g + 2);
+				y0 = Utility.ttSHORT(dataPtr + g + 4);
+				x1 = Utility.ttSHORT(dataPtr + g + 6);
+				y1 = Utility.ttSHORT(dataPtr + g + 8);
 			}
 
 			return 1;
@@ -1385,16 +1385,16 @@ namespace StbTrueTypeNext
 		public void stbtt_GetGlyphHMetrics(int glyph_index, out int advanceWidth, out int leftSideBearing)
 		{
 			var dataPtr = new FakePtr<byte>(_data);
-			var numOfLongHorMetrics = ttUSHORT(dataPtr + _hhea + 34);
+			var numOfLongHorMetrics = Utility.ttUSHORT(dataPtr + _hhea + 34);
 			if (glyph_index < numOfLongHorMetrics)
 			{
-				advanceWidth = ttSHORT(dataPtr + _hmtx + 4 * glyph_index);
-				leftSideBearing = ttSHORT(dataPtr + _hmtx + 4 * glyph_index + 2);
+				advanceWidth = Utility.ttSHORT(dataPtr + _hmtx + 4 * glyph_index);
+				leftSideBearing = Utility.ttSHORT(dataPtr + _hmtx + 4 * glyph_index + 2);
 			}
 			else
 			{
-				advanceWidth = ttSHORT(dataPtr + _hmtx + 4 * (numOfLongHorMetrics - 1));
-				leftSideBearing = ttSHORT(dataPtr + _hmtx + 4 * numOfLongHorMetrics + 2 * (glyph_index - numOfLongHorMetrics));
+				advanceWidth = Utility.ttSHORT(dataPtr + _hmtx + 4 * (numOfLongHorMetrics - 1));
+				leftSideBearing = Utility.ttSHORT(dataPtr + _hmtx + 4 * numOfLongHorMetrics + 2 * (glyph_index - numOfLongHorMetrics));
 			}
 		}
 
@@ -1653,8 +1653,8 @@ namespace StbTrueTypeNext
 			var svg_doc = stbtt_FindSVGDoc(gl);
 			if (!svg_doc.IsNull)
 			{
-				svg = data + _svg + ttULONG(svg_doc + 4);
-				return (int)ttULONG(svg_doc + 8);
+				svg = data + _svg + Utility.ttULONG(svg_doc + 4);
+				return (int)Utility.ttULONG(svg_doc + 8);
 			}
 
 			return 0;
@@ -1667,18 +1667,18 @@ namespace StbTrueTypeNext
 			var length = 0;
 			if (_kern == 0)
 				return null;
-			if (ttUSHORT(data + 2) < 1)
+			if (Utility.ttUSHORT(data + 2) < 1)
 				return null;
-			if (ttUSHORT(data + 8) != 1)
+			if (Utility.ttUSHORT(data + 8) != 1)
 				return null;
-			length = ttUSHORT(data + 10);
+			length = Utility.ttUSHORT(data + 10);
 
 			var table = new stbtt_kerningentry[length];
 			for (k = 0; k < length; k++)
 			{
-				table[k].glyph1 = ttUSHORT(data + 18 + k * 6);
-				table[k].glyph2 = ttUSHORT(data + 20 + k * 6);
-				table[k].advance = ttSHORT(data + 22 + k * 6);
+				table[k].glyph1 = Utility.ttUSHORT(data + 18 + k * 6);
+				table[k].glyph2 = Utility.ttUSHORT(data + 20 + k * 6);
+				table[k].advance = Utility.ttSHORT(data + 22 + k * 6);
 			}
 
 			return table;
@@ -1695,14 +1695,14 @@ namespace StbTrueTypeNext
 			_cff = Buffer.Null;
 
 			var dataPtr = new FakePtr<byte>(data);
-			cmap = stbtt__find_table(dataPtr, (uint)fontstart, "cmap");
-			_loca = (int)stbtt__find_table(dataPtr, (uint)fontstart, "loca");
-			_head = (int)stbtt__find_table(dataPtr, (uint)fontstart, "head");
-			_glyf = (int)stbtt__find_table(dataPtr, (uint)fontstart, "glyf");
-			_hhea = (int)stbtt__find_table(dataPtr, (uint)fontstart, "hhea");
-			_hmtx = (int)stbtt__find_table(dataPtr, (uint)fontstart, "hmtx");
-			_kern = (int)stbtt__find_table(dataPtr, (uint)fontstart, "kern");
-			_gpos = (int)stbtt__find_table(dataPtr, (uint)fontstart, "GPOS");
+			cmap = Utility.stbtt__find_table(dataPtr, (uint)fontstart, "cmap");
+			_loca = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "loca");
+			_head = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "head");
+			_glyf = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "glyf");
+			_hhea = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "hhea");
+			_hmtx = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "hmtx");
+			_kern = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "kern");
+			_gpos = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "GPOS");
 			if (cmap == 0 || _head == 0 || _hhea == 0 || _hmtx == 0)
 				return 0;
 			if (_glyf != 0)
@@ -1716,7 +1716,7 @@ namespace StbTrueTypeNext
 				var topdict = new Buffer();
 				var topdictidx = new Buffer();
 				uint cff = 0;
-				cff = stbtt__find_table(dataPtr, (uint)fontstart, "CFF ");
+				cff = Utility.stbtt__find_table(dataPtr, (uint)fontstart, "CFF ");
 				if (cff == 0)
 					return 0;
 				_fontdicts = Buffer.Null;
@@ -1758,38 +1758,38 @@ namespace StbTrueTypeNext
 				_charstrings = b.stbtt__cff_get_index();
 			}
 
-			t = stbtt__find_table(dataPtr, (uint)fontstart, "maxp");
+			t = Utility.stbtt__find_table(dataPtr, (uint)fontstart, "maxp");
 			if (t != 0)
-				_numGlyphs = ttUSHORT(dataPtr + t + 4);
+				_numGlyphs = Utility.ttUSHORT(dataPtr + t + 4);
 			else
 				_numGlyphs = 0xffff;
 			_svg = -1;
-			numTables = ttUSHORT(dataPtr + cmap + 2);
+			numTables = Utility.ttUSHORT(dataPtr + cmap + 2);
 			_indexMap = 0;
 			for (i = 0; i < numTables; ++i)
 			{
 				var encoding_record = (uint)(cmap + 4 + 8 * i);
-				switch (ttUSHORT(dataPtr + encoding_record))
+				switch (Utility.ttUSHORT(dataPtr + encoding_record))
 				{
 					case STBTT_PLATFORM_ID_MICROSOFT:
-						switch (ttUSHORT(dataPtr + encoding_record + 2))
+						switch (Utility.ttUSHORT(dataPtr + encoding_record + 2))
 						{
 							case STBTT_MS_EID_UNICODE_BMP:
 							case STBTT_MS_EID_UNICODE_FULL:
-								_indexMap = (int)(cmap + ttULONG(dataPtr + encoding_record + 4));
+								_indexMap = (int)(cmap + Utility.ttULONG(dataPtr + encoding_record + 4));
 								break;
 						}
 
 						break;
 					case STBTT_PLATFORM_ID_UNICODE:
-						_indexMap = (int)(cmap + ttULONG(dataPtr + encoding_record + 4));
+						_indexMap = (int)(cmap + Utility.ttULONG(dataPtr + encoding_record + 4));
 						break;
 				}
 			}
 
 			if (_indexMap == 0)
 				throw new Exception("The font does not have a table mapping from unicode codepoints to font indices.");
-			_indexToLocFormat = ttUSHORT(dataPtr + _head + 50);
+			_indexToLocFormat = Utility.ttUSHORT(dataPtr + _head + 50);
 			return 1;
 		}
 
@@ -1805,7 +1805,7 @@ namespace StbTrueTypeNext
 			g = stbtt__GetGlyfOffset(glyph_index);
 			if (g < 0)
 				return 1;
-			numberOfContours = ttSHORT(new FakePtr<byte>(_data, g));
+			numberOfContours = Utility.ttSHORT(new FakePtr<byte>(_data, g));
 			return numberOfContours == 0 ? 1 : 0;
 		}
 
@@ -1882,14 +1882,14 @@ namespace StbTrueTypeNext
 		public float stbtt_ScaleForMappingEmToPixels(float pixels)
 		{
 			var dataPtr = new FakePtr<byte>(_data);
-			int unitsPerEm = ttUSHORT(dataPtr + _head + 18);
+			int unitsPerEm = Utility.ttUSHORT(dataPtr + _head + 18);
 			return pixels / unitsPerEm;
 		}
 
 		public float stbtt_ScaleForPixelHeight(float height)
 		{
 			var dataPtr = new FakePtr<byte>(_data);
-			var fheight = ttSHORT(dataPtr + _hhea + 4) - ttSHORT(dataPtr + _hhea + 6);
+			var fheight = Utility.ttSHORT(dataPtr + _hhea + 4) - Utility.ttSHORT(dataPtr + _hhea + 6);
 			return height / fheight;
 		}
 
