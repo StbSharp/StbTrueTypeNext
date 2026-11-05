@@ -1223,13 +1223,13 @@ namespace StbTrueTypeNext
 			y1 = ttSHORT(dataPtr + _head + 42);
 		}
 
-		public static string stbtt_GetFontNameString(stbtt_fontinfo font, int platformID, int encodingID, int languageID, int nameID)
+		public string stbtt_GetFontNameString(int platformID, int encodingID, int languageID, int nameID)
 		{
 			var i = 0;
 			var count = 0;
 			var stringOffset = 0;
-			var fc = new FakePtr<byte>(font._data);
-			var offset = (uint)font._fontstart;
+			var fc = new FakePtr<byte>(_data);
+			var offset = (uint)_fontstart;
 			var nm = stbtt__find_table(fc, offset, "name");
 			if (nm == 0)
 			{
