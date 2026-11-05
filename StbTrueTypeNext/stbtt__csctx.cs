@@ -51,11 +51,11 @@
 		{
 			if (bounds != 0)
 			{
-				stbtt__track_vertex(this, x, y);
+				stbtt__track_vertex(x, y);
 				if (type == StbTrueType.STBTT_vcubic)
 				{
-					stbtt__track_vertex(this, cx, cy);
-					stbtt__track_vertex(this, cx1, cy1);
+					stbtt__track_vertex(cx, cy);
+					stbtt__track_vertex(cx1, cy1);
 				}
 			}
 			else
@@ -68,17 +68,17 @@
 			num_vertices++;
 		}
 
-		public static void stbtt__track_vertex(stbtt__csctx c, int x, int y)
+		public void stbtt__track_vertex(int x, int y)
 		{
-			if (x > c.max_x || c.started == 0)
-				c.max_x = x;
-			if (y > c.max_y || c.started == 0)
-				c.max_y = y;
-			if (x < c.min_x || c.started == 0)
-				c.min_x = x;
-			if (y < c.min_y || c.started == 0)
-				c.min_y = y;
-			c.started = 1;
+			if (x > max_x || started == 0)
+				max_x = x;
+			if (y > max_y || started == 0)
+				max_y = y;
+			if (x < min_x || started == 0)
+				min_x = x;
+			if (y < min_y || started == 0)
+				min_y = y;
+			started = 1;
 		}
 	}
 }
