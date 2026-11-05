@@ -12,6 +12,13 @@
 
 		public static void Set<T>(this T[] ptr, T value) where T : unmanaged => Set(ptr, value, ptr.Length);
 
+		public static float stbtt__oversample_shift(int oversample)
+		{
+			if (oversample == 0)
+				return 0.0f;
+			return -(oversample - 1) / (2.0f * oversample);
+		}
+
 		public static void stbtt__h_prefilter(byte[] pixels, int w, int h, int stride_in_bytes, uint kernel_width)
 		{
 			stbtt__h_prefilter(new FakePtr<byte>(pixels), w, h, stride_in_bytes, kernel_width);

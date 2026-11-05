@@ -350,13 +350,6 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static float stbtt__oversample_shift(int oversample)
-		{
-			if (oversample == 0)
-				return 0.0f;
-			return -(oversample - 1) / (2.0f * oversample);
-		}
-
 		public static float stbtt__position_trapezoid_area(float height, float tx0, float tx1, float bx0, float bx1)
 		{
 			return stbtt__sized_trapezoid_area(height, tx1 - tx0, bx1 - bx0);

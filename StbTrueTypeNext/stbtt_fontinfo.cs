@@ -1875,8 +1875,8 @@ namespace StbTrueTypeNext
 				Utility.stbtt__h_prefilter(output, out_w, out_h, out_stride, (uint)prefilter_x);
 			if (prefilter_y > 1)
 				stbtt__v_prefilter(output, out_w, out_h, out_stride, (uint)prefilter_y);
-			sub_x = stbtt__oversample_shift(prefilter_x);
-			sub_y = stbtt__oversample_shift(prefilter_y);
+			sub_x = Utility.stbtt__oversample_shift(prefilter_x);
+			sub_y = Utility.stbtt__oversample_shift(prefilter_y);
 		}
 
 		public float stbtt_ScaleForMappingEmToPixels(float pixels)

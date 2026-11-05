@@ -161,8 +161,8 @@ namespace StbTrueTypeNext.Packing
 				_v_oversample = ranges[i].v_oversample;
 				recip_h = 1.0f / _h_oversample;
 				recip_v = 1.0f / _v_oversample;
-				sub_x = stbtt__oversample_shift((int)_h_oversample);
-				sub_y = stbtt__oversample_shift((int)_v_oversample);
+				sub_x = Utility.stbtt__oversample_shift((int)_h_oversample);
+				sub_y = Utility.stbtt__oversample_shift((int)_v_oversample);
 				for (j = 0; j < ranges[i].num_chars; ++j)
 				{
 					var r = rects[k];
