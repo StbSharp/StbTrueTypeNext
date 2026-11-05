@@ -761,7 +761,7 @@ namespace StbTrueTypeNext
 					case 0x05:
 						if (sp < 2)
 							return 0;
-						for (; i + 1 < sp; i += 2) stbtt__csctx.stbtt__csctx_rline_to(c, s[i], s[i + 1]);
+						for (; i + 1 < sp; i += 2) c.stbtt__csctx_rline_to(s[i], s[i + 1]);
 
 						break;
 					case 0x07:
@@ -775,14 +775,14 @@ namespace StbTrueTypeNext
 							{
 								if (i >= sp)
 									break;
-								stbtt__csctx.stbtt__csctx_rline_to(c, s[i], 0);
+								c.stbtt__csctx_rline_to(s[i], 0);
 								i++;
 							}
 
 							goto_vlineto = 0;
 							if (i >= sp)
 								break;
-							stbtt__csctx.stbtt__csctx_rline_to(c, 0, s[i]);
+							c.stbtt__csctx_rline_to(0, s[i]);
 							i++;
 						}
 
@@ -827,12 +827,12 @@ namespace StbTrueTypeNext
 
 						if (i + 1 >= sp)
 							return 0;
-						stbtt__csctx.stbtt__csctx_rline_to(c, s[i], s[i + 1]);
+						c.stbtt__csctx_rline_to(s[i], s[i + 1]);
 						break;
 					case 0x19:
 						if (sp < 8)
 							return 0;
-						for (; i + 1 < sp - 6; i += 2) stbtt__csctx.stbtt__csctx_rline_to(c, s[i], s[i + 1]);
+						for (; i + 1 < sp - 6; i += 2) c.stbtt__csctx_rline_to(s[i], s[i + 1]);
 
 						if (i + 5 >= sp)
 							return 0;

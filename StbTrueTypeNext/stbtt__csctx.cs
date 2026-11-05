@@ -32,11 +32,11 @@
 			stbtt__csctx_v(this, StbTrueType.STBTT_vcubic, (int)x, (int)y, (int)cx1, (int)cy1, (int)cx2, (int)cy2);
 		}
 
-		public static void stbtt__csctx_rline_to(stbtt__csctx ctx, float dx, float dy)
+		public void stbtt__csctx_rline_to(float dx, float dy)
 		{
-			ctx.x += dx;
-			ctx.y += dy;
-			stbtt__csctx_v(ctx, StbTrueType.STBTT_vline, (int)ctx.x, (int)ctx.y, 0, 0, 0, 0);
+			x += dx;
+			y += dy;
+			stbtt__csctx_v(this, StbTrueType.STBTT_vline, (int)x, (int)y, 0, 0, 0, 0);
 		}
 
 		public static void stbtt__csctx_rmove_to(stbtt__csctx ctx, float dx, float dy)
