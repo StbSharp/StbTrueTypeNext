@@ -1,9 +1,21 @@
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using static StbTrueTypeNext.StbTrueType;
 
 namespace StbTrueTypeNext
 {
-	partial class StbTrueType
+	public class stbtt_pack_context
 	{
+		public uint h_oversample;
+		public int height;
+		public stbrp_node[] nodes;
+		public stbrp_context pack_info;
+		public int padding;
+		public byte[] pixels;
+		public int skip_missing;
+		public int stride_in_bytes;
+		public uint v_oversample;
+		public int width;
+
 		public static void stbrp_init_target(stbrp_context con, int pw, int ph)
 		{
 			con.width = pw;
@@ -289,20 +301,6 @@ namespace StbTrueTypeNext
 			public int w;
 			public int h;
 			public int was_packed;
-		}
-
-		public class stbtt_pack_context
-		{
-			public uint h_oversample;
-			public int height;
-			public stbrp_node[] nodes;
-			public stbrp_context pack_info;
-			public int padding;
-			public byte[] pixels;
-			public int skip_missing;
-			public int stride_in_bytes;
-			public uint v_oversample;
-			public int width;
 		}
 
 		public class stbtt_pack_range

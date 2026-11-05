@@ -7,7 +7,7 @@ namespace StbTrueTypeNext.Samples;
 public class FontBaker
 {
 	private byte[] _bitmap;
-	private StbTrueType.stbtt_pack_context _context;
+	private stbtt_pack_context _context;
 	private Dictionary<int, GlyphInfo> _glyphs;
 	private int bitmapWidth, bitmapHeight;
 
@@ -16,9 +16,9 @@ public class FontBaker
 		bitmapWidth = width;
 		bitmapHeight = height;
 		_bitmap = new byte[width * height];
-		_context = new StbTrueType.stbtt_pack_context();
+		_context = new stbtt_pack_context();
 
-		StbTrueType.stbtt_PackBegin(_context, _bitmap, width, height, width, 1);
+		stbtt_pack_context.stbtt_PackBegin(_context, _bitmap, width, height, width, 1);
 
 		_glyphs = new Dictionary<int, GlyphInfo>();
 	}
@@ -53,7 +53,7 @@ public class FontBaker
 				continue;
 
 			var cd = new StbTrueType.stbtt_packedchar[range.End - range.Start + 1];
-			StbTrueType.stbtt_PackFontRange(_context, fontInfo.data, 0, fontPixelHeight,
+			stbtt_pack_context.stbtt_PackFontRange(_context, fontInfo.data, 0, fontPixelHeight,
 				range.Start,
 				range.End - range.Start + 1,
 				cd);
