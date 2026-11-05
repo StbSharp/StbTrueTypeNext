@@ -6,26 +6,28 @@ namespace StbTrueTypeNext
 {
 	public partial class stbtt_fontinfo
 	{
-		internal Buffer cff;
-		internal Buffer charstrings;
-		public byte[] data = null;
-		internal Buffer fdselect;
-		internal Buffer fontdicts;
-		public int fontstart;
-		public int glyf;
-		public int gpos;
-		internal Buffer gsubrs;
-		public int head;
-		public int hhea;
-		public int hmtx;
-		public int index_map;
-		public int indexToLocFormat;
-		public int kern;
-		public int loca;
-		public int numGlyphs;
-		internal Buffer subrs;
-		public int svg;
-		public bool useOldRasterizer;
+		private Buffer _cff;
+		private Buffer _charstrings;
+		private byte[] _data = null;
+		private Buffer _fdselect;
+		private Buffer _fontdicts;
+		private int _fontstart;
+		private int _glyf;
+		private int _gpos;
+		private Buffer _gsubrs;
+		private int _head;
+		private int _hhea;
+		private int _hmtx;
+		private int _indexMap;
+		private int _indexToLocFormat;
+		private int _kern;
+		private int _loca;
+		private int _numGlyphs;
+		private Buffer _subrs;
+		private int _svg;
+		private bool _useOldRasterizer;
+
+		public byte[] Data => _data;
 
 		public static uint stbtt__find_table(FakePtr<byte> data, uint fontstart, string tag)
 		{
@@ -62,7 +64,7 @@ namespace StbTrueTypeNext
 
 		internal static Buffer stbtt__cid_get_glyph_subrs(stbtt_fontinfo info, int glyph_index)
 		{
-			var fdselect = info.fdselect;
+			var fdselect = info._fdselect;
 			var nranges = 0;
 			var start = 0;
 			var end = 0;
@@ -97,7 +99,7 @@ namespace StbTrueTypeNext
 
 			if (fdselector == -1)
 				return Buffer.Null;
-			return Buffer.stbtt__get_subrs(info.cff, Buffer.stbtt__cff_index_get(info.fontdicts, fdselector));
+			return Buffer.stbtt__get_subrs(info._cff, Buffer.stbtt__cff_index_get(info._fontdicts, fdselector));
 		}
 
 		public static int stbtt__close_shape(STTVertex[] vertices, int num_vertices, int was_off, int start_off,
@@ -124,22 +126,22 @@ namespace StbTrueTypeNext
 		{
 			uint t = 0;
 
-			var dataPtr = new FakePtr<byte>(info.data);
-			if (info.svg < 0)
+			var dataPtr = new FakePtr<byte>(info._data);
+			if (info._svg < 0)
 			{
-				t = stbtt__find_table(dataPtr, (uint)info.fontstart, "SVG ");
+				t = stbtt__find_table(dataPtr, (uint)info._fontstart, "SVG ");
 				if (t != 0)
 				{
 					var offset = ttULONG(dataPtr + t + 2);
-					info.svg = (int)(t + offset);
+					info._svg = (int)(t + offset);
 				}
 				else
 				{
-					info.svg = 0;
+					info._svg = 0;
 				}
 			}
 
-			return info.svg;
+			return info._svg;
 		}
 
 		public static int stbtt__GetCoverageIndex(FakePtr<byte> coverageTable, int glyph)
@@ -218,21 +220,21 @@ namespace StbTrueTypeNext
 		{
 			var g1 = 0;
 			var g2 = 0;
-			if (glyph_index >= info.numGlyphs)
+			if (glyph_index >= info._numGlyphs)
 				return -1;
-			if (info.indexToLocFormat >= 2)
+			if (info._indexToLocFormat >= 2)
 				return -1;
 
-			var dataPtr = new FakePtr<byte>(info.data);
-			if (info.indexToLocFormat == 0)
+			var dataPtr = new FakePtr<byte>(info._data);
+			if (info._indexToLocFormat == 0)
 			{
-				g1 = info.glyf + ttUSHORT(dataPtr + info.loca + glyph_index * 2) * 2;
-				g2 = info.glyf + ttUSHORT(dataPtr + info.loca + glyph_index * 2 + 2) * 2;
+				g1 = info._glyf + ttUSHORT(dataPtr + info._loca + glyph_index * 2) * 2;
+				g2 = info._glyf + ttUSHORT(dataPtr + info._loca + glyph_index * 2 + 2) * 2;
 			}
 			else
 			{
-				g1 = (int)(info.glyf + ttULONG(dataPtr + info.loca + glyph_index * 4));
-				g2 = (int)(info.glyf + ttULONG(dataPtr + info.loca + glyph_index * 4 + 4));
+				g1 = (int)(info._glyf + ttULONG(dataPtr + info._loca + glyph_index * 4));
+				g2 = (int)(info._glyf + ttULONG(dataPtr + info._loca + glyph_index * 4 + 4));
 			}
 
 			return g1 == g2 ? -1 : g1;
@@ -293,10 +295,10 @@ namespace StbTrueTypeNext
 			ushort lookupCount = 0;
 			var i = 0;
 			var sti = 0;
-			if (info.gpos == 0)
+			if (info._gpos == 0)
 				return 0;
 
-			var data = new FakePtr<byte>(info.data, info.gpos);
+			var data = new FakePtr<byte>(info._data, info._gpos);
 			if (ttUSHORT(data + 0) != 1)
 				return 0;
 			if (ttUSHORT(data + 2) != 0)
@@ -429,13 +431,13 @@ namespace StbTrueTypeNext
 
 		public static int stbtt__GetGlyphKernInfoAdvance(stbtt_fontinfo info, int glyph1, int glyph2)
 		{
-			var data = new FakePtr<byte>(info.data, info.kern);
+			var data = new FakePtr<byte>(info._data, info._kern);
 			uint needle = 0;
 			uint straw = 0;
 			var l = 0;
 			var r = 0;
 			var m = 0;
-			if (info.kern == 0)
+			if (info._kern == 0)
 				return 0;
 			if (ttUSHORT(data + 2) < 1)
 				return 0;
@@ -484,7 +486,7 @@ namespace StbTrueTypeNext
 		public static int stbtt__GetGlyphShapeTT(stbtt_fontinfo info, int glyph_index, out STTVertex[] pvertices)
 		{
 			short numberOfContours = 0;
-			var data = new FakePtr<byte>(info.data);
+			var data = new FakePtr<byte>(info._data);
 			var num_vertices = 0;
 			var g = stbtt__GetGlyfOffset(info, glyph_index);
 			pvertices = null;
@@ -770,10 +772,10 @@ namespace StbTrueTypeNext
 			var clear_stack = 0;
 			var s = new float[48];
 			var subr_stack = new Buffer[10];
-			var subrs = info.subrs;
+			var subrs = info._subrs;
 			var b = new Buffer();
 			float f = 0;
-			b = Buffer.stbtt__cff_index_get(info.charstrings, glyph_index);
+			b = Buffer.stbtt__cff_index_get(info._charstrings, glyph_index);
 			while (b.cursor < b.size)
 			{
 				i = 0;
@@ -917,7 +919,7 @@ namespace StbTrueTypeNext
 					case 0x1D:
 						if (b0 == 0x0A && has_subrs == 0)
 						{
-							if (info.fdselect.size != 0)
+							if (info._fdselect.size != 0)
 								subrs = stbtt__cid_get_glyph_subrs(info, glyph_index);
 							has_subrs = 1;
 						}
@@ -928,7 +930,7 @@ namespace StbTrueTypeNext
 						if (subr_stack_height >= 10)
 							return 0;
 						subr_stack[subr_stack_height++] = b;
-						b = Buffer.stbtt__get_subr(b0 == 0x0A ? subrs : info.gsubrs, v);
+						b = Buffer.stbtt__get_subr(b0 == 0x0A ? subrs : info._gsubrs, v);
 						if (b.size == 0)
 							return 0;
 						b.cursor = 0;
@@ -1066,8 +1068,8 @@ namespace StbTrueTypeNext
 
 		public static int stbtt_FindGlyphIndex(stbtt_fontinfo info, int unicode_codepoint)
 		{
-			var data = new FakePtr<byte>(info.data);
-			var index_map = (uint)info.index_map;
+			var data = new FakePtr<byte>(info._data);
+			var index_map = (uint)info._indexMap;
 			var format = ttUSHORT(data + index_map + 0);
 			if (format == 0)
 			{
@@ -1168,7 +1170,7 @@ namespace StbTrueTypeNext
 		public static FakePtr<byte> stbtt_FindSVGDoc(stbtt_fontinfo info, int gl)
 		{
 			var i = 0;
-			var data = new FakePtr<byte>(info.data);
+			var data = new FakePtr<byte>(info._data);
 			var svg_doc_list = data + stbtt__get_svg(info);
 			int numEntries = ttUSHORT(svg_doc_list);
 			var svg_docs = svg_doc_list + 2;
@@ -1222,7 +1224,7 @@ namespace StbTrueTypeNext
 
 		public static int stbtt_GetCodepointKernAdvance(stbtt_fontinfo info, int ch1, int ch2)
 		{
-			if (info.kern == 0 && info.gpos == 0)
+			if (info._kern == 0 && info._gpos == 0)
 				return 0;
 			return stbtt_GetGlyphKernAdvance(info, stbtt_FindGlyphIndex(info, ch1), stbtt_FindGlyphIndex(info, ch2));
 		}
@@ -1246,11 +1248,11 @@ namespace StbTrueTypeNext
 
 		public static void stbtt_GetFontBoundingBox(stbtt_fontinfo info, out int x0, out int y0, out int x1, out int y1)
 		{
-			var dataPtr = new FakePtr<byte>(info.data);
-			x0 = ttSHORT(dataPtr + info.head + 36);
-			y0 = ttSHORT(dataPtr + info.head + 38);
-			x1 = ttSHORT(dataPtr + info.head + 40);
-			y1 = ttSHORT(dataPtr + info.head + 42);
+			var dataPtr = new FakePtr<byte>(info._data);
+			x0 = ttSHORT(dataPtr + info._head + 36);
+			y0 = ttSHORT(dataPtr + info._head + 38);
+			x1 = ttSHORT(dataPtr + info._head + 40);
+			y1 = ttSHORT(dataPtr + info._head + 42);
 		}
 
 		public static string stbtt_GetFontNameString(stbtt_fontinfo font, int platformID, int encodingID, int languageID, int nameID)
@@ -1258,8 +1260,8 @@ namespace StbTrueTypeNext
 			var i = 0;
 			var count = 0;
 			var stringOffset = 0;
-			var fc = new FakePtr<byte>(font.data);
-			var offset = (uint)font.fontstart;
+			var fc = new FakePtr<byte>(font._data);
+			var offset = (uint)font._fontstart;
 			var nm = stbtt__find_table(fc, offset, "name");
 			if (nm == 0)
 			{
@@ -1292,18 +1294,18 @@ namespace StbTrueTypeNext
 
 		public static void stbtt_GetFontVMetrics(stbtt_fontinfo info, out int ascent, out int descent, out int lineGap)
 		{
-			var dataPtr = new FakePtr<byte>(info.data);
+			var dataPtr = new FakePtr<byte>(info._data);
 
-			ascent = ttSHORT(dataPtr + info.hhea + 4);
-			descent = ttSHORT(dataPtr + info.hhea + 6);
-			lineGap = ttSHORT(dataPtr + info.hhea + 8);
+			ascent = ttSHORT(dataPtr + info._hhea + 4);
+			descent = ttSHORT(dataPtr + info._hhea + 6);
+			lineGap = ttSHORT(dataPtr + info._hhea + 8);
 		}
 
 		public static int stbtt_GetFontVMetricsOS2(stbtt_fontinfo info, out int typoAscent, out int typoDescent, out int typoLineGap)
 		{
 			typoAscent = typoDescent = typoLineGap = 0;
-			var dataPtr = new FakePtr<byte>(info.data);
-			var tab = (int)stbtt__find_table(dataPtr, (uint)info.fontstart, "OS/2");
+			var dataPtr = new FakePtr<byte>(info._data);
+			var tab = (int)stbtt__find_table(dataPtr, (uint)info._fontstart, "OS/2");
 			if (tab == 0)
 				return 0;
 
@@ -1385,7 +1387,7 @@ namespace StbTrueTypeNext
 			}
 
 			var gbm = new Bitmap(width, height);
-			gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.useOldRasterizer);
+			gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info._useOldRasterizer);
 
 			return gbm.Pixels.Data;
 		}
@@ -1393,7 +1395,7 @@ namespace StbTrueTypeNext
 		public static int stbtt_GetGlyphBox(stbtt_fontinfo info, int glyph_index, out int x0, out int y0, out int x1, out int y1)
 		{
 			x0 = y0 = x1 = y1 = 0;
-			if (info.cff.size != 0)
+			if (info._cff.size != 0)
 			{
 				stbtt__GetGlyphInfoT2(info, glyph_index, out x0, out y0, out x1, out y1);
 			}
@@ -1403,7 +1405,7 @@ namespace StbTrueTypeNext
 				if (g < 0)
 					return 0;
 
-				var dataPtr = new FakePtr<byte>(info.data);
+				var dataPtr = new FakePtr<byte>(info._data);
 				x0 = ttSHORT(dataPtr + g + 2);
 				y0 = ttSHORT(dataPtr + g + 4);
 				x1 = ttSHORT(dataPtr + g + 6);
@@ -1416,26 +1418,26 @@ namespace StbTrueTypeNext
 		public static void stbtt_GetGlyphHMetrics(stbtt_fontinfo info, int glyph_index, out int advanceWidth,
 			out int leftSideBearing)
 		{
-			var dataPtr = new FakePtr<byte>(info.data);
-			var numOfLongHorMetrics = ttUSHORT(dataPtr + info.hhea + 34);
+			var dataPtr = new FakePtr<byte>(info._data);
+			var numOfLongHorMetrics = ttUSHORT(dataPtr + info._hhea + 34);
 			if (glyph_index < numOfLongHorMetrics)
 			{
-				advanceWidth = ttSHORT(dataPtr + info.hmtx + 4 * glyph_index);
-				leftSideBearing = ttSHORT(dataPtr + info.hmtx + 4 * glyph_index + 2);
+				advanceWidth = ttSHORT(dataPtr + info._hmtx + 4 * glyph_index);
+				leftSideBearing = ttSHORT(dataPtr + info._hmtx + 4 * glyph_index + 2);
 			}
 			else
 			{
-				advanceWidth = ttSHORT(dataPtr + info.hmtx + 4 * (numOfLongHorMetrics - 1));
-				leftSideBearing = ttSHORT(dataPtr + info.hmtx + 4 * numOfLongHorMetrics + 2 * (glyph_index - numOfLongHorMetrics));
+				advanceWidth = ttSHORT(dataPtr + info._hmtx + 4 * (numOfLongHorMetrics - 1));
+				leftSideBearing = ttSHORT(dataPtr + info._hmtx + 4 * numOfLongHorMetrics + 2 * (glyph_index - numOfLongHorMetrics));
 			}
 		}
 
 		public static int stbtt_GetGlyphKernAdvance(stbtt_fontinfo info, int g1, int g2)
 		{
 			var xAdvance = 0;
-			if (info.gpos != 0)
+			if (info._gpos != 0)
 				xAdvance += stbtt__GetGlyphGPOSInfoAdvance(info, g1, g2);
-			else if (info.kern != 0)
+			else if (info._kern != 0)
 				xAdvance += stbtt__GetGlyphKernInfoAdvance(info, g1, g2);
 			return xAdvance;
 		}
@@ -1665,7 +1667,7 @@ namespace StbTrueTypeNext
 
 		public static int stbtt_GetGlyphShape(stbtt_fontinfo info, int glyph_index, out STTVertex[] pvertices)
 		{
-			if (info.cff.size == 0)
+			if (info._cff.size == 0)
 			{
 				return stbtt__GetGlyphShapeTT(info, glyph_index, out pvertices);
 			}
@@ -1675,13 +1677,13 @@ namespace StbTrueTypeNext
 
 		public static int stbtt_GetGlyphSVG(stbtt_fontinfo info, int gl, ref FakePtr<byte> svg)
 		{
-			var data = new FakePtr<byte>(info.data);
-			if (info.svg == 0)
+			var data = new FakePtr<byte>(info._data);
+			if (info._svg == 0)
 				return 0;
 			var svg_doc = stbtt_FindSVGDoc(info, gl);
 			if (!svg_doc.IsNull)
 			{
-				svg = data + info.svg + ttULONG(svg_doc + 4);
+				svg = data + info._svg + ttULONG(svg_doc + 4);
 				return (int)ttULONG(svg_doc + 8);
 			}
 
@@ -1690,10 +1692,10 @@ namespace StbTrueTypeNext
 
 		public static stbtt_kerningentry[] stbtt_GetKerningTable(stbtt_fontinfo info)
 		{
-			var data = new FakePtr<byte>(info.data, info.kern);
+			var data = new FakePtr<byte>(info._data, info._kern);
 			var k = 0;
 			var length = 0;
-			if (info.kern == 0)
+			if (info._kern == 0)
 				return null;
 			if (ttUSHORT(data + 2) < 1)
 				return null;
@@ -1723,24 +1725,24 @@ namespace StbTrueTypeNext
 			uint t = 0;
 			var i = 0;
 			var numTables = 0;
-			info.data = data;
-			info.fontstart = fontstart;
-			info.cff = Buffer.Null;
+			info._data = data;
+			info._fontstart = fontstart;
+			info._cff = Buffer.Null;
 
 			var dataPtr = new FakePtr<byte>(data);
 			cmap = stbtt__find_table(dataPtr, (uint)fontstart, "cmap");
-			info.loca = (int)stbtt__find_table(dataPtr, (uint)fontstart, "loca");
-			info.head = (int)stbtt__find_table(dataPtr, (uint)fontstart, "head");
-			info.glyf = (int)stbtt__find_table(dataPtr, (uint)fontstart, "glyf");
-			info.hhea = (int)stbtt__find_table(dataPtr, (uint)fontstart, "hhea");
-			info.hmtx = (int)stbtt__find_table(dataPtr, (uint)fontstart, "hmtx");
-			info.kern = (int)stbtt__find_table(dataPtr, (uint)fontstart, "kern");
-			info.gpos = (int)stbtt__find_table(dataPtr, (uint)fontstart, "GPOS");
-			if (cmap == 0 || info.head == 0 || info.hhea == 0 || info.hmtx == 0)
+			info._loca = (int)stbtt__find_table(dataPtr, (uint)fontstart, "loca");
+			info._head = (int)stbtt__find_table(dataPtr, (uint)fontstart, "head");
+			info._glyf = (int)stbtt__find_table(dataPtr, (uint)fontstart, "glyf");
+			info._hhea = (int)stbtt__find_table(dataPtr, (uint)fontstart, "hhea");
+			info._hmtx = (int)stbtt__find_table(dataPtr, (uint)fontstart, "hmtx");
+			info._kern = (int)stbtt__find_table(dataPtr, (uint)fontstart, "kern");
+			info._gpos = (int)stbtt__find_table(dataPtr, (uint)fontstart, "GPOS");
+			if (cmap == 0 || info._head == 0 || info._hhea == 0 || info._hmtx == 0)
 				return 0;
-			if (info.glyf != 0)
+			if (info._glyf != 0)
 			{
-				if (info.loca == 0)
+				if (info._loca == 0)
 					return 0;
 			}
 			else
@@ -1752,17 +1754,17 @@ namespace StbTrueTypeNext
 				cff = stbtt__find_table(dataPtr, (uint)fontstart, "CFF ");
 				if (cff == 0)
 					return 0;
-				info.fontdicts = Buffer.Null;
-				info.fdselect = Buffer.Null;
-				info.cff = new Buffer(dataPtr + cff, 512 * 1024 * 1024);
-				b = info.cff;
+				info._fontdicts = Buffer.Null;
+				info._fdselect = Buffer.Null;
+				info._cff = new Buffer(dataPtr + cff, 512 * 1024 * 1024);
+				b = info._cff;
 				b.stbtt__buf_skip(2);
 				b.stbtt__buf_seek(b.stbtt__buf_get8());
 				b.stbtt__cff_get_index();
 				topdictidx = b.stbtt__cff_get_index();
 				topdict = Buffer.stbtt__cff_index_get(topdictidx, 0);
 				b.stbtt__cff_get_index();
-				info.gsubrs = b.stbtt__cff_get_index();
+				info._gsubrs = b.stbtt__cff_get_index();
 
 				uint cstype = 2;
 				uint charstrings = 0;
@@ -1773,7 +1775,7 @@ namespace StbTrueTypeNext
 				topdict.stbtt__dict_get_ints(0x100 | 36, ref fdarrayoff);
 				topdict.stbtt__dict_get_ints(0x100 | 37, ref fdselectoff);
 
-				info.subrs = Buffer.stbtt__get_subrs(b, topdict);
+				info._subrs = Buffer.stbtt__get_subrs(b, topdict);
 				if (cstype != 2)
 					return 0;
 				if (charstrings == 0)
@@ -1783,22 +1785,22 @@ namespace StbTrueTypeNext
 					if (fdselectoff == 0)
 						return 0;
 					b.stbtt__buf_seek((int)fdarrayoff);
-					info.fontdicts = b.stbtt__cff_get_index();
-					info.fdselect = b.stbtt__buf_range((int)fdselectoff, (int)(b.size - fdselectoff));
+					info._fontdicts = b.stbtt__cff_get_index();
+					info._fdselect = b.stbtt__buf_range((int)fdselectoff, (int)(b.size - fdselectoff));
 				}
 
 				b.stbtt__buf_seek((int)charstrings);
-				info.charstrings = b.stbtt__cff_get_index();
+				info._charstrings = b.stbtt__cff_get_index();
 			}
 
 			t = stbtt__find_table(dataPtr, (uint)fontstart, "maxp");
 			if (t != 0)
-				info.numGlyphs = ttUSHORT(dataPtr + t + 4);
+				info._numGlyphs = ttUSHORT(dataPtr + t + 4);
 			else
-				info.numGlyphs = 0xffff;
-			info.svg = -1;
+				info._numGlyphs = 0xffff;
+			info._svg = -1;
 			numTables = ttUSHORT(dataPtr + cmap + 2);
-			info.index_map = 0;
+			info._indexMap = 0;
 			for (i = 0; i < numTables; ++i)
 			{
 				var encoding_record = (uint)(cmap + 4 + 8 * i);
@@ -1809,20 +1811,20 @@ namespace StbTrueTypeNext
 						{
 							case STBTT_MS_EID_UNICODE_BMP:
 							case STBTT_MS_EID_UNICODE_FULL:
-								info.index_map = (int)(cmap + ttULONG(dataPtr + encoding_record + 4));
+								info._indexMap = (int)(cmap + ttULONG(dataPtr + encoding_record + 4));
 								break;
 						}
 
 						break;
 					case STBTT_PLATFORM_ID_UNICODE:
-						info.index_map = (int)(cmap + ttULONG(dataPtr + encoding_record + 4));
+						info._indexMap = (int)(cmap + ttULONG(dataPtr + encoding_record + 4));
 						break;
 				}
 			}
 
-			if (info.index_map == 0)
+			if (info._indexMap == 0)
 				throw new Exception("The font does not have a table mapping from unicode codepoints to font indices.");
-			info.indexToLocFormat = ttUSHORT(dataPtr + info.head + 50);
+			info._indexToLocFormat = ttUSHORT(dataPtr + info._head + 50);
 			return 1;
 		}
 
@@ -1830,7 +1832,7 @@ namespace StbTrueTypeNext
 		{
 			short numberOfContours = 0;
 			var g = 0;
-			if (info.cff.size != 0)
+			if (info._cff.size != 0)
 			{
 				int x0, y0, x1, y1;
 				return stbtt__GetGlyphInfoT2(info, glyph_index, out x0, out y0, out x1, out y1) == 0 ? 1 : 0;
@@ -1838,7 +1840,7 @@ namespace StbTrueTypeNext
 			g = stbtt__GetGlyfOffset(info, glyph_index);
 			if (g < 0)
 				return 1;
-			numberOfContours = ttSHORT(new FakePtr<byte>(info.data, g));
+			numberOfContours = ttSHORT(new FakePtr<byte>(info._data, g));
 			return numberOfContours == 0 ? 1 : 0;
 		}
 
@@ -1896,7 +1898,7 @@ namespace StbTrueTypeNext
 			if (out_w != 0 && out_h != 0)
 			{
 				var gbm = new Bitmap(out_w, out_h, out_stride, output);
-				gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.useOldRasterizer);
+				gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info._useOldRasterizer);
 			}
 		}
 
@@ -1916,15 +1918,15 @@ namespace StbTrueTypeNext
 
 		public static float stbtt_ScaleForMappingEmToPixels(stbtt_fontinfo info, float pixels)
 		{
-			var dataPtr = new FakePtr<byte>(info.data);
-			int unitsPerEm = ttUSHORT(dataPtr + info.head + 18);
+			var dataPtr = new FakePtr<byte>(info._data);
+			int unitsPerEm = ttUSHORT(dataPtr + info._head + 18);
 			return pixels / unitsPerEm;
 		}
 
 		public static float stbtt_ScaleForPixelHeight(stbtt_fontinfo info, float height)
 		{
-			var dataPtr = new FakePtr<byte>(info.data);
-			var fheight = ttSHORT(dataPtr + info.hhea + 4) - ttSHORT(dataPtr + info.hhea + 6);
+			var dataPtr = new FakePtr<byte>(info._data);
+			var fheight = ttSHORT(dataPtr + info._hhea + 4) - ttSHORT(dataPtr + info._hhea + 6);
 			return height / fheight;
 		}
 
