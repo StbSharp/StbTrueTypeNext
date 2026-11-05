@@ -1817,11 +1817,11 @@ namespace StbTrueTypeNext
 		public void stbtt_MakeCodepointBitmapSubpixel(byte[] output, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int codepoint)
 		{
-			stbtt_MakeGlyphBitmapSubpixel(this, new FakePtr<byte>(output), out_w, out_h, out_stride, 
+			stbtt_MakeGlyphBitmapSubpixel(this, new FakePtr<byte>(output), out_w, out_h, out_stride,
 				scale_x, scale_y, shift_x, shift_y, stbtt_FindGlyphIndex(codepoint));
 		}
 
-		public  void stbtt_MakeCodepointBitmapSubpixelPrefilter(byte[] output, int out_w,
+		public void stbtt_MakeCodepointBitmapSubpixelPrefilter(byte[] output, int out_w,
 			int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int oversample_x,
 			int oversample_y, out float sub_x, out float sub_y, int codepoint)
 		{
@@ -1841,10 +1841,10 @@ namespace StbTrueTypeNext
 			stbtt_MakeGlyphBitmapSubpixel(this, output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, glyph);
 		}
 
-		public static void stbtt_MakeGlyphBitmapSubpixel(stbtt_fontinfo info, byte[] output, int out_w, int out_h,
+		public void stbtt_MakeGlyphBitmapSubpixel(byte[] output, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int glyph)
 		{
-			stbtt_MakeGlyphBitmapSubpixel(info, new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, glyph);
+			stbtt_MakeGlyphBitmapSubpixel(this, new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, glyph);
 		}
 
 		public static void stbtt_MakeGlyphBitmapSubpixel(stbtt_fontinfo info, FakePtr<byte> output, int out_w, int out_h,
@@ -1869,7 +1869,7 @@ namespace StbTrueTypeNext
 			int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int prefilter_x,
 			int prefilter_y, out float sub_x, out float sub_y, int glyph)
 		{
-			stbtt_MakeGlyphBitmapSubpixel(info, output, out_w - (prefilter_x - 1), out_h - (prefilter_y - 1),
+			info.stbtt_MakeGlyphBitmapSubpixel(output, out_w - (prefilter_x - 1), out_h - (prefilter_y - 1),
 				out_stride, scale_x, scale_y, shift_x, shift_y, glyph);
 			if (prefilter_x > 1)
 				stbtt__h_prefilter(output, out_w, out_h, out_stride, (uint)prefilter_x);
