@@ -99,7 +99,7 @@ namespace StbTrueTypeNext.Packing
 			for (i = 0; i < num_ranges; ++i)
 			{
 				var fh = ranges[i].font_size;
-				var scale = fh > 0 ? stbtt_ScaleForPixelHeight(info, fh) : stbtt_ScaleForMappingEmToPixels(info, -fh);
+				var scale = fh > 0 ? stbtt_ScaleForPixelHeight(info, fh) : info.stbtt_ScaleForMappingEmToPixels(-fh);
 				ranges[i].h_oversample = (byte)_h_oversample;
 				ranges[i].v_oversample = (byte)_v_oversample;
 				for (j = 0; j < ranges[i].num_chars; ++j)
@@ -152,7 +152,7 @@ namespace StbTrueTypeNext.Packing
 			for (i = 0; i < num_ranges; ++i)
 			{
 				var fh = ranges[i].font_size;
-				var scale = fh > 0 ? stbtt_ScaleForPixelHeight(info, fh) : stbtt_ScaleForMappingEmToPixels(info, -fh);
+				var scale = fh > 0 ? stbtt_ScaleForPixelHeight(info, fh) : info.stbtt_ScaleForMappingEmToPixels(-fh);
 				float recip_h = 0;
 				float recip_v = 0;
 				float sub_x = 0;

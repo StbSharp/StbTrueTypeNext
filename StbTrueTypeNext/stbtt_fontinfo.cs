@@ -1879,10 +1879,10 @@ namespace StbTrueTypeNext
 			sub_y = stbtt__oversample_shift(prefilter_y);
 		}
 
-		public static float stbtt_ScaleForMappingEmToPixels(stbtt_fontinfo info, float pixels)
+		public float stbtt_ScaleForMappingEmToPixels(float pixels)
 		{
-			var dataPtr = new FakePtr<byte>(info._data);
-			int unitsPerEm = ttUSHORT(dataPtr + info._head + 18);
+			var dataPtr = new FakePtr<byte>(_data);
+			int unitsPerEm = ttUSHORT(dataPtr + _head + 18);
 			return pixels / unitsPerEm;
 		}
 
