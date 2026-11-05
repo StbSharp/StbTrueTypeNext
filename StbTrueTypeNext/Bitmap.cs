@@ -211,5 +211,81 @@ namespace StbTrueTypeNext
 				stbtt__rasterize(windings, winding_lengths, scale_x, scale_y, shift_x, shift_y, x_off, y_off, invert, rasterizerVersion);
 			}
 		}
+
+		private static void stbtt__add_point(Vector2[] points, int n, float x, float y)
+		{
+			if (points == null)
+				return;
+			points[n].x = x;
+			points[n].y = y;
+		}
+
+		private static void stbtt__tesselate_cubic(Vector2[] points, ref int num_points, float x0, float y0, float x1,
+			float y1, float x2, float y2, float x3, float y3, float objspace_flatness_squared, int n)
+		{
+			var dx0 = x1 - x0;
+			var dy0 = y1 - y0;
+			var dx1 = x2 - x1;
+			var dy1 = y2 - y1;
+			var dx2 = x3 - x2;
+			var dy2 = y3 - y2;
+			var dx = x3 - x0;
+			var dy = y3 - y0;
+			var longlen = (float)(Math.Sqrt(dx0 * dx0 + dy0 * dy0) + Math.Sqrt(dx1 * dx1 + dy1 * dy1) +
+								   Math.Sqrt(dx2 * dx2 + dy2 * dy2));
+			var shortlen = (float)Math.Sqrt(dx * dx + dy * dy);
+			var flatness_squared = longlen * longlen - shortlen * shortlen;
+			if (n > 16)
+				return;
+			if (flatness_squared > objspace_flatness_squared)
+			{
+				var x01 = (x0 + x1) / 2;
+				var y01 = (y0 + y1) / 2;
+				var x12 = (x1 + x2) / 2;
+				var y12 = (y1 + y2) / 2;
+				var x23 = (x2 + x3) / 2;
+				var y23 = (y2 + y3) / 2;
+				var xa = (x01 + x12) / 2;
+				var ya = (y01 + y12) / 2;
+				var xb = (x12 + x23) / 2;
+				var yb = (y12 + y23) / 2;
+				var mx = (xa + xb) / 2;
+				var my = (ya + yb) / 2;
+				stbtt__tesselate_cubic(points, ref num_points, x0, y0, x01, y01, xa, ya, mx, my, objspace_flatness_squared,
+					n + 1);
+				stbtt__tesselate_cubic(points, ref num_points, mx, my, xb, yb, x23, y23, x3, y3, objspace_flatness_squared,
+					n + 1);
+			}
+			else
+			{
+				stbtt__add_point(points, num_points, x3, y3);
+				++num_points;
+			}
+		}
+
+		private static int stbtt__tesselate_curve(Vector2[] points, ref int num_points, float x0, float y0, float x1,
+			float y1, float x2, float y2, float objspace_flatness_squared, int n)
+		{
+			var mx = (x0 + 2 * x1 + x2) / 4;
+			var my = (y0 + 2 * y1 + y2) / 4;
+			var dx = (x0 + x2) / 2 - mx;
+			var dy = (y0 + y2) / 2 - my;
+			if (n > 16)
+				return 1;
+			if (dx * dx + dy * dy > objspace_flatness_squared)
+			{
+				stbtt__tesselate_curve(points, ref num_points, x0, y0, (x0 + x1) / 2.0f, (y0 + y1) / 2.0f, mx, my,
+					objspace_flatness_squared, n + 1);
+				stbtt__tesselate_curve(points, ref num_points, mx, my, (x1 + x2) / 2.0f, (y1 + y2) / 2.0f, x2, y2,
+					objspace_flatness_squared, n + 1);
+			}
+			else
+			{
+				stbtt__add_point(points, num_points, x2, y2);
+				++num_points;
+			}
+
+			return 1;
+		}
 	}
 }
