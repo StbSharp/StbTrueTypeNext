@@ -93,6 +93,11 @@ namespace StbTrueTypeNext
 			return num_vertices;
 		}
 
+		private static int stbtt_CompareUTF8toUTF16_bigendian_internal(FakePtr<byte> s1, int len1, FakePtr<byte> s2, int len2)
+		{
+			return len1 == stbtt__CompareUTF8toUTF16_bigendian_prefix(s1, len1, s2, len2) ? 1 : 0;
+		}
+
 		private static int stbtt__CompareUTF8toUTF16_bigendian_prefix(FakePtr<byte> s1, int len1, FakePtr<byte> s2, int len2)
 		{
 			var i = 0;
@@ -440,11 +445,6 @@ namespace StbTrueTypeNext
 				r[2] = s - u * (m - n);
 				return 3;
 			}
-		}
-
-		public static int stbtt_CompareUTF8toUTF16_bigendian_internal(FakePtr<byte> s1, int len1, FakePtr<byte> s2, int len2)
-		{
-			return len1 == stbtt__CompareUTF8toUTF16_bigendian_prefix(s1, len1, s2, len2) ? 1 : 0;
 		}
 
 		public static int stbtt_FindMatchingFont(byte[] fontdata, byte[] name, int flags)
