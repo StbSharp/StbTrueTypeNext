@@ -22,7 +22,6 @@ namespace StbTrueTypeNext
 			public int hmtx;
 			public int index_map;
 			public int indexToLocFormat;
-			public bool isDataCopy;
 			public int kern;
 			public int loca;
 			public int numGlyphs;
@@ -48,22 +47,15 @@ namespace StbTrueTypeNext
 		}
 
 		/// <summary>
-		///     Creates and initializes a font from ttf/otf/ttc data
+		/// Creates and initializes a font from ttf/otf/ttc data
 		/// </summary>
 		/// <param name="data"></param>
 		/// <param name="offset"></param>
 		/// <returns>null if the data was invalid</returns>
 		public static stbtt_fontinfo CreateFont(byte[] data, int offset)
 		{
-			var dataCopy = new byte[data.Length];
-			Array.Copy(data, dataCopy, data.Length);
-
-			var info = new stbtt_fontinfo
-			{
-				isDataCopy = true
-			};
-
-			if (stbtt_InitFont_internal(info, dataCopy, offset) == 0)
+			var info = new stbtt_fontinfo();
+			if (stbtt_InitFont_internal(info, data, offset) == 0)
 			{
 				return null;
 			}

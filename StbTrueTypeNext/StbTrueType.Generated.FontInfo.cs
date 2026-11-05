@@ -43,7 +43,7 @@ namespace StbTrueTypeNext
 
 			if (fdselector == -1)
 				return stbtt__buf.Null;
-			return stbtt__get_subrs(info.cff, stbtt__cff_index_get(info.fontdicts, fdselector));
+			return stbtt__buf.stbtt__get_subrs(info.cff, stbtt__buf.stbtt__cff_index_get(info.fontdicts, fdselector));
 		}
 
 		public static int stbtt__close_shape(stbtt_vertex[] vertices, int num_vertices, int was_off, int start_off,
@@ -719,7 +719,7 @@ namespace StbTrueTypeNext
 			var subrs = info.subrs;
 			var b = new stbtt__buf();
 			float f = 0;
-			b = stbtt__cff_index_get(info.charstrings, glyph_index);
+			b = stbtt__buf.stbtt__cff_index_get(info.charstrings, glyph_index);
 			while (b.cursor < b.size)
 			{
 				i = 0;
@@ -874,7 +874,7 @@ namespace StbTrueTypeNext
 						if (subr_stack_height >= 10)
 							return 0;
 						subr_stack[subr_stack_height++] = b;
-						b = stbtt__get_subr(b0 == 0x0A ? subrs : info.gsubrs, v);
+						b = stbtt__buf.stbtt__get_subr(b0 == 0x0A ? subrs : info.gsubrs, v);
 						if (b.size == 0)
 							return 0;
 						b.cursor = 0;
@@ -1708,7 +1708,7 @@ namespace StbTrueTypeNext
 				b.stbtt__buf_seek(b.stbtt__buf_get8());
 				b.stbtt__cff_get_index();
 				topdictidx = b.stbtt__cff_get_index();
-				topdict = stbtt__cff_index_get(topdictidx, 0);
+				topdict = stbtt__buf.stbtt__cff_index_get(topdictidx, 0);
 				b.stbtt__cff_get_index();
 				info.gsubrs = b.stbtt__cff_get_index();
 
@@ -1721,7 +1721,7 @@ namespace StbTrueTypeNext
 				topdict.stbtt__dict_get_ints(0x100 | 36, ref fdarrayoff);
 				topdict.stbtt__dict_get_ints(0x100 | 37, ref fdselectoff);
 
-				info.subrs = stbtt__get_subrs(b, topdict);
+				info.subrs = stbtt__buf.stbtt__get_subrs(b, topdict);
 				if (cstype != 2)
 					return 0;
 				if (charstrings == 0)

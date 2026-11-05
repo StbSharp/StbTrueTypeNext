@@ -4,52 +4,6 @@ namespace StbTrueTypeNext
 {
 	partial class StbTrueType
 	{
-		public static stbtt__buf stbtt__cff_index_get(stbtt__buf b, int i)
-		{
-			var count = 0;
-			var offsize = 0;
-			var start = 0;
-			var end = 0;
-			b.stbtt__buf_seek(0);
-			count = (int)b.stbtt__buf_get(2);
-			offsize = b.stbtt__buf_get8();
-			b.stbtt__buf_skip(i * offsize);
-			start = (int)b.stbtt__buf_get(offsize);
-			end = (int)b.stbtt__buf_get(offsize);
-			return b.stbtt__buf_range(2 + (count + 1) * offsize + start, end - start);
-		}
-
-		public static stbtt__buf stbtt__get_subr(stbtt__buf idx, int n)
-		{
-			var count = idx.stbtt__cff_index_count();
-			var bias = 107;
-			if (count >= 33900)
-				bias = 32768;
-			else if (count >= 1240)
-				bias = 1131;
-			n += bias;
-			if (n < 0 || n >= count)
-				return stbtt__buf.Null;
-			return stbtt__cff_index_get(idx, n);
-		}
-
-		public static stbtt__buf stbtt__get_subrs(stbtt__buf cff, stbtt__buf fontdict)
-		{
-			var private_loc = new uint[] { 0, 0 };
-			fontdict.stbtt__dict_get_ints(18, 2, private_loc);
-			if (private_loc[1] == 0 || private_loc[0] == 0)
-				return stbtt__buf.Null;
-			var pdict = cff.stbtt__buf_range((int)private_loc[1], (int)private_loc[0]);
-			uint subrsoff = 0;
-			if (!pdict.stbtt__dict_get_ints(19, ref subrsoff))
-			{
-				return stbtt__buf.Null;
-			}
-
-			cff.stbtt__buf_seek((int)(private_loc[1] + subrsoff));
-			return cff.stbtt__cff_get_index();
-		}
-
 		[StructLayout(LayoutKind.Sequential)]
 		public struct stbtt__buf
 		{
@@ -209,6 +163,52 @@ namespace StbTrueTypeNext
 				}
 
 				return false;
+			}
+
+			public static stbtt__buf stbtt__cff_index_get(stbtt__buf b, int i)
+			{
+				var count = 0;
+				var offsize = 0;
+				var start = 0;
+				var end = 0;
+				b.stbtt__buf_seek(0);
+				count = (int)b.stbtt__buf_get(2);
+				offsize = b.stbtt__buf_get8();
+				b.stbtt__buf_skip(i * offsize);
+				start = (int)b.stbtt__buf_get(offsize);
+				end = (int)b.stbtt__buf_get(offsize);
+				return b.stbtt__buf_range(2 + (count + 1) * offsize + start, end - start);
+			}
+
+			public static stbtt__buf stbtt__get_subr(stbtt__buf idx, int n)
+			{
+				var count = idx.stbtt__cff_index_count();
+				var bias = 107;
+				if (count >= 33900)
+					bias = 32768;
+				else if (count >= 1240)
+					bias = 1131;
+				n += bias;
+				if (n < 0 || n >= count)
+					return Null;
+				return stbtt__cff_index_get(idx, n);
+			}
+
+			public static stbtt__buf stbtt__get_subrs(stbtt__buf cff, stbtt__buf fontdict)
+			{
+				var private_loc = new uint[] { 0, 0 };
+				fontdict.stbtt__dict_get_ints(18, 2, private_loc);
+				if (private_loc[1] == 0 || private_loc[0] == 0)
+					return Null;
+				var pdict = cff.stbtt__buf_range((int)private_loc[1], (int)private_loc[0]);
+				uint subrsoff = 0;
+				if (!pdict.stbtt__dict_get_ints(19, ref subrsoff))
+				{
+					return Null;
+				}
+
+				cff.stbtt__buf_seek((int)(private_loc[1] + subrsoff));
+				return cff.stbtt__cff_get_index();
 			}
 		}
 	}
