@@ -1,11 +1,16 @@
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
+using static StbTrueTypeNext.StbTrueType;
 
 namespace StbTrueTypeNext
 {
-	partial class StbTrueType
+	internal class stbtt__bitmap
 	{
-		private static void stbtt__rasterize(stbtt__bitmap result, stbtt__point[] pts, int[] wcount,
+		public int _width;
+		public int _height;
+		public int _stride;
+		public FakePtr<byte> _pixels;
+
+		public void stbtt__rasterize(stbtt__point[] pts, int[] wcount,
 			float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, bool useOldRasterizer)
 		{
 			var y_scale_inv = invert != 0 ? -scale_y : scale_y;
@@ -17,7 +22,7 @@ namespace StbTrueTypeNext
 			var vsubsample = 1;
 			if (useOldRasterizer)
 			{
-				vsubsample = (result.h) < (8) ? 15 : 5;
+				vsubsample = (_height) < (8) ? 15 : 5;
 			}
 
 			var windings = wcount.Length;
@@ -62,16 +67,82 @@ namespace StbTrueTypeNext
 
 			if (!useOldRasterizer)
 			{
-				RasterizerV2.Rasterize(result, es, vsubsample, off_x, off_y);
+				RasterizerV2.Rasterize(this, es, vsubsample, off_x, off_y);
 			}
 			else
 			{
-				RasterizerV1.Rasterize(result, es, vsubsample, off_x, off_y);
+				RasterizerV1.Rasterize(this, es, vsubsample, off_x, off_y);
 			}
 		}
 
+		private static stbtt__point[] stbtt_FlattenCurves(stbtt_vertex[] vertices, int num_verts, float objspace_flatness, out int[] contour_lengths)
+		{
+			stbtt__point[] points = null;
+			var num_points = 0;
+			var objspace_flatness_squared = objspace_flatness * objspace_flatness;
+			var i = 0;
+			var n = 0;
+			var start = 0;
+			var pass = 0;
+			for (i = 0; i < num_verts; ++i)
+				if (vertices[i].type == STBTT_vmove)
+					++n;
 
-		public static void stbtt_Rasterize(stbtt__bitmap result, float flatness_in_pixels, stbtt_vertex[] vertices,
+			contour_lengths = null;
+			if (n == 0)
+				return null;
+			contour_lengths = new int[n];
+
+			for (pass = 0; pass < 2; ++pass)
+			{
+				float x = 0;
+				float y = 0;
+				if (pass == 1)
+				{
+					points = new stbtt__point[num_points];
+				}
+
+				num_points = 0;
+				n = -1;
+				for (i = 0; i < num_verts; ++i)
+					switch (vertices[i].type)
+					{
+						case STBTT_vmove:
+							if (n >= 0)
+								contour_lengths[n] = num_points - start;
+							++n;
+							start = num_points;
+							x = vertices[i].x;
+							y = vertices[i].y;
+							stbtt__add_point(points, num_points++, x, y);
+							break;
+						case STBTT_vline:
+							x = vertices[i].x;
+							y = vertices[i].y;
+							stbtt__add_point(points, num_points++, x, y);
+							break;
+						case STBTT_vcurve:
+							stbtt__tesselate_curve(points, ref num_points, x, y, vertices[i].cx, vertices[i].cy,
+								vertices[i].x, vertices[i].y, objspace_flatness_squared, 0);
+							x = vertices[i].x;
+							y = vertices[i].y;
+							break;
+						case STBTT_vcubic:
+							stbtt__tesselate_cubic(points, ref num_points, x, y, vertices[i].cx, vertices[i].cy,
+								vertices[i].cx1, vertices[i].cy1, vertices[i].x, vertices[i].y,
+								objspace_flatness_squared, 0);
+							x = vertices[i].x;
+							y = vertices[i].y;
+							break;
+					}
+
+				contour_lengths[n] = num_points - start;
+			}
+
+			return points;
+		}
+
+		public void stbtt_Rasterize(float flatness_in_pixels, stbtt_vertex[] vertices,
 			int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, bool useOldRasterizer)
 		{
 			var scale = scale_x > scale_y ? scale_y : scale_x;
@@ -80,26 +151,8 @@ namespace StbTrueTypeNext
 			var windings = stbtt_FlattenCurves(vertices, num_verts, flatness_in_pixels / scale, out winding_lengths);
 			if (windings != null)
 			{
-				stbtt__rasterize(result, windings, winding_lengths, scale_x, scale_y, shift_x, shift_y, x_off, y_off, invert, useOldRasterizer);
+				stbtt__rasterize(windings, winding_lengths, scale_x, scale_y, shift_x, shift_y, x_off, y_off, invert, useOldRasterizer);
 			}
-		}
-
-		public class stbtt__bitmap
-		{
-			public int w;
-			public int h;
-			public int stride;
-			public FakePtr<byte> pixels;
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct stbtt__edge
-		{
-			public float x0;
-			public float y0;
-			public float x1;
-			public float y1;
-			public int invert;
 		}
 	}
 }

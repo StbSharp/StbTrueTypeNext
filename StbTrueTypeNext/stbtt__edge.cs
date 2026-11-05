@@ -1,0 +1,11 @@
+﻿namespace StbTrueTypeNext
+{
+	internal struct stbtt__edge
+	{
+		public float x0;
+		public float y0;
+		public float x1;
+		public float y1;
+		public int invert;
+	}
+}

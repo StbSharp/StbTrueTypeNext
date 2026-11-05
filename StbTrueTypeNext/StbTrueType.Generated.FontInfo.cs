@@ -1320,22 +1320,22 @@ namespace StbTrueTypeNext
 			}
 
 			stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
-			gbm.w = ix1 - ix0;
-			gbm.h = iy1 - iy0;
-			gbm.pixels = FakePtr<byte>.Null;
+			gbm._width = ix1 - ix0;
+			gbm._height = iy1 - iy0;
+			gbm._pixels = FakePtr<byte>.Null;
 
-			width = gbm.w;
-			height = gbm.h;
+			width = gbm._width;
+			height = gbm._height;
 			xoff = ix0;
 			yoff = iy0;
-			if (gbm.w != 0 && gbm.h != 0)
+			if (gbm._width != 0 && gbm._height != 0)
 			{
-				gbm.pixels = new FakePtr<byte>(gbm.w * gbm.h);
-				gbm.stride = gbm.w;
-				stbtt_Rasterize(gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.useOldRasterizer);
+				gbm._pixels = new FakePtr<byte>(gbm._width * gbm._height);
+				gbm._stride = gbm._width;
+				gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.useOldRasterizer);
 			}
 
-			return gbm.pixels.Data;
+			return gbm._pixels.Data;
 		}
 
 		public static int stbtt_GetGlyphBox(stbtt_fontinfo info, int glyph_index, out int x0, out int y0, out int x1, out int y1)
@@ -1841,13 +1841,13 @@ namespace StbTrueTypeNext
 			var num_verts = stbtt_GetGlyphShape(info, glyph, out vertices);
 			var gbm = new stbtt__bitmap();
 			stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
-			gbm.pixels = output;
-			gbm.w = out_w;
-			gbm.h = out_h;
-			gbm.stride = out_stride;
-			if (gbm.w != 0 && gbm.h != 0)
+			gbm._pixels = output;
+			gbm._width = out_w;
+			gbm._height = out_h;
+			gbm._stride = out_stride;
+			if (gbm._width != 0 && gbm._height != 0)
 			{
-				stbtt_Rasterize(gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.useOldRasterizer);
+				gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.useOldRasterizer);
 			}
 		}
 

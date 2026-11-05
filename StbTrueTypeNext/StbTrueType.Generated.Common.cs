@@ -57,7 +57,7 @@ namespace StbTrueTypeNext
 		public const int STBTT_vline = 2;
 		public const int STBTT_vmove = 1;
 
-		public static void stbtt__add_point(stbtt__point[] points, int n, float x, float y)
+		internal static void stbtt__add_point(stbtt__point[] points, int n, float x, float y)
 		{
 			if (points == null)
 				return;
@@ -409,7 +409,7 @@ namespace StbTrueTypeNext
 			return stbtt__sized_trapezoid_area(height, tx1 - tx0, bx1 - bx0);
 		}
 
-		public static int stbtt__ray_intersect_bezier(float[] orig, float[] ray, stbtt__point q0, stbtt__point q1, stbtt__point q2, float[] hits)
+		internal static int stbtt__ray_intersect_bezier(float[] orig, float[] ray, stbtt__point q0, stbtt__point q1, stbtt__point q2, float[] hits)
 		{
 			var q0perp = q0.y * ray[0] - q0.x * ray[1];
 			var q1perp = q1.y * ray[0] - q1.x * ray[1];
@@ -511,7 +511,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static void stbtt__tesselate_cubic(stbtt__point[] points, ref int num_points, float x0, float y0, float x1,
+		internal static void stbtt__tesselate_cubic(stbtt__point[] points, ref int num_points, float x0, float y0, float x1,
 			float y1, float x2, float y2, float x3, float y3, float objspace_flatness_squared, int n)
 		{
 			var dx0 = x1 - x0;
@@ -554,7 +554,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static int stbtt__tesselate_curve(stbtt__point[] points, ref int num_points, float x0, float y0, float x1,
+		internal static int stbtt__tesselate_curve(stbtt__point[] points, ref int num_points, float x0, float y0, float x1,
 			float y1, float x2, float y2, float objspace_flatness_squared, int n)
 		{
 			var mx = (x0 + 2 * x1 + x2) / 4;
@@ -744,73 +744,6 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static stbtt__point[] stbtt_FlattenCurves(stbtt_vertex[] vertices, int num_verts, float objspace_flatness, out int[] contour_lengths)
-		{
-			stbtt__point[] points = null;
-			var num_points = 0;
-			var objspace_flatness_squared = objspace_flatness * objspace_flatness;
-			var i = 0;
-			var n = 0;
-			var start = 0;
-			var pass = 0;
-			for (i = 0; i < num_verts; ++i)
-				if (vertices[i].type == STBTT_vmove)
-					++n;
-
-			contour_lengths = null;
-			if (n == 0)
-				return null;
-			contour_lengths = new int[n];
-
-			for (pass = 0; pass < 2; ++pass)
-			{
-				float x = 0;
-				float y = 0;
-				if (pass == 1)
-				{
-					points = new stbtt__point[num_points];
-				}
-
-				num_points = 0;
-				n = -1;
-				for (i = 0; i < num_verts; ++i)
-					switch (vertices[i].type)
-					{
-						case STBTT_vmove:
-							if (n >= 0)
-								contour_lengths[n] = num_points - start;
-							++n;
-							start = num_points;
-							x = vertices[i].x;
-							y = vertices[i].y;
-							stbtt__add_point(points, num_points++, x, y);
-							break;
-						case STBTT_vline:
-							x = vertices[i].x;
-							y = vertices[i].y;
-							stbtt__add_point(points, num_points++, x, y);
-							break;
-						case STBTT_vcurve:
-							stbtt__tesselate_curve(points, ref num_points, x, y, vertices[i].cx, vertices[i].cy,
-								vertices[i].x, vertices[i].y, objspace_flatness_squared, 0);
-							x = vertices[i].x;
-							y = vertices[i].y;
-							break;
-						case STBTT_vcubic:
-							stbtt__tesselate_cubic(points, ref num_points, x, y, vertices[i].cx, vertices[i].cy,
-								vertices[i].cx1, vertices[i].cy1, vertices[i].x, vertices[i].y,
-								objspace_flatness_squared, 0);
-							x = vertices[i].x;
-							y = vertices[i].y;
-							break;
-					}
-
-				contour_lengths[n] = num_points - start;
-			}
-
-			return points;
-		}
-
 		public static void stbtt_GetBakedQuad(stbtt_bakedchar[] chardata, int pw, int ph, int char_index,
 			ref float xpos, ref float ypos, ref stbtt_aligned_quad q, int opengl_fillrule)
 		{
@@ -948,24 +881,6 @@ namespace StbTrueTypeNext
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct stbtt__point
-		{
-			public float x;
-			public float y;
-
-			public stbtt__point(float _x, float _y)
-			{
-				x = _x;
-				y = _y;
-			}
-
-			public bool Equals(stbtt__point other)
-			{
-				return x == other.x && y == other.y;
-			}
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
 		public struct stbtt_aligned_quad
 		{
 			public float x0;
@@ -1002,19 +917,6 @@ namespace StbTrueTypeNext
 			public float xadvance;
 			public float xoff2;
 			public float yoff2;
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct stbtt_vertex
-		{
-			public short x;
-			public short y;
-			public short cx;
-			public short cy;
-			public short cx1;
-			public short cy1;
-			public byte type;
-			public byte padding;
 		}
 	}
 }

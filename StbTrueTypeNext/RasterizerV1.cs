@@ -88,9 +88,9 @@ namespace StbTrueTypeNext
 			var scanline_data = new byte[512];
 			byte[] scanline;
 
-			if ((result.w) > (512))
+			if ((result._width) > (512))
 			{
-				scanline = new byte[result.w];
+				scanline = new byte[result._width];
 			}
 			else
 			{
@@ -100,13 +100,13 @@ namespace StbTrueTypeNext
 			y = off_y * vsubsample;
 
 			var e = es[es.Count - 1];
-			e.y0 = (off_y + result.h) * (float)(vsubsample) + 1;
+			e.y0 = (off_y + result._height) * (float)(vsubsample) + 1;
 			es[es.Count - 1] = e;
 
 			var ei = 0;
-			while ((j) < (result.h))
+			while ((j) < (result._height))
 			{
-				scanline.Set((byte)0, result.w);
+				scanline.Set((byte)0, result._width);
 				for (s = (int)(0); (s) < (vsubsample); ++s)
 				{
 					// find center of pixel for this scanline
@@ -160,12 +160,12 @@ namespace StbTrueTypeNext
 						}
 					}
 
-					stbtt__fill_active_edges_old_rasterizer(scanline, (int)(result.w), edges, (int)(max_weight));
+					stbtt__fill_active_edges_old_rasterizer(scanline, (int)(result._width), edges, (int)(max_weight));
 					++y;
 				}
 
-				var pixelsPtr = result.pixels + j * result.stride;
-				pixelsPtr.Copy(scanline, result.w);
+				var pixelsPtr = result._pixels + j * result._stride;
+				pixelsPtr.Copy(scanline, result._width);
 
 				++j;
 			}
