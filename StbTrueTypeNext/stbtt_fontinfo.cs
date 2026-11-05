@@ -1194,7 +1194,7 @@ namespace StbTrueTypeNext
 		{
 			if (_kern == 0 && _gpos == 0)
 				return 0;
-			return stbtt_GetGlyphKernAdvance(this, stbtt_FindGlyphIndex(ch1), stbtt_FindGlyphIndex(ch2));
+			return stbtt_GetGlyphKernAdvance(stbtt_FindGlyphIndex(ch1), stbtt_FindGlyphIndex(ch2));
 		}
 
 		public byte[] stbtt_GetCodepointSDF(float scale, int codepoint, int padding,
@@ -1399,13 +1399,17 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static int stbtt_GetGlyphKernAdvance(stbtt_fontinfo info, int g1, int g2)
+		public int stbtt_GetGlyphKernAdvance(int g1, int g2)
 		{
 			var xAdvance = 0;
-			if (info._gpos != 0)
-				xAdvance += info.stbtt__GetGlyphGPOSInfoAdvance(g1, g2);
-			else if (info._kern != 0)
-				xAdvance += info.stbtt__GetGlyphKernInfoAdvance(g1, g2);
+			if (_gpos != 0)
+			{
+				xAdvance += stbtt__GetGlyphGPOSInfoAdvance(g1, g2);
+			}
+			else if (_kern != 0)
+			{
+				xAdvance += stbtt__GetGlyphKernInfoAdvance(g1, g2);
+			}
 			return xAdvance;
 		}
 
