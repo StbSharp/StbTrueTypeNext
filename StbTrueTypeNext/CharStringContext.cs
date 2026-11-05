@@ -1,6 +1,6 @@
 ﻿namespace StbTrueTypeNext
 {
-	internal class stbtt__csctx
+	internal class CharStringContext
 	{
 		public int bounds;
 		public int started;

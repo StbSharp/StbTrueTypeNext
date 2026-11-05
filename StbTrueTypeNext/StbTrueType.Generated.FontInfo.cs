@@ -359,7 +359,7 @@ namespace StbTrueTypeNext
 
 		public static int stbtt__GetGlyphInfoT2(stbtt_fontinfo info, int glyph_index, out int x0, out int y0, out int x1, out int y1)
 		{
-			var c = new stbtt__csctx
+			var c = new CharStringContext
 			{
 				bounds = 1
 			};
@@ -407,14 +407,14 @@ namespace StbTrueTypeNext
 
 		public static int stbtt__GetGlyphShapeT2(stbtt_fontinfo info, int glyph_index, out STTVertex[] pvertices)
 		{
-			var count_ctx = new stbtt__csctx
+			var count_ctx = new CharStringContext
 			{
 				bounds = 1
 			};
 
 			if (stbtt__run_charstring(info, glyph_index, count_ctx) != 0)
 			{
-				var output_ctx = new stbtt__csctx();
+				var output_ctx = new CharStringContext();
 				pvertices = new STTVertex[count_ctx.num_vertices];
 				output_ctx.pvertices = pvertices;
 				if (stbtt__run_charstring(info, glyph_index, output_ctx) != 0)
@@ -703,7 +703,7 @@ namespace StbTrueTypeNext
 			return num_vertices;
 		}
 
-		internal static int stbtt__run_charstring(stbtt_fontinfo info, int glyph_index, stbtt__csctx c)
+		internal static int stbtt__run_charstring(stbtt_fontinfo info, int glyph_index, CharStringContext c)
 		{
 			var in_header = 1;
 			var maskbits = 0;
