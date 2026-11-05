@@ -193,12 +193,7 @@
 
 		public static int stbtt_GetFontOffsetForIndex(byte[] data, int index)
 		{
-			return stbtt_GetFontOffsetForIndex_internal(new FakePtr<byte>(data), index);
-		}
-
-		public static int stbtt_GetFontOffsetForIndex_internal(FakePtr<byte> font_collection, int index)
-		{
-
+			var font_collection = new FakePtr<byte>(data);
 			if (stbtt__isfont(font_collection) != 0)
 				return index == 0 ? 0 : -1;
 			if (font_collection[0] == "ttcf"[0] && font_collection[1] == "ttcf"[1] && font_collection[2] == "ttcf"[2] &&
