@@ -465,26 +465,6 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static void stbtt_GetBakedQuad(stbtt_bakedchar[] chardata, int pw, int ph, int char_index,
-			ref float xpos, ref float ypos, ref stbtt_aligned_quad q, int opengl_fillrule)
-		{
-			var d3d_bias = opengl_fillrule != 0 ? 0 : -0.5f;
-			var ipw = 1.0f / pw;
-			var iph = 1.0f / ph;
-			var b = chardata[char_index];
-			var round_x = (int)Math.Floor(xpos + b.XOff + 0.5f);
-			var round_y = (int)Math.Floor(ypos + b.YOff + 0.5f);
-			q.x0 = round_x + d3d_bias;
-			q.y0 = round_y + d3d_bias;
-			q.x1 = round_x + b.X1 - b.X0 + d3d_bias;
-			q.y1 = round_y + b.Y1 - b.Y0 + d3d_bias;
-			q.s0 = b.X0 * ipw;
-			q.t0 = b.Y0 * iph;
-			q.s1 = b.X1 * ipw;
-			q.t1 = b.Y1 * iph;
-			xpos += b.XAdvance;
-		}
-
 		public static int stbtt_GetFontOffsetForIndex(byte[] data, int index)
 		{
 			return stbtt_GetFontOffsetForIndex_internal(new FakePtr<byte>(data), index);
@@ -568,18 +548,6 @@ namespace StbTrueTypeNext
 		public static ushort ttUSHORT(FakePtr<byte> p)
 		{
 			return (ushort)(p[0] * 256 + p[1]);
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct stbtt_bakedchar
-		{
-			public ushort X0;
-			public ushort Y0;
-			public ushort X1;
-			public ushort Y1;
-			public float XOff;
-			public float YOff;
-			public float XAdvance;
 		}
 	}
 }
