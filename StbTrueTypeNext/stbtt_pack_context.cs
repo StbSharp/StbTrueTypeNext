@@ -35,7 +35,7 @@ namespace StbTrueTypeNext
 			_pixels.Set((byte)0, pw * ph);
 		}
 
-		public static void stbtt_PackEnd(stbtt_pack_context spc)
+		public void stbtt_PackEnd()
 		{
 		}
 
