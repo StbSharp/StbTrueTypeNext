@@ -95,7 +95,7 @@ namespace StbTrueTypeNext.Tests
 				Assert.NotEqual(0, glyphId);
 
 				int advanceWidth, leftSideBearing;
-				stbtt_GetGlyphHMetrics(fontInfo, glyphId, out advanceWidth, out leftSideBearing);
+				fontInfo.stbtt_GetGlyphHMetrics(glyphId, out advanceWidth, out leftSideBearing);
 
 				int x0, y0, x1, y1;
 				fontInfo.stbtt_GetGlyphBitmapBox(glyphId, scale, scale, out x0, out y0, out x1, out y1);

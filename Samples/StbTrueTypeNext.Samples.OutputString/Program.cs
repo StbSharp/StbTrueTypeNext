@@ -46,7 +46,7 @@ class Program
 			}
 
 			int advanceTemp, lsbTemp;
-			stbtt_GetGlyphHMetrics(info, glyphId, out advanceTemp, out lsbTemp);
+			info.stbtt_GetGlyphHMetrics(glyphId, out advanceTemp, out lsbTemp);
 			var advance = (int)(advanceTemp * scale + 0.5f);
 
 			int x0, y0, x1, y1;

@@ -1187,7 +1187,7 @@ namespace StbTrueTypeNext
 
 		public void stbtt_GetCodepointHMetrics(int codepoint, out int advanceWidth, out int leftSideBearing)
 		{
-			stbtt_GetGlyphHMetrics(this, stbtt_FindGlyphIndex(codepoint), out advanceWidth, out leftSideBearing);
+			stbtt_GetGlyphHMetrics(stbtt_FindGlyphIndex(codepoint), out advanceWidth, out leftSideBearing);
 		}
 
 		public int stbtt_GetCodepointKernAdvance(int ch1, int ch2)
@@ -1383,20 +1383,19 @@ namespace StbTrueTypeNext
 			return 1;
 		}
 
-		public static void stbtt_GetGlyphHMetrics(stbtt_fontinfo info, int glyph_index, out int advanceWidth,
-			out int leftSideBearing)
+		public void stbtt_GetGlyphHMetrics(int glyph_index, out int advanceWidth, out int leftSideBearing)
 		{
-			var dataPtr = new FakePtr<byte>(info._data);
-			var numOfLongHorMetrics = ttUSHORT(dataPtr + info._hhea + 34);
+			var dataPtr = new FakePtr<byte>(_data);
+			var numOfLongHorMetrics = ttUSHORT(dataPtr + _hhea + 34);
 			if (glyph_index < numOfLongHorMetrics)
 			{
-				advanceWidth = ttSHORT(dataPtr + info._hmtx + 4 * glyph_index);
-				leftSideBearing = ttSHORT(dataPtr + info._hmtx + 4 * glyph_index + 2);
+				advanceWidth = ttSHORT(dataPtr + _hmtx + 4 * glyph_index);
+				leftSideBearing = ttSHORT(dataPtr + _hmtx + 4 * glyph_index + 2);
 			}
 			else
 			{
-				advanceWidth = ttSHORT(dataPtr + info._hmtx + 4 * (numOfLongHorMetrics - 1));
-				leftSideBearing = ttSHORT(dataPtr + info._hmtx + 4 * numOfLongHorMetrics + 2 * (glyph_index - numOfLongHorMetrics));
+				advanceWidth = ttSHORT(dataPtr + _hmtx + 4 * (numOfLongHorMetrics - 1));
+				leftSideBearing = ttSHORT(dataPtr + _hmtx + 4 * numOfLongHorMetrics + 2 * (glyph_index - numOfLongHorMetrics));
 			}
 		}
 
