@@ -1793,19 +1793,19 @@ namespace StbTrueTypeNext
 			return 1;
 		}
 
-		public static int stbtt_IsGlyphEmpty(stbtt_fontinfo info, int glyph_index)
+		public int stbtt_IsGlyphEmpty(int glyph_index)
 		{
 			short numberOfContours = 0;
 			var g = 0;
-			if (info._cff.size != 0)
+			if (_cff.size != 0)
 			{
 				int x0, y0, x1, y1;
-				return info.stbtt__GetGlyphInfoT2(glyph_index, out x0, out y0, out x1, out y1) == 0 ? 1 : 0;
+				return stbtt__GetGlyphInfoT2(glyph_index, out x0, out y0, out x1, out y1) == 0 ? 1 : 0;
 			}
-			g = info.stbtt__GetGlyfOffset(glyph_index);
+			g = stbtt__GetGlyfOffset(glyph_index);
 			if (g < 0)
 				return 1;
-			numberOfContours = ttSHORT(new FakePtr<byte>(info._data, g));
+			numberOfContours = ttSHORT(new FakePtr<byte>(_data, g));
 			return numberOfContours == 0 ? 1 : 0;
 		}
 
