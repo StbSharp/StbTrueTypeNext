@@ -734,7 +734,7 @@ namespace StbTrueTypeNext
 
 				if (y + gh + 1 >= ph)
 					return -i;
-				stbtt_MakeGlyphBitmap(f, new FakePtr<byte>(pixels, x + y * pw), gw, gh, pw, scale, scale, g);
+				f.stbtt_MakeGlyphBitmap(new FakePtr<byte>(pixels, x + y * pw), gw, gh, pw, scale, scale, g);
 				chardata[i].x0 = (ushort)(short)x;
 				chardata[i].y0 = (ushort)(short)y;
 				chardata[i].x1 = (ushort)(short)(x + gw);

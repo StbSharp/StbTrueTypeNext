@@ -1832,13 +1832,13 @@ namespace StbTrueTypeNext
 		public void stbtt_MakeGlyphBitmap(byte[] output, int out_w, int out_h, int out_stride,
 			float scale_x, float scale_y, int glyph)
 		{
-			stbtt_MakeGlyphBitmap(this, new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, glyph);
+			stbtt_MakeGlyphBitmap(new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, glyph);
 		}
 
-		public static void stbtt_MakeGlyphBitmap(stbtt_fontinfo info, FakePtr<byte> output, int out_w, int out_h,
-			int out_stride, float scale_x, float scale_y, int glyph)
+		public void stbtt_MakeGlyphBitmap(FakePtr<byte> output, int out_w, int out_h, int out_stride,
+			float scale_x, float scale_y, int glyph)
 		{
-			stbtt_MakeGlyphBitmapSubpixel(info, output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, glyph);
+			stbtt_MakeGlyphBitmapSubpixel(this, output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, glyph);
 		}
 
 		public static void stbtt_MakeGlyphBitmapSubpixel(stbtt_fontinfo info, byte[] output, int out_w, int out_h,
