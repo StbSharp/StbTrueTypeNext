@@ -1,12 +1,12 @@
-﻿namespace StbTrueTypeNext
+﻿namespace StbTrueTypeNext.Packing
 {
-	public class stbtt_pack_range
+	public class PackRange
 	{
 		public float font_size;
 		public int first_unicode_codepoint_in_range;
 		public int[] array_of_unicode_codepoints;
 		public int num_chars;
-		public stbtt_packedchar[] chardata_for_range;
+		public PackedChar[] chardata_for_range;
 		public byte h_oversample;
 		public byte v_oversample;
 	}

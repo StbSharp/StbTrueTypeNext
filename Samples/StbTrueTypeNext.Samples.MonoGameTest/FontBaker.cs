@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StbTrueTypeNext.Packing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,7 +8,7 @@ namespace StbTrueTypeNext.Samples;
 public class FontBaker
 {
 	private byte[] _bitmap;
-	private stbtt_pack_context _context;
+	private Packer _context;
 	private Dictionary<int, GlyphInfo> _glyphs;
 	private int bitmapWidth, bitmapHeight;
 
@@ -16,7 +17,7 @@ public class FontBaker
 		bitmapWidth = width;
 		bitmapHeight = height;
 		_bitmap = new byte[width * height];
-		_context = new stbtt_pack_context();
+		_context = new Packer();
 
 		_context.stbtt_PackBegin(_bitmap, width, height, width, 1);
 
@@ -52,7 +53,7 @@ public class FontBaker
 			if (range.Start > range.End)
 				continue;
 
-			var cd = new stbtt_packedchar[range.End - range.Start + 1];
+			var cd = new PackedChar[range.End - range.Start + 1];
 			_context.stbtt_PackFontRange(fontInfo.data, 0, fontPixelHeight,
 				range.Start,
 				range.End - range.Start + 1,

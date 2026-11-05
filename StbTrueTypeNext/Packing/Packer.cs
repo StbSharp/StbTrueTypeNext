@@ -1,8 +1,8 @@
 ﻿using static StbTrueTypeNext.StbTrueType;
 
-namespace StbTrueTypeNext
+namespace StbTrueTypeNext.Packing
 {
-	public class stbtt_pack_context
+	public class Packer
 	{
 		private struct stbrp_rect
 		{
@@ -49,9 +49,9 @@ namespace StbTrueTypeNext
 		}
 
 		public int stbtt_PackFontRange(byte[] fontdata, int font_index, float font_size,
-			int first_unicode_codepoint_in_range, int num_chars_in_range, stbtt_packedchar[] chardata_for_range)
+			int first_unicode_codepoint_in_range, int num_chars_in_range, PackedChar[] chardata_for_range)
 		{
-			var range = new stbtt_pack_range
+			var range = new PackRange
 			{
 				first_unicode_codepoint_in_range = first_unicode_codepoint_in_range,
 				array_of_unicode_codepoints = null,
@@ -60,12 +60,12 @@ namespace StbTrueTypeNext
 				font_size = font_size
 			};
 
-			var ranges = new stbtt_pack_range[] { range };
+			var ranges = new PackRange[] { range };
 
 			return stbtt_PackFontRanges(fontdata, font_index, ranges);
 		}
 
-		public int stbtt_PackFontRanges(byte[] fontdata, int font_index, stbtt_pack_range[] ranges)
+		public int stbtt_PackFontRanges(byte[] fontdata, int font_index, PackRange[] ranges)
 		{
 			var info = new stbtt_fontinfo();
 			var i = 0;
@@ -97,7 +97,7 @@ namespace StbTrueTypeNext
 			return stbtt_PackFontRangesRenderIntoRects(info, ranges, rects);
 		}
 
-		private int stbtt_PackFontRangesGatherRects(stbtt_fontinfo info, stbtt_pack_range[] ranges, stbrp_rect[] rects)
+		private int stbtt_PackFontRangesGatherRects(stbtt_fontinfo info, PackRange[] ranges, stbrp_rect[] rects)
 		{
 			var i = 0;
 			var j = 0;
@@ -147,7 +147,7 @@ namespace StbTrueTypeNext
 
 		private void stbtt_PackFontRangesPackRects(stbrp_rect[] rects, int num_rects) => _pack_info.stbrp_pack_rects(rects, num_rects);
 
-		private int stbtt_PackFontRangesRenderIntoRects(stbtt_fontinfo info, stbtt_pack_range[] ranges, stbrp_rect[] rects)
+		private int stbtt_PackFontRangesRenderIntoRects(stbtt_fontinfo info, PackRange[] ranges, stbrp_rect[] rects)
 		{
 			var i = 0;
 			var j = 0;

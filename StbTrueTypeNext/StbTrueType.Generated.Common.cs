@@ -1,3 +1,4 @@
+using StbTrueTypeNext.Packing;
 using System;
 using System.Runtime.InteropServices;
 
@@ -804,7 +805,7 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static void stbtt_GetPackedQuad(stbtt_packedchar[] chardata, int pw, int ph, int char_index,
+		public static void stbtt_GetPackedQuad(PackedChar[] chardata, int pw, int ph, int char_index,
 			ref float xpos, ref float ypos, ref stbtt_aligned_quad q, int align_to_integer)
 		{
 			var ipw = 1.0f / pw;

@@ -1,6 +1,6 @@
-﻿namespace StbTrueTypeNext
+﻿namespace StbTrueTypeNext.Packing
 {
-	public struct stbtt_packedchar
+	public struct PackedChar
 	{
 		public ushort x0;
 		public ushort y0;
