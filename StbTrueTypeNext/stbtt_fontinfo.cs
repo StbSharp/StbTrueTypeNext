@@ -1176,7 +1176,7 @@ namespace StbTrueTypeNext
 		public byte[] stbtt_GetCodepointBitmapSubpixel(float scale_x, float scale_y,
 			float shift_x, float shift_y, int codepoint, out int width, out int height, out int xoff, out int yoff)
 		{
-			return stbtt_GetGlyphBitmapSubpixel(this, scale_x, scale_y, shift_x, shift_y,
+			return stbtt_GetGlyphBitmapSubpixel(scale_x, scale_y, shift_x, shift_y,
 				stbtt_FindGlyphIndex(codepoint), out width, out height, out xoff, out yoff);
 		}
 
@@ -1287,7 +1287,7 @@ namespace StbTrueTypeNext
 		public byte[] stbtt_GetGlyphBitmap(float scale_x, float scale_y, int glyph,
 			out int width, out int height, out int xoff, out int yoff)
 		{
-			return stbtt_GetGlyphBitmapSubpixel(this, scale_x, scale_y, 0.0f, 0.0f, glyph, out width, out height, out xoff, out yoff);
+			return stbtt_GetGlyphBitmapSubpixel(scale_x, scale_y, 0.0f, 0.0f, glyph, out width, out height, out xoff, out yoff);
 		}
 
 		public void stbtt_GetGlyphBitmapBox(int glyph, float scale_x, float scale_y,
@@ -1319,8 +1319,8 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static byte[] stbtt_GetGlyphBitmapSubpixel(stbtt_fontinfo info, float scale_x, float scale_y,
-			float shift_x, float shift_y, int glyph, out int width, out int height, out int xoff, out int yoff)
+		public byte[] stbtt_GetGlyphBitmapSubpixel(float scale_x, float scale_y, float shift_x, float shift_y, int glyph,
+			out int width, out int height, out int xoff, out int yoff)
 		{
 			width = height = xoff = yoff = 0;
 
@@ -1329,7 +1329,7 @@ namespace StbTrueTypeNext
 			var ix1 = 0;
 			var iy1 = 0;
 			STTVertex[] vertices;
-			var num_verts = stbtt_GetGlyphShape(info, glyph, out vertices);
+			var num_verts = stbtt_GetGlyphShape(this, glyph, out vertices);
 			if (scale_x == 0)
 				scale_x = scale_y;
 			if (scale_y == 0)
@@ -1342,7 +1342,7 @@ namespace StbTrueTypeNext
 				scale_y = scale_x;
 			}
 
-			info.stbtt_GetGlyphBitmapBoxSubpixel(glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
+			stbtt_GetGlyphBitmapBoxSubpixel(glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
 
 			width = ix1 - ix0;
 			height = iy1 - iy0;
@@ -1355,7 +1355,7 @@ namespace StbTrueTypeNext
 			}
 
 			var gbm = new Bitmap(width, height);
-			gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.RasterizerVersion);
+			gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, RasterizerVersion);
 
 			return gbm.Pixels.Data;
 		}
