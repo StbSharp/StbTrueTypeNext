@@ -1214,13 +1214,13 @@ namespace StbTrueTypeNext
 			return stbtt_GetGlyphSVG(this, stbtt_FindGlyphIndex(unicode_codepoint), ref svg);
 		}
 
-		public static void stbtt_GetFontBoundingBox(stbtt_fontinfo info, out int x0, out int y0, out int x1, out int y1)
+		public void stbtt_GetFontBoundingBox(out int x0, out int y0, out int x1, out int y1)
 		{
-			var dataPtr = new FakePtr<byte>(info._data);
-			x0 = ttSHORT(dataPtr + info._head + 36);
-			y0 = ttSHORT(dataPtr + info._head + 38);
-			x1 = ttSHORT(dataPtr + info._head + 40);
-			y1 = ttSHORT(dataPtr + info._head + 42);
+			var dataPtr = new FakePtr<byte>(_data);
+			x0 = ttSHORT(dataPtr + _head + 36);
+			y0 = ttSHORT(dataPtr + _head + 38);
+			x1 = ttSHORT(dataPtr + _head + 40);
+			y1 = ttSHORT(dataPtr + _head + 42);
 		}
 
 		public static string stbtt_GetFontNameString(stbtt_fontinfo font, int platformID, int encodingID, int languageID, int nameID)
