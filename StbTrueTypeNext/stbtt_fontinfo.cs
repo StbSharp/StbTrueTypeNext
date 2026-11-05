@@ -91,26 +91,26 @@ namespace StbTrueTypeNext
 			return Buffer.stbtt__get_subrs(_cff, Buffer.stbtt__cff_index_get(_fontdicts, fdselector));
 		}
 
-		public static int stbtt__get_svg(stbtt_fontinfo info)
+		private int stbtt__get_svg()
 		{
 			uint t = 0;
 
-			var dataPtr = new FakePtr<byte>(info._data);
-			if (info._svg < 0)
+			var dataPtr = new FakePtr<byte>(_data);
+			if (_svg < 0)
 			{
-				t = dataPtr.stbtt__find_table((uint)info._fontstart, "SVG ");
+				t = dataPtr.stbtt__find_table((uint)_fontstart, "SVG ");
 				if (t != 0)
 				{
 					var offset = ttULONG(dataPtr + t + 2);
-					info._svg = (int)(t + offset);
+					_svg = (int)(t + offset);
 				}
 				else
 				{
-					info._svg = 0;
+					_svg = 0;
 				}
 			}
 
-			return info._svg;
+			return _svg;
 		}
 
 		public static int stbtt__GetCoverageIndex(FakePtr<byte> coverageTable, int glyph)
@@ -1140,7 +1140,7 @@ namespace StbTrueTypeNext
 		{
 			var i = 0;
 			var data = new FakePtr<byte>(info._data);
-			var svg_doc_list = data + stbtt__get_svg(info);
+			var svg_doc_list = data + info.stbtt__get_svg();
 			int numEntries = ttUSHORT(svg_doc_list);
 			var svg_docs = svg_doc_list + 2;
 			for (i = 0; i < numEntries; i++)
