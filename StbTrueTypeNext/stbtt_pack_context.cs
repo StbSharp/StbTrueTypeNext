@@ -15,24 +15,24 @@ namespace StbTrueTypeNext
 		private int _skip_missing;
 		private int _stride_in_bytes;
 
-		public void stbtt_PackBegin(byte[] _pixels, int pw, int ph, int _stride_in_bytes, int _padding)
+		public void stbtt_PackBegin(byte[] pixels, int pw, int ph, int stride_in_bytes, int padding)
 		{
 			var context = new stbrp_context();
-			var num_nodes = pw - _padding;
+			var num_nodes = pw - padding;
 
 			_width = pw;
 			_height = ph;
-			this._pixels = _pixels;
+			_pixels = pixels;
 			_pack_info = context;
 			_nodes = new stbrp_node[num_nodes];
-			this._padding = _padding;
-			this._stride_in_bytes = _stride_in_bytes != 0 ? _stride_in_bytes : pw;
+			_padding = padding;
+			_stride_in_bytes = stride_in_bytes != 0 ? stride_in_bytes : pw;
 			_h_oversample = 1;
 			_v_oversample = 1;
 			_skip_missing = 0;
-			context.stbrp_init_target(pw - _padding, ph - _padding);
+			context.stbrp_init_target(pw - padding, ph - padding);
 
-			_pixels.Set((byte)0, pw * ph);
+			pixels.Set((byte)0, pw * ph);
 		}
 
 		public void stbtt_PackEnd()
