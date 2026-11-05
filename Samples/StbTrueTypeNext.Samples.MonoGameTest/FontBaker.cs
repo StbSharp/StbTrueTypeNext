@@ -18,7 +18,7 @@ public class FontBaker
 		_bitmap = new byte[width * height];
 		_context = new stbtt_pack_context();
 
-		stbtt_pack_context.stbtt_PackBegin(_context, _bitmap, width, height, width, 1);
+		_context.stbtt_PackBegin(_bitmap, width, height, width, 1);
 
 		_glyphs = new Dictionary<int, GlyphInfo>();
 	}
@@ -52,7 +52,7 @@ public class FontBaker
 			if (range.Start > range.End)
 				continue;
 
-			var cd = new StbTrueType.stbtt_packedchar[range.End - range.Start + 1];
+			var cd = new stbtt_packedchar[range.End - range.Start + 1];
 			stbtt_pack_context.stbtt_PackFontRange(_context, fontInfo.data, 0, fontPixelHeight,
 				range.Start,
 				range.End - range.Start + 1,

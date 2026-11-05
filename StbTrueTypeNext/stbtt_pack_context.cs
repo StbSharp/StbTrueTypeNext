@@ -5,18 +5,18 @@ namespace StbTrueTypeNext
 {
 	public class stbtt_pack_context
 	{
-		public uint h_oversample;
-		public int height;
-		public stbrp_node[] nodes;
-		public stbrp_context pack_info;
-		public int padding;
-		public byte[] pixels;
-		public int skip_missing;
-		public int stride_in_bytes;
-		public uint v_oversample;
-		public int width;
+		private uint h_oversample;
+		private int height;
+		private stbrp_node[] nodes;
+		private stbrp_context pack_info;
+		private int padding;
+		private byte[] pixels;
+		private int skip_missing;
+		private int stride_in_bytes;
+		private uint v_oversample;
+		private int width;
 
-		public static void stbrp_init_target(stbrp_context con, int pw, int ph)
+		private static void stbrp_init_target(stbrp_context con, int pw, int ph)
 		{
 			con.width = pw;
 			con.height = ph;
@@ -25,7 +25,7 @@ namespace StbTrueTypeNext
 			con.bottom_y = 0;
 		}
 
-		public static void stbrp_pack_rects(stbrp_context con, stbrp_rect[] rects, int num_rects)
+		private static void stbrp_pack_rects(stbrp_context con, stbrp_rect[] rects, int num_rects)
 		{
 			var i = 0;
 			for (i = 0; i < num_rects; ++i)
@@ -49,26 +49,24 @@ namespace StbTrueTypeNext
 			for (; i < num_rects; ++i) rects[i].was_packed = 0;
 		}
 
-		public static int stbtt_PackBegin(stbtt_pack_context spc, byte[] pixels, int pw, int ph, int stride_in_bytes, int padding)
+		public void stbtt_PackBegin(byte[] _pixels, int pw, int ph, int _stride_in_bytes, int _padding)
 		{
 			var context = new stbrp_context();
-			var num_nodes = pw - padding;
-			var nodes = new stbrp_node[num_nodes];
+			var num_nodes = pw - _padding;
 
-			spc.width = pw;
-			spc.height = ph;
-			spc.pixels = pixels;
-			spc.pack_info = context;
-			spc.nodes = nodes;
-			spc.padding = padding;
-			spc.stride_in_bytes = stride_in_bytes != 0 ? stride_in_bytes : pw;
-			spc.h_oversample = 1;
-			spc.v_oversample = 1;
-			spc.skip_missing = 0;
-			stbrp_init_target(context, pw - padding, ph - padding);
+			width = pw;
+			height = ph;
+			pixels = _pixels;
+			pack_info = context;
+			nodes = new stbrp_node[num_nodes];
+			padding = _padding;
+			stride_in_bytes = _stride_in_bytes != 0 ? _stride_in_bytes : pw;
+			h_oversample = 1;
+			v_oversample = 1;
+			skip_missing = 0;
+			stbrp_init_target(context, pw - _padding, ph - _padding);
 
-			pixels.Set((byte)0, pw * ph);
-			return 1;
+			_pixels.Set((byte)0, pw * ph);
 		}
 
 		public static void stbtt_PackEnd(stbtt_pack_context spc)
@@ -117,7 +115,7 @@ namespace StbTrueTypeNext
 			return return_value;
 		}
 
-		public static int stbtt_PackFontRangesGatherRects(stbtt_pack_context spc, stbtt_fontinfo info,
+		private static int stbtt_PackFontRangesGatherRects(stbtt_pack_context spc, stbtt_fontinfo info,
 			stbtt_pack_range[] ranges, stbrp_rect[] rects)
 		{
 			var i = 0;
@@ -164,9 +162,9 @@ namespace StbTrueTypeNext
 			return k;
 		}
 
-		public static void stbtt_PackFontRangesPackRects(stbtt_pack_context spc, stbrp_rect[] rects, int num_rects) => stbrp_pack_rects(spc.pack_info, rects, num_rects);
+		private static void stbtt_PackFontRangesPackRects(stbtt_pack_context spc, stbrp_rect[] rects, int num_rects) => stbrp_pack_rects(spc.pack_info, rects, num_rects);
 
-		public static int stbtt_PackFontRangesRenderIntoRects(stbtt_pack_context spc, stbtt_fontinfo info,
+		private static int stbtt_PackFontRangesRenderIntoRects(stbtt_pack_context spc, stbtt_fontinfo info,
 			stbtt_pack_range[] ranges, stbrp_rect[] rects)
 		{
 			var i = 0;
@@ -277,7 +275,7 @@ namespace StbTrueTypeNext
 			spc.skip_missing = skip;
 		}
 
-		public class stbrp_context
+		private class stbrp_context
 		{
 			public int width;
 			public int height;
@@ -286,14 +284,12 @@ namespace StbTrueTypeNext
 			public int bottom_y;
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
-		public struct stbrp_node
+		private struct stbrp_node
 		{
 			public byte x;
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
-		public struct stbrp_rect
+		private struct stbrp_rect
 		{
 			public int x;
 			public int y;
