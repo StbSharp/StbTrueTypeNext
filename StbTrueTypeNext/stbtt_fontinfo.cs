@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -29,21 +30,25 @@ namespace StbTrueTypeNext
 
 		public RasterizerVersion RasterizerVersion { get; set; } = RasterizerVersion.V2;
 
-		/// <summary>
-		/// Creates and initializes a font from ttf/otf/ttc data
-		/// </summary>
-		/// <param name="data"></param>
-		/// <param name="offset"></param>
-		/// <returns>null if the data was invalid</returns>
-		public static stbtt_fontinfo CreateFont(byte[] data, int offset)
+		public static stbtt_fontinfo FromMemory(byte[] data, int offset = 0)
 		{
 			var info = new stbtt_fontinfo();
 			if (stbtt_InitFont_internal(info, data, offset) == 0)
 			{
-				return null;
+				throw new Exception("Unable to parse font");
 			}
 
 			return info;
+		}
+
+		public static stbtt_fontinfo FromStream(Stream s)
+		{
+			using(var ms = new MemoryStream())
+			{
+				s.CopyTo(ms);
+
+				return FromMemory(ms.ToArray());
+			}
 		}
 
 		internal static Buffer stbtt__cid_get_glyph_subrs(stbtt_fontinfo info, int glyph_index)
@@ -1696,11 +1701,6 @@ namespace StbTrueTypeNext
 			}
 
 			return table;
-		}
-
-		public static int stbtt_InitFont(stbtt_fontinfo info, byte[] data, int offset)
-		{
-			return stbtt_InitFont_internal(info, data, offset);
 		}
 
 		public static int stbtt_InitFont_internal(stbtt_fontinfo info, byte[] data, int fontstart)

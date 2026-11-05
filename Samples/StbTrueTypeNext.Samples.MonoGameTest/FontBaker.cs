@@ -39,10 +39,7 @@ public class FontBaker
 		if (!characterRanges.Any())
 			throw new ArgumentException("characterRanges must have a least one value.");
 
-		var fontInfo = stbtt_fontinfo.CreateFont(ttf, 0);
-		if (fontInfo == null)
-			throw new Exception("Failed to init font.");
-
+		var fontInfo = stbtt_fontinfo.FromMemory(ttf);
 		var scaleFactor = stbtt_fontinfo.stbtt_ScaleForPixelHeight(fontInfo, fontPixelHeight);
 
 		int ascent, descent, lineGap;

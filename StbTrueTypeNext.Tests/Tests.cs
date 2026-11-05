@@ -23,7 +23,7 @@ namespace StbTrueTypeNext.Tests
 			var ttfData = File.ReadAllBytes(@"C:\Windows\Fonts\webdings.ttf");
 			Assert.Throws<Exception>(() =>
 			{
-				var fontInfo = CreateFont(ttfData, 0);
+				var fontInfo = stbtt_fontinfo.FromMemory(ttfData);
 			});
 		}
 
@@ -31,7 +31,7 @@ namespace StbTrueTypeNext.Tests
 		public void TestCreationAndDispose()
 		{
 			var ttfData = _assembly.ReadResourceAsBytes("DroidSans.ttf");
-			var fontInfo = CreateFont(ttfData, 0);
+			var fontInfo = stbtt_fontinfo.FromMemory(ttfData);
 			Assert.NotNull(fontInfo);
 		}
 
@@ -62,7 +62,7 @@ namespace StbTrueTypeNext.Tests
 			for (int i = 0; i < numberOfFonts; i++)
 			{
 				int offset = stbtt_GetFontOffsetForIndex(ttcContent, i);
-				fonts.Add(CreateFont(ttcContent, offset));
+				fonts.Add(stbtt_fontinfo.FromMemory(ttcContent, offset));
 			}
 
 			Assert.Equal(numberOfFonts, fonts.Count);
@@ -115,7 +115,7 @@ namespace StbTrueTypeNext.Tests
 		public void TestNewRasterizer()
 		{
 			var ttfData = _assembly.ReadResourceAsBytes("DroidSans.ttf");
-			var fontInfo = CreateFont(ttfData, 0);
+			var fontInfo = stbtt_fontinfo.FromMemory(ttfData);
 			Assert.NotNull(fontInfo);
 
 			TestRasterize(fontInfo, "Hello, World!", 32.0f);
@@ -125,7 +125,7 @@ namespace StbTrueTypeNext.Tests
 		public void TestOldRasterizer()
 		{
 			var ttfData = _assembly.ReadResourceAsBytes("DroidSans.ttf");
-			var fontInfo = CreateFont(ttfData, 0);
+			var fontInfo = stbtt_fontinfo.FromMemory(ttfData);
 			Assert.NotNull(fontInfo);
 
 			fontInfo.RasterizerVersion = RasterizerVersion.V1;

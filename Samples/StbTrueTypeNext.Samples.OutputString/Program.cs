@@ -22,9 +22,7 @@ class Program
 		var bytes = File.ReadAllBytes("Fonts/DroidSans.ttf");
 		var buffer = new byte[bufferSize * bufferSize];
 
-		var info = new stbtt_fontinfo();
-
-		var res = stbtt_InitFont(info, bytes, 0);
+		var info = stbtt_fontinfo.FromMemory(bytes);
 
 		int ascent, descent, lineGap;
 		stbtt_GetFontVMetrics(info, out ascent, out descent, out lineGap);

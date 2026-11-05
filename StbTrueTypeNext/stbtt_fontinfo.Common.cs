@@ -670,10 +670,8 @@ namespace StbTrueTypeNext
 			var y = 0;
 			var bottom_y = 0;
 			var i = 0;
-			var f = new stbtt_fontinfo();
 
-			if (stbtt_InitFont(f, data, offset) == 0)
-				return -1;
+			var f = stbtt_fontinfo.FromMemory(data, offset);
 			pixels.Set((byte)0, pw * ph);
 			x = y = 1;
 			bottom_y = 1;
@@ -842,8 +840,7 @@ namespace StbTrueTypeNext
 			var i_descent = 0;
 			var i_lineGap = 0;
 			float scale = 0;
-			var info = new stbtt_fontinfo();
-			stbtt_InitFont(info, fontdata, stbtt_GetFontOffsetForIndex(fontdata, index));
+			var info = stbtt_fontinfo.FromMemory(fontdata, stbtt_GetFontOffsetForIndex(fontdata, index));
 			scale = size > 0 ? stbtt_ScaleForPixelHeight(info, size) : stbtt_ScaleForMappingEmToPixels(info, -size);
 			stbtt_GetFontVMetrics(info, out i_ascent, out i_descent, out i_lineGap);
 

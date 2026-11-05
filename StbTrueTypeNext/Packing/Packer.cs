@@ -58,7 +58,6 @@ namespace StbTrueTypeNext.Packing
 
 		public int stbtt_PackFontRanges(byte[] fontdata, int font_index, PackRange[] ranges)
 		{
-			var info = new stbtt_fontinfo();
 			var i = 0;
 			var j = 0;
 			var n = 0;
@@ -81,7 +80,7 @@ namespace StbTrueTypeNext.Packing
 
 			var rects = new PackRect[n];
 
-			stbtt_InitFont(info, fontdata, stbtt_GetFontOffsetForIndex(fontdata, font_index));
+			var info = stbtt_fontinfo.FromMemory(fontdata, stbtt_GetFontOffsetForIndex(fontdata, font_index));
 			n = stbtt_PackFontRangesGatherRects(info, ranges, rects);
 			stbtt_PackFontRangesPackRects(rects, n);
 
