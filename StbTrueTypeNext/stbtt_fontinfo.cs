@@ -113,78 +113,6 @@ namespace StbTrueTypeNext
 			return _svg;
 		}
 
-		public static int stbtt__GetCoverageIndex(FakePtr<byte> coverageTable, int glyph)
-		{
-			var coverageFormat = ttUSHORT(coverageTable);
-			switch (coverageFormat)
-			{
-				case 1:
-					{
-						var glyphCount = ttUSHORT(coverageTable + 2);
-						var l = 0;
-						var r = glyphCount - 1;
-						var m = 0;
-						var straw = 0;
-						var needle = glyph;
-						while (l <= r)
-						{
-							var glyphArray = coverageTable + 4;
-							ushort glyphID = 0;
-							m = (l + r) >> 1;
-							glyphID = ttUSHORT(glyphArray + 2 * m);
-							straw = glyphID;
-							if (needle < straw)
-								r = m - 1;
-							else if (needle > straw)
-								l = m + 1;
-							else
-								return m;
-						}
-
-						break;
-					}
-
-				case 2:
-					{
-						var rangeCount = ttUSHORT(coverageTable + 2);
-						var rangeArray = coverageTable + 4;
-						var l = 0;
-						var r = rangeCount - 1;
-						var m = 0;
-						var strawStart = 0;
-						var strawEnd = 0;
-						var needle = glyph;
-						while (l <= r)
-						{
-							m = (l + r) >> 1;
-							var rangeRecord = rangeArray + 6 * m;
-							strawStart = ttUSHORT(rangeRecord);
-							strawEnd = ttUSHORT(rangeRecord + 2);
-							if (needle < strawStart)
-							{
-								r = m - 1;
-							}
-							else if (needle > strawEnd)
-							{
-								l = m + 1;
-							}
-							else
-							{
-								var startCoverageIndex = ttUSHORT(rangeRecord + 4);
-								return startCoverageIndex + glyph - strawStart;
-							}
-						}
-
-						break;
-					}
-
-				default:
-					return -1;
-			}
-
-			return -1;
-		}
-
 		public static int stbtt__GetGlyfOffset(stbtt_fontinfo info, int glyph_index)
 		{
 			var g1 = 0;
@@ -256,6 +184,78 @@ namespace StbTrueTypeNext
 			}
 
 			return 0;
+		}
+
+		private static int stbtt__GetCoverageIndex(FakePtr<byte> coverageTable, int glyph)
+		{
+			var coverageFormat = ttUSHORT(coverageTable);
+			switch (coverageFormat)
+			{
+				case 1:
+					{
+						var glyphCount = ttUSHORT(coverageTable + 2);
+						var l = 0;
+						var r = glyphCount - 1;
+						var m = 0;
+						var straw = 0;
+						var needle = glyph;
+						while (l <= r)
+						{
+							var glyphArray = coverageTable + 4;
+							ushort glyphID = 0;
+							m = (l + r) >> 1;
+							glyphID = ttUSHORT(glyphArray + 2 * m);
+							straw = glyphID;
+							if (needle < straw)
+								r = m - 1;
+							else if (needle > straw)
+								l = m + 1;
+							else
+								return m;
+						}
+
+						break;
+					}
+
+				case 2:
+					{
+						var rangeCount = ttUSHORT(coverageTable + 2);
+						var rangeArray = coverageTable + 4;
+						var l = 0;
+						var r = rangeCount - 1;
+						var m = 0;
+						var strawStart = 0;
+						var strawEnd = 0;
+						var needle = glyph;
+						while (l <= r)
+						{
+							m = (l + r) >> 1;
+							var rangeRecord = rangeArray + 6 * m;
+							strawStart = ttUSHORT(rangeRecord);
+							strawEnd = ttUSHORT(rangeRecord + 2);
+							if (needle < strawStart)
+							{
+								r = m - 1;
+							}
+							else if (needle > strawEnd)
+							{
+								l = m + 1;
+							}
+							else
+							{
+								var startCoverageIndex = ttUSHORT(rangeRecord + 4);
+								return startCoverageIndex + glyph - strawStart;
+							}
+						}
+
+						break;
+					}
+
+				default:
+					return -1;
+			}
+
+			return -1;
 		}
 
 		public static int stbtt__GetGlyphGPOSInfoAdvance(stbtt_fontinfo info, int glyph1, int glyph2)

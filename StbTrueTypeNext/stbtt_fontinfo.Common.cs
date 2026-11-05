@@ -79,15 +79,15 @@ namespace StbTrueTypeNext
 			if (start_off != 0)
 			{
 				if (was_off != 0)
-					stbtt_fontinfo.stbtt_setvertex(ref vertices[num_vertices++], stbtt_fontinfo.STBTT_vcurve, (cx + scx) >> 1, (cy + scy) >> 1, cx, cy);
-				stbtt_fontinfo.stbtt_setvertex(ref vertices[num_vertices++], stbtt_fontinfo.STBTT_vcurve, sx, sy, scx, scy);
+					stbtt_setvertex(ref vertices[num_vertices++], STBTT_vcurve, (cx + scx) >> 1, (cy + scy) >> 1, cx, cy);
+				stbtt_setvertex(ref vertices[num_vertices++], STBTT_vcurve, sx, sy, scx, scy);
 			}
 			else
 			{
 				if (was_off != 0)
-					stbtt_fontinfo.stbtt_setvertex(ref vertices[num_vertices++], stbtt_fontinfo.STBTT_vcurve, sx, sy, cx, cy);
+					stbtt_setvertex(ref vertices[num_vertices++], STBTT_vcurve, sx, sy, cx, cy);
 				else
-					stbtt_fontinfo.stbtt_setvertex(ref vertices[num_vertices++], stbtt_fontinfo.STBTT_vline, sx, sy, 0, 0);
+					stbtt_setvertex(ref vertices[num_vertices++], STBTT_vline, sx, sy, 0, 0);
 			}
 
 			return num_vertices;
@@ -706,7 +706,7 @@ namespace StbTrueTypeNext
 			var bottom_y = 0;
 			var i = 0;
 
-			var f = stbtt_fontinfo.FromMemory(data, offset);
+			var f = FromMemory(data, offset);
 			pixels.Set((byte)0, pw * ph);
 			x = y = 1;
 			bottom_y = 1;
@@ -875,7 +875,7 @@ namespace StbTrueTypeNext
 			var i_descent = 0;
 			var i_lineGap = 0;
 			float scale = 0;
-			var info = stbtt_fontinfo.FromMemory(fontdata, stbtt_GetFontOffsetForIndex(fontdata, index));
+			var info = FromMemory(fontdata, stbtt_GetFontOffsetForIndex(fontdata, index));
 			scale = size > 0 ? stbtt_ScaleForPixelHeight(info, size) : stbtt_ScaleForMappingEmToPixels(info, -size);
 			stbtt_GetFontVMetrics(info, out i_ascent, out i_descent, out i_lineGap);
 
