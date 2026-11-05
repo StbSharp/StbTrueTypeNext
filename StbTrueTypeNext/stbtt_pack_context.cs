@@ -83,15 +83,14 @@ namespace StbTrueTypeNext
 			var rects = new stbrp_rect[n];
 
 			stbtt_InitFont(info, fontdata, stbtt_GetFontOffsetForIndex(fontdata, font_index));
-			n = stbtt_PackFontRangesGatherRects(this, info, ranges, rects);
+			n = stbtt_PackFontRangesGatherRects(info, ranges, rects);
 			stbtt_PackFontRangesPackRects(this, rects, n);
 			return_value = stbtt_PackFontRangesRenderIntoRects(this, info, ranges, rects);
 
 			return return_value;
 		}
 
-		private static int stbtt_PackFontRangesGatherRects(stbtt_pack_context spc, stbtt_fontinfo info,
-			stbtt_pack_range[] ranges, stbrp_rect[] rects)
+		private int stbtt_PackFontRangesGatherRects(stbtt_fontinfo info, stbtt_pack_range[] ranges, stbrp_rect[] rects)
 		{
 			var i = 0;
 			var j = 0;
@@ -104,8 +103,8 @@ namespace StbTrueTypeNext
 			{
 				var fh = ranges[i].font_size;
 				var scale = fh > 0 ? stbtt_ScaleForPixelHeight(info, fh) : stbtt_ScaleForMappingEmToPixels(info, -fh);
-				ranges[i].h_oversample = (byte)spc._h_oversample;
-				ranges[i].v_oversample = (byte)spc._v_oversample;
+				ranges[i].h_oversample = (byte)_h_oversample;
+				ranges[i].v_oversample = (byte)_v_oversample;
 				for (j = 0; j < ranges[i].num_chars; ++j)
 				{
 					var x0 = 0;
@@ -116,18 +115,20 @@ namespace StbTrueTypeNext
 						? ranges[i].first_unicode_codepoint_in_range + j
 						: ranges[i].array_of_unicode_codepoints[j];
 					var glyph = stbtt_FindGlyphIndex(info, codepoint);
-					if (glyph == 0 && (spc._skip_missing != 0 || missing_glyph_added != 0))
+					if (glyph == 0 && (_skip_missing != 0 || missing_glyph_added != 0))
 					{
 						rects[k].w = rects[k].h = 0;
 					}
 					else
 					{
-						stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale * spc._h_oversample, scale * spc._v_oversample,
+						stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale * _h_oversample, scale * _v_oversample,
 							0, 0, out x0, out y0, out x1, out y1);
-						rects[k].w = (int)(x1 - x0 + spc._padding + spc._h_oversample - 1);
-						rects[k].h = (int)(y1 - y0 + spc._padding + spc._v_oversample - 1);
+						rects[k].w = (int)(x1 - x0 + _padding + _h_oversample - 1);
+						rects[k].h = (int)(y1 - y0 + _padding + _v_oversample - 1);
 						if (glyph == 0)
+						{
 							missing_glyph_added = 1;
+						}
 					}
 
 					++k;
