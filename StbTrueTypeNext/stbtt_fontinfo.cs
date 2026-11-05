@@ -1204,9 +1204,9 @@ namespace StbTrueTypeNext
 				pixel_dist_scale, out width, out height, out xoff, out yoff);
 		}
 
-		public static int stbtt_GetCodepointShape(stbtt_fontinfo info, int unicode_codepoint, out STTVertex[] vertices)
+		public int stbtt_GetCodepointShape(int unicode_codepoint, out STTVertex[] vertices)
 		{
-			return stbtt_GetGlyphShape(info, info.stbtt_FindGlyphIndex(unicode_codepoint), out vertices);
+			return stbtt_GetGlyphShape(this, stbtt_FindGlyphIndex(unicode_codepoint), out vertices);
 		}
 
 		public static int stbtt_GetCodepointSVG(stbtt_fontinfo info, int unicode_codepoint, ref FakePtr<byte> svg)
