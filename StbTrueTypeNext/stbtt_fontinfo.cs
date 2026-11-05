@@ -1160,10 +1160,10 @@ namespace StbTrueTypeNext
 				out width, out height, out xoff, out yoff);
 		}
 
-		public static void stbtt_GetCodepointBitmapBox(stbtt_fontinfo font, int codepoint, float scale_x, float scale_y,
+		public void stbtt_GetCodepointBitmapBox(int codepoint, float scale_x, float scale_y,
 			out int ix0, out int iy0, out int ix1, out int iy1)
 		{
-			stbtt_GetCodepointBitmapBoxSubpixel(font, codepoint, scale_x, scale_y, 0.0f, 0.0f, out ix0, out iy0, out ix1, out iy1);
+			stbtt_GetCodepointBitmapBoxSubpixel(this, codepoint, scale_x, scale_y, 0.0f, 0.0f, out ix0, out iy0, out ix1, out iy1);
 		}
 
 		public static void stbtt_GetCodepointBitmapBoxSubpixel(stbtt_fontinfo font, int codepoint, float scale_x,
