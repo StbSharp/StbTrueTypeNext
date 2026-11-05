@@ -242,7 +242,7 @@ namespace StbTrueTypeNext
 			return (float)Math.Pow(x, 1.0f / 3.0f);
 		}
 
-		public static int stbtt__isfont(FakePtr<byte> font)
+		private static int stbtt__isfont(FakePtr<byte> font)
 		{
 			if (font[0] == 49 && font[1] == 0 && font[2] == 0 && font[3] == 0)
 				return 1;
@@ -257,7 +257,7 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static int stbtt__matches(FakePtr<byte> fc, uint offset, byte[] name, int flags)
+		private static int stbtt__matches(FakePtr<byte> fc, uint offset, byte[] name, int flags)
 		{
 			var nlen = name.Length;
 			uint nm = 0;
@@ -296,7 +296,7 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static int stbtt__matchpair(FakePtr<byte> fc, uint nm, byte[] name, int nlen, int target_id, int next_id)
+		private static int stbtt__matchpair(FakePtr<byte> fc, uint nm, byte[] name, int nlen, int target_id, int next_id)
 		{
 			var i = 0;
 			int count = ttUSHORT(fc + nm + 2);
