@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using static StbTrueTypeNext.StbTrueType;
+﻿using static StbTrueTypeNext.StbTrueType;
 
 namespace StbTrueTypeNext
 {
@@ -15,15 +14,6 @@ namespace StbTrueTypeNext
 		private int stride_in_bytes;
 		private uint v_oversample;
 		private int width;
-
-		private static void stbrp_init_target(stbrp_context con, int pw, int ph)
-		{
-			con.width = pw;
-			con.height = ph;
-			con.x = 0;
-			con.y = 0;
-			con.bottom_y = 0;
-		}
 
 		private static void stbrp_pack_rects(stbrp_context con, stbrp_rect[] rects, int num_rects)
 		{
@@ -64,7 +54,7 @@ namespace StbTrueTypeNext
 			h_oversample = 1;
 			v_oversample = 1;
 			skip_missing = 0;
-			stbrp_init_target(context, pw - _padding, ph - _padding);
+			context.stbrp_init_target(pw - _padding, ph - _padding);
 
 			_pixels.Set((byte)0, pw * ph);
 		}
@@ -282,6 +272,15 @@ namespace StbTrueTypeNext
 			public int x;
 			public int y;
 			public int bottom_y;
+
+			public void stbrp_init_target(int pw, int ph)
+			{
+				width = pw;
+				height = ph;
+				x = 0;
+				y = 0;
+				bottom_y = 0;
+			}
 		}
 
 		private struct stbrp_node
