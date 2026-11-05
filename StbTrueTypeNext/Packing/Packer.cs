@@ -118,7 +118,7 @@ namespace StbTrueTypeNext.Packing
 					}
 					else
 					{
-						stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale * _h_oversample, scale * _v_oversample,
+						info.stbtt_GetGlyphBitmapBoxSubpixel(glyph, scale * _h_oversample, scale * _v_oversample,
 							0, 0, out x0, out y0, out x1, out y1);
 						rects[k].w = (int)(x1 - x0 + _padding + _h_oversample - 1);
 						rects[k].h = (int)(y1 - y0 + _padding + _v_oversample - 1);

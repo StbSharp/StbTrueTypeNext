@@ -1169,7 +1169,7 @@ namespace StbTrueTypeNext
 		public void stbtt_GetCodepointBitmapBoxSubpixel(int codepoint, float scale_x,
 			float scale_y, float shift_x, float shift_y, out int ix0, out int iy0, out int ix1, out int iy1)
 		{
-			stbtt_GetGlyphBitmapBoxSubpixel(this, stbtt_FindGlyphIndex(codepoint), scale_x, scale_y, shift_x,
+			stbtt_GetGlyphBitmapBoxSubpixel(stbtt_FindGlyphIndex(codepoint), scale_x, scale_y, shift_x,
 				shift_y, out ix0, out iy0, out ix1, out iy1);
 		}
 
@@ -1293,17 +1293,17 @@ namespace StbTrueTypeNext
 		public void stbtt_GetGlyphBitmapBox(int glyph, float scale_x, float scale_y,
 			out int ix0, out int iy0, out int ix1, out int iy1)
 		{
-			stbtt_GetGlyphBitmapBoxSubpixel(this, glyph, scale_x, scale_y, 0.0f, 0.0f, out ix0, out iy0, out ix1, out iy1);
+			stbtt_GetGlyphBitmapBoxSubpixel(glyph, scale_x, scale_y, 0.0f, 0.0f, out ix0, out iy0, out ix1, out iy1);
 		}
 
-		public static void stbtt_GetGlyphBitmapBoxSubpixel(stbtt_fontinfo font, int glyph, float scale_x, float scale_y,
+		public void stbtt_GetGlyphBitmapBoxSubpixel(int glyph, float scale_x, float scale_y,
 			float shift_x, float shift_y, out int ix0, out int iy0, out int ix1, out int iy1)
 		{
 			var x0 = 0;
 			var y0 = 0;
 			var x1 = 0;
 			var y1 = 0;
-			if (stbtt_GetGlyphBox(font, glyph, out x0, out y0, out x1, out y1) == 0)
+			if (stbtt_GetGlyphBox(this, glyph, out x0, out y0, out x1, out y1) == 0)
 			{
 				ix0 = 0;
 				iy0 = 0;
@@ -1342,7 +1342,7 @@ namespace StbTrueTypeNext
 				scale_y = scale_x;
 			}
 
-			stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
+			info.stbtt_GetGlyphBitmapBoxSubpixel(glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
 
 			width = ix1 - ix0;
 			height = iy1 - iy0;
@@ -1426,7 +1426,7 @@ namespace StbTrueTypeNext
 			var h = 0;
 			if (scale == 0)
 				return null;
-			stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale, scale, 0.0f, 0.0f, out ix0, out iy0, out ix1, out iy1);
+			info.stbtt_GetGlyphBitmapBoxSubpixel(glyph, scale, scale, 0.0f, 0.0f, out ix0, out iy0, out ix1, out iy1);
 			if (ix0 == ix1 || iy0 == iy1)
 				return null;
 			ix0 -= padding;
@@ -1856,7 +1856,7 @@ namespace StbTrueTypeNext
 			var iy1 = 0;
 			STTVertex[] vertices;
 			var num_verts = stbtt_GetGlyphShape(info, glyph, out vertices);
-			stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
+			info.stbtt_GetGlyphBitmapBoxSubpixel(glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
 
 			if (out_w != 0 && out_h != 0)
 			{
