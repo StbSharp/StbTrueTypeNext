@@ -50,9 +50,7 @@ class Program
 			var advance = (int)(advanceTemp * scale + 0.5f);
 
 			int x0, y0, x1, y1;
-			stbtt_GetGlyphBitmapBox(
-				info, glyphId, scale, scale, out x0, out y0, out x1, out y1
-			);
+			info.stbtt_GetGlyphBitmapBox(glyphId, scale, scale, out x0, out y0, out x1, out y1);
 
 			posX += x0;
 			posY = ascent + y0;

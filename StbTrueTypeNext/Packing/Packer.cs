@@ -184,7 +184,7 @@ namespace StbTrueTypeNext.Packing
 						r.w -= pad;
 						r.h -= pad;
 						stbtt_GetGlyphHMetrics(info, glyph, out advance, out lsb);
-						stbtt_GetGlyphBitmapBox(info, glyph, scale * _h_oversample, scale * _v_oversample,
+						info.stbtt_GetGlyphBitmapBox(glyph, scale * _h_oversample, scale * _v_oversample,
 							out x0, out y0, out x1, out y1);
 						stbtt_MakeGlyphBitmapSubpixel(info, new FakePtr<byte>(_pixels, r.x + r.y * _stride_in_bytes),
 							(int)(r.w - _h_oversample + 1), (int)(r.h - _v_oversample + 1),
