@@ -1269,11 +1269,11 @@ namespace StbTrueTypeNext
 			lineGap = ttSHORT(dataPtr + _hhea + 8);
 		}
 
-		public static int stbtt_GetFontVMetricsOS2(stbtt_fontinfo info, out int typoAscent, out int typoDescent, out int typoLineGap)
+		public int stbtt_GetFontVMetricsOS2(out int typoAscent, out int typoDescent, out int typoLineGap)
 		{
 			typoAscent = typoDescent = typoLineGap = 0;
-			var dataPtr = new FakePtr<byte>(info._data);
-			var tab = (int)stbtt__find_table(dataPtr, (uint)info._fontstart, "OS/2");
+			var dataPtr = new FakePtr<byte>(_data);
+			var tab = (int)stbtt__find_table(dataPtr, (uint)_fontstart, "OS/2");
 			if (tab == 0)
 				return 0;
 
