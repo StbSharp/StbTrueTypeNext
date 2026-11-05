@@ -29,22 +29,6 @@ namespace StbTrueTypeNext
 
 		public RasterizerVersion RasterizerVersion { get; set; } = RasterizerVersion.V2;
 
-		public static uint stbtt__find_table(FakePtr<byte> data, uint fontstart, string tag)
-		{
-			int num_tables = ttUSHORT(data + fontstart + 4);
-			var tabledir = fontstart + 12;
-			int i;
-			for (i = 0; i < num_tables; ++i)
-			{
-				var loc = (uint)(tabledir + 16 * i);
-				if ((data + loc + 0)[0] == tag[0] && (data + loc + 0)[1] == tag[1] &&
-					(data + loc + 0)[2] == tag[2] && (data + loc + 0)[3] == tag[3])
-					return ttULONG(data + loc + 8);
-			}
-
-			return 0;
-		}
-
 		/// <summary>
 		/// Creates and initializes a font from ttf/otf/ttc data
 		/// </summary>
@@ -129,7 +113,7 @@ namespace StbTrueTypeNext
 			var dataPtr = new FakePtr<byte>(info._data);
 			if (info._svg < 0)
 			{
-				t = stbtt__find_table(dataPtr, (uint)info._fontstart, "SVG ");
+				t = dataPtr.stbtt__find_table((uint)info._fontstart, "SVG ");
 				if (t != 0)
 				{
 					var offset = ttULONG(dataPtr + t + 2);
@@ -1262,7 +1246,7 @@ namespace StbTrueTypeNext
 			var stringOffset = 0;
 			var fc = new FakePtr<byte>(font._data);
 			var offset = (uint)font._fontstart;
-			var nm = stbtt__find_table(fc, offset, "name");
+			var nm = fc.stbtt__find_table(offset, "name");
 			if (nm == 0)
 			{
 				return null;
@@ -1305,7 +1289,7 @@ namespace StbTrueTypeNext
 		{
 			typoAscent = typoDescent = typoLineGap = 0;
 			var dataPtr = new FakePtr<byte>(info._data);
-			var tab = (int)stbtt__find_table(dataPtr, (uint)info._fontstart, "OS/2");
+			var tab = (int)dataPtr.stbtt__find_table((uint)info._fontstart, "OS/2");
 			if (tab == 0)
 				return 0;
 
@@ -1730,14 +1714,14 @@ namespace StbTrueTypeNext
 			info._cff = Buffer.Null;
 
 			var dataPtr = new FakePtr<byte>(data);
-			cmap = stbtt__find_table(dataPtr, (uint)fontstart, "cmap");
-			info._loca = (int)stbtt__find_table(dataPtr, (uint)fontstart, "loca");
-			info._head = (int)stbtt__find_table(dataPtr, (uint)fontstart, "head");
-			info._glyf = (int)stbtt__find_table(dataPtr, (uint)fontstart, "glyf");
-			info._hhea = (int)stbtt__find_table(dataPtr, (uint)fontstart, "hhea");
-			info._hmtx = (int)stbtt__find_table(dataPtr, (uint)fontstart, "hmtx");
-			info._kern = (int)stbtt__find_table(dataPtr, (uint)fontstart, "kern");
-			info._gpos = (int)stbtt__find_table(dataPtr, (uint)fontstart, "GPOS");
+			cmap = dataPtr.stbtt__find_table((uint)fontstart, "cmap");
+			info._loca = (int)dataPtr.stbtt__find_table((uint)fontstart, "loca");
+			info._head = (int)dataPtr.stbtt__find_table((uint)fontstart, "head");
+			info._glyf = (int)dataPtr.stbtt__find_table((uint)fontstart, "glyf");
+			info._hhea = (int)dataPtr.stbtt__find_table((uint)fontstart, "hhea");
+			info._hmtx = (int)dataPtr.stbtt__find_table((uint)fontstart, "hmtx");
+			info._kern = (int)dataPtr.stbtt__find_table((uint)fontstart, "kern");
+			info._gpos = (int)dataPtr.stbtt__find_table((uint)fontstart, "GPOS");
 			if (cmap == 0 || info._head == 0 || info._hhea == 0 || info._hmtx == 0)
 				return 0;
 			if (info._glyf != 0)
@@ -1751,7 +1735,7 @@ namespace StbTrueTypeNext
 				var topdict = new Buffer();
 				var topdictidx = new Buffer();
 				uint cff = 0;
-				cff = stbtt__find_table(dataPtr, (uint)fontstart, "CFF ");
+				cff = dataPtr.stbtt__find_table((uint)fontstart, "CFF ");
 				if (cff == 0)
 					return 0;
 				info._fontdicts = Buffer.Null;
@@ -1793,7 +1777,7 @@ namespace StbTrueTypeNext
 				info._charstrings = b.stbtt__cff_get_index();
 			}
 
-			t = stbtt__find_table(dataPtr, (uint)fontstart, "maxp");
+			t = dataPtr.stbtt__find_table((uint)fontstart, "maxp");
 			if (t != 0)
 				info._numGlyphs = ttUSHORT(dataPtr + t + 4);
 			else

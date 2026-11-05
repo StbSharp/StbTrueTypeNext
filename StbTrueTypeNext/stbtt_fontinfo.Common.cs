@@ -314,12 +314,12 @@ namespace StbTrueTypeNext
 				return 0;
 			if (flags != 0)
 			{
-				hd = stbtt__find_table(fc, offset, "head");
+				hd = fc.stbtt__find_table(offset, "head");
 				if ((ttUSHORT(fc + hd + 44) & 7) != (flags & 7))
 					return 0;
 			}
 
-			nm = stbtt__find_table(fc, offset, "name");
+			nm = fc.stbtt__find_table(offset, "name");
 			if (nm == 0)
 				return 0;
 			if (flags != 0)
