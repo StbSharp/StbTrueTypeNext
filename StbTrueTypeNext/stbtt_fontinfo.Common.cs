@@ -93,7 +93,7 @@ namespace StbTrueTypeNext
 			return num_vertices;
 		}
 
-		public static int stbtt__CompareUTF8toUTF16_bigendian_prefix(FakePtr<byte> s1, int len1, FakePtr<byte> s2, int len2)
+		private static int stbtt__CompareUTF8toUTF16_bigendian_prefix(FakePtr<byte> s1, int len1, FakePtr<byte> s2, int len2)
 		{
 			var i = 0;
 			while (len2 != 0)
@@ -156,7 +156,7 @@ namespace StbTrueTypeNext
 			return i;
 		}
 
-		public static int stbtt__compute_crossings_x(float x, float y, int nverts, STTVertex[] verts)
+		private static int stbtt__compute_crossings_x(float x, float y, int nverts, STTVertex[] verts)
 		{
 			var i = 0;
 			var orig = new float[2];
@@ -235,7 +235,7 @@ namespace StbTrueTypeNext
 			return winding;
 		}
 
-		public static float stbtt__cuberoot(float x)
+		private static float stbtt__cuberoot(float x)
 		{
 			if (x < 0)
 				return -(float)Math.Pow(-x, 1.0f / 3.0f);
