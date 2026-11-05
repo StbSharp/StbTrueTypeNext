@@ -39,11 +39,11 @@ public class FontBaker
 		if (!characterRanges.Any())
 			throw new ArgumentException("characterRanges must have a least one value.");
 
-		var fontInfo = stbtt_fontinfo.FromMemory(ttf);
-		var scaleFactor = fontInfo.stbtt_ScaleForPixelHeight(fontPixelHeight);
+		var font = stbtt_fontinfo.FromMemory(ttf);
+		var scaleFactor = font.stbtt_ScaleForPixelHeight(fontPixelHeight);
 
 		int ascent, descent, lineGap;
-		fontInfo.stbtt_GetFontVMetrics(out ascent, out descent, out lineGap);
+		font.stbtt_GetFontVMetrics(out ascent, out descent, out lineGap);
 
 		foreach (var range in characterRanges)
 		{
@@ -51,7 +51,7 @@ public class FontBaker
 				continue;
 
 			var cd = new PackedChar[range.End - range.Start + 1];
-			_context.stbtt_PackFontRange(fontInfo.Data, 0, fontPixelHeight,
+			_context.stbtt_PackFontRange(font, fontPixelHeight,
 				range.Start,
 				range.End - range.Start + 1,
 				cd);

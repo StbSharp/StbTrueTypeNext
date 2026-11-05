@@ -1,6 +1,4 @@
-﻿using static StbTrueTypeNext.stbtt_fontinfo;
-
-namespace StbTrueTypeNext.Packing
+﻿namespace StbTrueTypeNext.Packing
 {
 	public class Packer
 	{
@@ -39,7 +37,7 @@ namespace StbTrueTypeNext.Packing
 		{
 		}
 
-		public int stbtt_PackFontRange(byte[] fontdata, int font_index, float font_size,
+		public int stbtt_PackFontRange(stbtt_fontinfo font, float font_size,
 			int first_unicode_codepoint_in_range, int num_chars_in_range, PackedChar[] chardata_for_range)
 		{
 			var range = new PackRange
@@ -53,10 +51,10 @@ namespace StbTrueTypeNext.Packing
 
 			var ranges = new PackRange[] { range };
 
-			return stbtt_PackFontRanges(fontdata, font_index, ranges);
+			return stbtt_PackFontRanges(font, ranges);
 		}
 
-		public int stbtt_PackFontRanges(byte[] fontdata, int font_index, PackRange[] ranges)
+		public int stbtt_PackFontRanges(stbtt_fontinfo font, PackRange[] ranges)
 		{
 			var i = 0;
 			var j = 0;
@@ -80,11 +78,10 @@ namespace StbTrueTypeNext.Packing
 
 			var rects = new PackRect[n];
 
-			var info = stbtt_fontinfo.FromMemory(fontdata, FontCollection.stbtt_GetFontOffsetForIndex(fontdata, font_index));
-			n = stbtt_PackFontRangesGatherRects(info, ranges, rects);
+			n = stbtt_PackFontRangesGatherRects(font, ranges, rects);
 			stbtt_PackFontRangesPackRects(rects, n);
 
-			return stbtt_PackFontRangesRenderIntoRects(info, ranges, rects);
+			return stbtt_PackFontRangesRenderIntoRects(font, ranges, rects);
 		}
 
 		private int stbtt_PackFontRangesGatherRects(stbtt_fontinfo info, PackRange[] ranges, PackRect[] rects)
