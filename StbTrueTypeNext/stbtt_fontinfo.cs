@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace StbTrueTypeNext
@@ -33,7 +32,7 @@ namespace StbTrueTypeNext
 		public static stbtt_fontinfo FromMemory(byte[] data, int offset = 0)
 		{
 			var info = new stbtt_fontinfo();
-			if (stbtt_InitFont_internal(info, data, offset) == 0)
+			if (info.stbtt_InitFont_internal(data, offset) == 0)
 			{
 				throw new Exception("Unable to parse font");
 			}
@@ -1685,30 +1684,30 @@ namespace StbTrueTypeNext
 			return table;
 		}
 
-		public static int stbtt_InitFont_internal(stbtt_fontinfo info, byte[] data, int fontstart)
+		private int stbtt_InitFont_internal(byte[] data, int fontstart)
 		{
 			uint cmap = 0;
 			uint t = 0;
 			var i = 0;
 			var numTables = 0;
-			info._data = data;
-			info._fontstart = fontstart;
-			info._cff = Buffer.Null;
+			_data = data;
+			_fontstart = fontstart;
+			_cff = Buffer.Null;
 
 			var dataPtr = new FakePtr<byte>(data);
 			cmap = stbtt__find_table(dataPtr, (uint)fontstart, "cmap");
-			info._loca = (int)stbtt__find_table(dataPtr, (uint)fontstart, "loca");
-			info._head = (int)stbtt__find_table(dataPtr, (uint)fontstart, "head");
-			info._glyf = (int)stbtt__find_table(dataPtr, (uint)fontstart, "glyf");
-			info._hhea = (int)stbtt__find_table(dataPtr, (uint)fontstart, "hhea");
-			info._hmtx = (int)stbtt__find_table(dataPtr, (uint)fontstart, "hmtx");
-			info._kern = (int)stbtt__find_table(dataPtr, (uint)fontstart, "kern");
-			info._gpos = (int)stbtt__find_table(dataPtr, (uint)fontstart, "GPOS");
-			if (cmap == 0 || info._head == 0 || info._hhea == 0 || info._hmtx == 0)
+			_loca = (int)stbtt__find_table(dataPtr, (uint)fontstart, "loca");
+			_head = (int)stbtt__find_table(dataPtr, (uint)fontstart, "head");
+			_glyf = (int)stbtt__find_table(dataPtr, (uint)fontstart, "glyf");
+			_hhea = (int)stbtt__find_table(dataPtr, (uint)fontstart, "hhea");
+			_hmtx = (int)stbtt__find_table(dataPtr, (uint)fontstart, "hmtx");
+			_kern = (int)stbtt__find_table(dataPtr, (uint)fontstart, "kern");
+			_gpos = (int)stbtt__find_table(dataPtr, (uint)fontstart, "GPOS");
+			if (cmap == 0 || _head == 0 || _hhea == 0 || _hmtx == 0)
 				return 0;
-			if (info._glyf != 0)
+			if (_glyf != 0)
 			{
-				if (info._loca == 0)
+				if (_loca == 0)
 					return 0;
 			}
 			else
@@ -1720,17 +1719,17 @@ namespace StbTrueTypeNext
 				cff = stbtt__find_table(dataPtr, (uint)fontstart, "CFF ");
 				if (cff == 0)
 					return 0;
-				info._fontdicts = Buffer.Null;
-				info._fdselect = Buffer.Null;
-				info._cff = new Buffer(dataPtr + cff, 512 * 1024 * 1024);
-				b = info._cff;
+				_fontdicts = Buffer.Null;
+				_fdselect = Buffer.Null;
+				_cff = new Buffer(dataPtr + cff, 512 * 1024 * 1024);
+				b = _cff;
 				b.stbtt__buf_skip(2);
 				b.stbtt__buf_seek(b.stbtt__buf_get8());
 				b.stbtt__cff_get_index();
 				topdictidx = b.stbtt__cff_get_index();
 				topdict = Buffer.stbtt__cff_index_get(topdictidx, 0);
 				b.stbtt__cff_get_index();
-				info._gsubrs = b.stbtt__cff_get_index();
+				_gsubrs = b.stbtt__cff_get_index();
 
 				uint cstype = 2;
 				uint charstrings = 0;
@@ -1741,7 +1740,7 @@ namespace StbTrueTypeNext
 				topdict.stbtt__dict_get_ints(0x100 | 36, ref fdarrayoff);
 				topdict.stbtt__dict_get_ints(0x100 | 37, ref fdselectoff);
 
-				info._subrs = Buffer.stbtt__get_subrs(b, topdict);
+				_subrs = Buffer.stbtt__get_subrs(b, topdict);
 				if (cstype != 2)
 					return 0;
 				if (charstrings == 0)
@@ -1751,22 +1750,22 @@ namespace StbTrueTypeNext
 					if (fdselectoff == 0)
 						return 0;
 					b.stbtt__buf_seek((int)fdarrayoff);
-					info._fontdicts = b.stbtt__cff_get_index();
-					info._fdselect = b.stbtt__buf_range((int)fdselectoff, (int)(b.size - fdselectoff));
+					_fontdicts = b.stbtt__cff_get_index();
+					_fdselect = b.stbtt__buf_range((int)fdselectoff, (int)(b.size - fdselectoff));
 				}
 
 				b.stbtt__buf_seek((int)charstrings);
-				info._charstrings = b.stbtt__cff_get_index();
+				_charstrings = b.stbtt__cff_get_index();
 			}
 
 			t = stbtt__find_table(dataPtr, (uint)fontstart, "maxp");
 			if (t != 0)
-				info._numGlyphs = ttUSHORT(dataPtr + t + 4);
+				_numGlyphs = ttUSHORT(dataPtr + t + 4);
 			else
-				info._numGlyphs = 0xffff;
-			info._svg = -1;
+				_numGlyphs = 0xffff;
+			_svg = -1;
 			numTables = ttUSHORT(dataPtr + cmap + 2);
-			info._indexMap = 0;
+			_indexMap = 0;
 			for (i = 0; i < numTables; ++i)
 			{
 				var encoding_record = (uint)(cmap + 4 + 8 * i);
@@ -1777,20 +1776,20 @@ namespace StbTrueTypeNext
 						{
 							case STBTT_MS_EID_UNICODE_BMP:
 							case STBTT_MS_EID_UNICODE_FULL:
-								info._indexMap = (int)(cmap + ttULONG(dataPtr + encoding_record + 4));
+								_indexMap = (int)(cmap + ttULONG(dataPtr + encoding_record + 4));
 								break;
 						}
 
 						break;
 					case STBTT_PLATFORM_ID_UNICODE:
-						info._indexMap = (int)(cmap + ttULONG(dataPtr + encoding_record + 4));
+						_indexMap = (int)(cmap + ttULONG(dataPtr + encoding_record + 4));
 						break;
 				}
 			}
 
-			if (info._indexMap == 0)
+			if (_indexMap == 0)
 				throw new Exception("The font does not have a table mapping from unicode codepoints to font indices.");
-			info._indexToLocFormat = ttUSHORT(dataPtr + info._head + 50);
+			_indexToLocFormat = ttUSHORT(dataPtr + _head + 50);
 			return 1;
 		}
 
