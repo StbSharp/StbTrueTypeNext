@@ -1197,10 +1197,10 @@ namespace StbTrueTypeNext
 			return stbtt_GetGlyphKernAdvance(this, stbtt_FindGlyphIndex(ch1), stbtt_FindGlyphIndex(ch2));
 		}
 
-		public static byte[] stbtt_GetCodepointSDF(stbtt_fontinfo info, float scale, int codepoint, int padding,
+		public byte[] stbtt_GetCodepointSDF(float scale, int codepoint, int padding,
 			byte onedge_value, float pixel_dist_scale, out int width, out int height, out int xoff, out int yoff)
 		{
-			return stbtt_GetGlyphSDF(info, scale, info.stbtt_FindGlyphIndex(codepoint), padding, onedge_value,
+			return stbtt_GetGlyphSDF(this, scale, stbtt_FindGlyphIndex(codepoint), padding, onedge_value,
 				pixel_dist_scale, out width, out height, out xoff, out yoff);
 		}
 
