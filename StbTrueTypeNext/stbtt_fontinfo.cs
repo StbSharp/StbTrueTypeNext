@@ -1153,10 +1153,10 @@ namespace StbTrueTypeNext
 			return FakePtr<byte>.Null;
 		}
 
-		public static byte[] stbtt_GetCodepointBitmap(stbtt_fontinfo info, float scale_x, float scale_y, int codepoint,
+		public byte[] stbtt_GetCodepointBitmap(float scale_x, float scale_y, int codepoint,
 			out int width, out int height, out int xoff, out int yoff)
 		{
-			return stbtt_GetCodepointBitmapSubpixel(info, scale_x, scale_y, 0.0f, 0.0f, codepoint,
+			return stbtt_GetCodepointBitmapSubpixel(this, scale_x, scale_y, 0.0f, 0.0f, codepoint,
 				out width, out height, out xoff, out yoff);
 		}
 
