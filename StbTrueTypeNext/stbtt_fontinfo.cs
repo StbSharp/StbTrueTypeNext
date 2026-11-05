@@ -1200,7 +1200,7 @@ namespace StbTrueTypeNext
 		public byte[] stbtt_GetCodepointSDF(float scale, int codepoint, int padding,
 			byte onedge_value, float pixel_dist_scale, out int width, out int height, out int xoff, out int yoff)
 		{
-			return stbtt_GetGlyphSDF(this, scale, stbtt_FindGlyphIndex(codepoint), padding, onedge_value,
+			return stbtt_GetGlyphSDF(scale, stbtt_FindGlyphIndex(codepoint), padding, onedge_value,
 				pixel_dist_scale, out width, out height, out xoff, out yoff);
 		}
 
@@ -1413,8 +1413,8 @@ namespace StbTrueTypeNext
 			return xAdvance;
 		}
 
-		public static byte[] stbtt_GetGlyphSDF(stbtt_fontinfo info, float scale, int glyph, int padding,
-			byte onedge_value, float pixel_dist_scale, out int width, out int height, out int xoff, out int yoff)
+		public byte[] stbtt_GetGlyphSDF(float scale, int glyph, int padding, byte onedge_value, float pixel_dist_scale, 
+			out int width, out int height, out int xoff, out int yoff)
 		{
 			width = height = xoff = yoff = 0;
 			byte[] data = null;
@@ -1429,7 +1429,7 @@ namespace StbTrueTypeNext
 			var h = 0;
 			if (scale == 0)
 				return null;
-			info.stbtt_GetGlyphBitmapBoxSubpixel(glyph, scale, scale, 0.0f, 0.0f, out ix0, out iy0, out ix1, out iy1);
+			stbtt_GetGlyphBitmapBoxSubpixel(glyph, scale, scale, 0.0f, 0.0f, out ix0, out iy0, out ix1, out iy1);
 			if (ix0 == ix1 || iy0 == iy1)
 				return null;
 			ix0 -= padding;
@@ -1450,7 +1450,7 @@ namespace StbTrueTypeNext
 				var i = 0;
 				var j = 0;
 				STTVertex[] verts;
-				var num_verts = stbtt_GetGlyphShape(info, glyph, out verts);
+				var num_verts = stbtt_GetGlyphShape(this, glyph, out verts);
 				data = new byte[w * h];
 				var precompute = new float[num_verts];
 				for (i = 0, j = num_verts - 1; i < num_verts; j = i++)
