@@ -111,7 +111,7 @@ namespace StbTrueTypeNext.Packing
 					var codepoint = ranges[i].array_of_unicode_codepoints == null
 						? ranges[i].first_unicode_codepoint_in_range + j
 						: ranges[i].array_of_unicode_codepoints[j];
-					var glyph = stbtt_FindGlyphIndex(info, codepoint);
+					var glyph = info.stbtt_FindGlyphIndex(codepoint);
 					if (glyph == 0 && (SkipMissing || missing_glyph_added != 0))
 					{
 						rects[k].w = rects[k].h = 0;
@@ -177,7 +177,7 @@ namespace StbTrueTypeNext.Packing
 						var codepoint = ranges[i].array_of_unicode_codepoints == null
 							? ranges[i].first_unicode_codepoint_in_range + j
 							: ranges[i].array_of_unicode_codepoints[j];
-						var glyph = stbtt_FindGlyphIndex(info, codepoint);
+						var glyph = info.stbtt_FindGlyphIndex(codepoint);
 						var pad = _padding;
 						r.x += pad;
 						r.y += pad;

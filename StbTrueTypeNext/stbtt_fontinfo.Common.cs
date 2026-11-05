@@ -721,7 +721,7 @@ namespace StbTrueTypeNext
 				var y1 = 0;
 				var gw = 0;
 				var gh = 0;
-				var g = stbtt_FindGlyphIndex(f, first_char + i);
+				var g = f.stbtt_FindGlyphIndex(first_char + i);
 				stbtt_GetGlyphHMetrics(f, g, out advance, out lsb);
 				stbtt_GetGlyphBitmapBox(f, g, scale, scale, out x0, out y0, out x1, out y1);
 				gw = x1 - x0;

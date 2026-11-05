@@ -39,7 +39,7 @@ class Program
 		for (var i = 0; i < s.Length; ++i)
 		{
 			var c = s[i];
-			var glyphId = stbtt_FindGlyphIndex(info, c);
+			var glyphId = info.stbtt_FindGlyphIndex(c);
 			if (glyphId == 0)
 			{
 				continue;

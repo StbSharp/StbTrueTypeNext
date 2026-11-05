@@ -1035,10 +1035,10 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public static int stbtt_FindGlyphIndex(stbtt_fontinfo info, int unicode_codepoint)
+		public int stbtt_FindGlyphIndex(int unicode_codepoint)
 		{
-			var data = new FakePtr<byte>(info._data);
-			var index_map = (uint)info._indexMap;
+			var data = new FakePtr<byte>(_data);
+			var index_map = (uint)_indexMap;
 			var format = ttUSHORT(data + index_map + 0);
 			if (format == 0)
 			{
@@ -1169,7 +1169,7 @@ namespace StbTrueTypeNext
 		public static void stbtt_GetCodepointBitmapBoxSubpixel(stbtt_fontinfo font, int codepoint, float scale_x,
 			float scale_y, float shift_x, float shift_y, out int ix0, out int iy0, out int ix1, out int iy1)
 		{
-			stbtt_GetGlyphBitmapBoxSubpixel(font, stbtt_FindGlyphIndex(font, codepoint), scale_x, scale_y, shift_x,
+			stbtt_GetGlyphBitmapBoxSubpixel(font, font.stbtt_FindGlyphIndex(codepoint), scale_x, scale_y, shift_x,
 				shift_y, out ix0, out iy0, out ix1, out iy1);
 		}
 
@@ -1177,42 +1177,42 @@ namespace StbTrueTypeNext
 			float shift_x, float shift_y, int codepoint, out int width, out int height, out int xoff, out int yoff)
 		{
 			return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y, shift_x, shift_y,
-				stbtt_FindGlyphIndex(info, codepoint), out width, out height, out xoff, out yoff);
+				info.stbtt_FindGlyphIndex(codepoint), out width, out height, out xoff, out yoff);
 		}
 
 		public static int stbtt_GetCodepointBox(stbtt_fontinfo info, int codepoint, out int x0, out int y0, out int x1, out int y1)
 		{
-			return stbtt_GetGlyphBox(info, stbtt_FindGlyphIndex(info, codepoint), out x0, out y0, out x1, out y1);
+			return stbtt_GetGlyphBox(info, info.stbtt_FindGlyphIndex(codepoint), out x0, out y0, out x1, out y1);
 		}
 
 		public static void stbtt_GetCodepointHMetrics(stbtt_fontinfo info, int codepoint, out int advanceWidth,
 			out int leftSideBearing)
 		{
-			stbtt_GetGlyphHMetrics(info, stbtt_FindGlyphIndex(info, codepoint), out advanceWidth, out leftSideBearing);
+			stbtt_GetGlyphHMetrics(info, info.stbtt_FindGlyphIndex(codepoint), out advanceWidth, out leftSideBearing);
 		}
 
 		public static int stbtt_GetCodepointKernAdvance(stbtt_fontinfo info, int ch1, int ch2)
 		{
 			if (info._kern == 0 && info._gpos == 0)
 				return 0;
-			return stbtt_GetGlyphKernAdvance(info, stbtt_FindGlyphIndex(info, ch1), stbtt_FindGlyphIndex(info, ch2));
+			return stbtt_GetGlyphKernAdvance(info, info.stbtt_FindGlyphIndex(ch1), info.stbtt_FindGlyphIndex(ch2));
 		}
 
 		public static byte[] stbtt_GetCodepointSDF(stbtt_fontinfo info, float scale, int codepoint, int padding,
 			byte onedge_value, float pixel_dist_scale, out int width, out int height, out int xoff, out int yoff)
 		{
-			return stbtt_GetGlyphSDF(info, scale, stbtt_FindGlyphIndex(info, codepoint), padding, onedge_value,
+			return stbtt_GetGlyphSDF(info, scale, info.stbtt_FindGlyphIndex(codepoint), padding, onedge_value,
 				pixel_dist_scale, out width, out height, out xoff, out yoff);
 		}
 
 		public static int stbtt_GetCodepointShape(stbtt_fontinfo info, int unicode_codepoint, out STTVertex[] vertices)
 		{
-			return stbtt_GetGlyphShape(info, stbtt_FindGlyphIndex(info, unicode_codepoint), out vertices);
+			return stbtt_GetGlyphShape(info, info.stbtt_FindGlyphIndex(unicode_codepoint), out vertices);
 		}
 
 		public static int stbtt_GetCodepointSVG(stbtt_fontinfo info, int unicode_codepoint, ref FakePtr<byte> svg)
 		{
-			return stbtt_GetGlyphSVG(info, stbtt_FindGlyphIndex(info, unicode_codepoint), ref svg);
+			return stbtt_GetGlyphSVG(info, info.stbtt_FindGlyphIndex(unicode_codepoint), ref svg);
 		}
 
 		public static void stbtt_GetFontBoundingBox(stbtt_fontinfo info, out int x0, out int y0, out int x1, out int y1)
@@ -1819,7 +1819,7 @@ namespace StbTrueTypeNext
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int codepoint)
 		{
 			stbtt_MakeGlyphBitmapSubpixel(info, new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y,
-				stbtt_FindGlyphIndex(info, codepoint));
+				info.stbtt_FindGlyphIndex(codepoint));
 		}
 
 		public static void stbtt_MakeCodepointBitmapSubpixelPrefilter(stbtt_fontinfo info, byte[] output, int out_w,
@@ -1827,7 +1827,7 @@ namespace StbTrueTypeNext
 			int oversample_y, out float sub_x, out float sub_y, int codepoint)
 		{
 			stbtt_MakeGlyphBitmapSubpixelPrefilter(info, output, out_w, out_h, out_stride, scale_x, scale_y, shift_x,
-				shift_y, oversample_x, oversample_y, out sub_x, out sub_y, stbtt_FindGlyphIndex(info, codepoint));
+				shift_y, oversample_x, oversample_y, out sub_x, out sub_y, info.stbtt_FindGlyphIndex(codepoint));
 		}
 
 		public static void stbtt_MakeGlyphBitmap(stbtt_fontinfo info, byte[] output, int out_w, int out_h,

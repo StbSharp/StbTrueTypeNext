@@ -91,7 +91,7 @@ namespace StbTrueTypeNext.Tests
 					continue;
 				}
 
-				var glyphId = stbtt_FindGlyphIndex(fontInfo, c);
+				var glyphId = fontInfo.stbtt_FindGlyphIndex(c);
 				Assert.NotEqual(0, glyphId);
 
 				int advanceWidth, leftSideBearing;
