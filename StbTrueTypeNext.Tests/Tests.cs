@@ -98,7 +98,7 @@ namespace StbTrueTypeNext.Tests
 				stbtt_GetGlyphHMetrics(fontInfo, glyphId, out advanceWidth, out leftSideBearing);
 
 				int x0, y0, x1, y1;
-				stbtt_GetGlyphBitmapBox(fontInfo, glyphId, scale, scale, out x0, out y0, out x1, out y1);
+				fontInfo.stbtt_GetGlyphBitmapBox(glyphId, scale, scale, out x0, out y0, out x1, out y1);
 
 				var width = x1 - x0;
 				var height = y1 - y0;
