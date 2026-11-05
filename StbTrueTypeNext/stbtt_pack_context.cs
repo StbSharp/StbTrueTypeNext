@@ -15,30 +15,6 @@ namespace StbTrueTypeNext
 		private uint v_oversample;
 		private int width;
 
-		private static void stbrp_pack_rects(stbrp_context con, stbrp_rect[] rects, int num_rects)
-		{
-			var i = 0;
-			for (i = 0; i < num_rects; ++i)
-			{
-				if (con.x + rects[i].w > con.width)
-				{
-					con.x = 0;
-					con.y = con.bottom_y;
-				}
-
-				if (con.y + rects[i].h > con.height)
-					break;
-				rects[i].x = con.x;
-				rects[i].y = con.y;
-				rects[i].was_packed = 1;
-				con.x += rects[i].w;
-				if (con.y + rects[i].h > con.bottom_y)
-					con.bottom_y = con.y + rects[i].h;
-			}
-
-			for (; i < num_rects; ++i) rects[i].was_packed = 0;
-		}
-
 		public void stbtt_PackBegin(byte[] _pixels, int pw, int ph, int _stride_in_bytes, int _padding)
 		{
 			var context = new stbrp_context();
@@ -152,7 +128,7 @@ namespace StbTrueTypeNext
 			return k;
 		}
 
-		private static void stbtt_PackFontRangesPackRects(stbtt_pack_context spc, stbrp_rect[] rects, int num_rects) => stbrp_pack_rects(spc.pack_info, rects, num_rects);
+		private static void stbtt_PackFontRangesPackRects(stbtt_pack_context spc, stbrp_rect[] rects, int num_rects) => spc.pack_info.stbrp_pack_rects(rects, num_rects);
 
 		private static int stbtt_PackFontRangesRenderIntoRects(stbtt_pack_context spc, stbtt_fontinfo info,
 			stbtt_pack_range[] ranges, stbrp_rect[] rects)
@@ -280,6 +256,30 @@ namespace StbTrueTypeNext
 				x = 0;
 				y = 0;
 				bottom_y = 0;
+			}
+
+			public void stbrp_pack_rects(stbrp_rect[] rects, int num_rects)
+			{
+				var i = 0;
+				for (i = 0; i < num_rects; ++i)
+				{
+					if (x + rects[i].w > width)
+					{
+						x = 0;
+						y = bottom_y;
+					}
+
+					if (y + rects[i].h > height)
+						break;
+					rects[i].x = x;
+					rects[i].y = y;
+					rects[i].was_packed = 1;
+					x += rects[i].w;
+					if (y + rects[i].h > bottom_y)
+						bottom_y = y + rects[i].h;
+				}
+
+				for (; i < num_rects; ++i) rects[i].was_packed = 0;
 			}
 		}
 
