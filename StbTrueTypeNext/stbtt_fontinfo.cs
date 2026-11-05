@@ -1872,7 +1872,7 @@ namespace StbTrueTypeNext
 			stbtt_MakeGlyphBitmapSubpixel(output, out_w - (prefilter_x - 1), out_h - (prefilter_y - 1),
 				out_stride, scale_x, scale_y, shift_x, shift_y, glyph);
 			if (prefilter_x > 1)
-				stbtt__h_prefilter(output, out_w, out_h, out_stride, (uint)prefilter_x);
+				Utility.stbtt__h_prefilter(output, out_w, out_h, out_stride, (uint)prefilter_x);
 			if (prefilter_y > 1)
 				stbtt__v_prefilter(output, out_w, out_h, out_stride, (uint)prefilter_y);
 			sub_x = stbtt__oversample_shift(prefilter_x);

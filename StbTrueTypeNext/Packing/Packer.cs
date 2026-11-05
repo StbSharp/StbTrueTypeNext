@@ -190,7 +190,7 @@ namespace StbTrueTypeNext.Packing
 							(int)(r.w - _h_oversample + 1), (int)(r.h - _v_oversample + 1),
 							_stride_in_bytes, scale * _h_oversample, scale * _v_oversample, 0, 0, glyph);
 						if (_h_oversample > 1)
-							stbtt__h_prefilter(new FakePtr<byte>(_pixels, r.x + r.y * _stride_in_bytes), r.w, r.h,
+							Utility.stbtt__h_prefilter(new FakePtr<byte>(_pixels, r.x + r.y * _stride_in_bytes), r.w, r.h,
 								_stride_in_bytes, _h_oversample);
 						if (_v_oversample > 1)
 							stbtt__v_prefilter(new FakePtr<byte>(_pixels, r.x + r.y * _stride_in_bytes), r.w, r.h,
