@@ -98,7 +98,7 @@ namespace StbTrueTypeNext
 			var dataPtr = new FakePtr<byte>(_data);
 			if (_svg < 0)
 			{
-				t = dataPtr.stbtt__find_table((uint)_fontstart, "SVG ");
+				t = stbtt__find_table(dataPtr, (uint)_fontstart, "SVG ");
 				if (t != 0)
 				{
 					var offset = ttULONG(dataPtr + t + 2);
@@ -563,7 +563,7 @@ namespace StbTrueTypeNext
 					if (next_move == i)
 					{
 						if (i != 0)
-							num_vertices = vertices.stbtt__close_shape(num_vertices, was_off, start_off, sx, sy, scx,
+							num_vertices = stbtt__close_shape(vertices, num_vertices, was_off, start_off, sx, sy, scx,
 								scy, cx, cy);
 						start_off = (flags & 1) != 0 ? 0 : 1;
 						if (start_off != 0)
@@ -615,7 +615,7 @@ namespace StbTrueTypeNext
 					}
 				}
 
-				num_vertices = vertices.stbtt__close_shape(num_vertices, was_off, start_off, sx, sy, scx, scy, cx, cy);
+				num_vertices = stbtt__close_shape(vertices, num_vertices, was_off, start_off, sx, sy, scx, scy, cx, cy);
 			}
 			else if (numberOfContours < 0)
 			{
@@ -1231,7 +1231,7 @@ namespace StbTrueTypeNext
 			var stringOffset = 0;
 			var fc = new FakePtr<byte>(font._data);
 			var offset = (uint)font._fontstart;
-			var nm = fc.stbtt__find_table(offset, "name");
+			var nm = stbtt__find_table(fc, offset, "name");
 			if (nm == 0)
 			{
 				return null;
@@ -1274,7 +1274,7 @@ namespace StbTrueTypeNext
 		{
 			typoAscent = typoDescent = typoLineGap = 0;
 			var dataPtr = new FakePtr<byte>(info._data);
-			var tab = (int)dataPtr.stbtt__find_table((uint)info._fontstart, "OS/2");
+			var tab = (int)stbtt__find_table(dataPtr, (uint)info._fontstart, "OS/2");
 			if (tab == 0)
 				return 0;
 
@@ -1694,14 +1694,14 @@ namespace StbTrueTypeNext
 			info._cff = Buffer.Null;
 
 			var dataPtr = new FakePtr<byte>(data);
-			cmap = dataPtr.stbtt__find_table((uint)fontstart, "cmap");
-			info._loca = (int)dataPtr.stbtt__find_table((uint)fontstart, "loca");
-			info._head = (int)dataPtr.stbtt__find_table((uint)fontstart, "head");
-			info._glyf = (int)dataPtr.stbtt__find_table((uint)fontstart, "glyf");
-			info._hhea = (int)dataPtr.stbtt__find_table((uint)fontstart, "hhea");
-			info._hmtx = (int)dataPtr.stbtt__find_table((uint)fontstart, "hmtx");
-			info._kern = (int)dataPtr.stbtt__find_table((uint)fontstart, "kern");
-			info._gpos = (int)dataPtr.stbtt__find_table((uint)fontstart, "GPOS");
+			cmap = stbtt__find_table(dataPtr, (uint)fontstart, "cmap");
+			info._loca = (int)stbtt__find_table(dataPtr, (uint)fontstart, "loca");
+			info._head = (int)stbtt__find_table(dataPtr, (uint)fontstart, "head");
+			info._glyf = (int)stbtt__find_table(dataPtr, (uint)fontstart, "glyf");
+			info._hhea = (int)stbtt__find_table(dataPtr, (uint)fontstart, "hhea");
+			info._hmtx = (int)stbtt__find_table(dataPtr, (uint)fontstart, "hmtx");
+			info._kern = (int)stbtt__find_table(dataPtr, (uint)fontstart, "kern");
+			info._gpos = (int)stbtt__find_table(dataPtr, (uint)fontstart, "GPOS");
 			if (cmap == 0 || info._head == 0 || info._hhea == 0 || info._hmtx == 0)
 				return 0;
 			if (info._glyf != 0)
@@ -1715,7 +1715,7 @@ namespace StbTrueTypeNext
 				var topdict = new Buffer();
 				var topdictidx = new Buffer();
 				uint cff = 0;
-				cff = dataPtr.stbtt__find_table((uint)fontstart, "CFF ");
+				cff = stbtt__find_table(dataPtr, (uint)fontstart, "CFF ");
 				if (cff == 0)
 					return 0;
 				info._fontdicts = Buffer.Null;
@@ -1757,7 +1757,7 @@ namespace StbTrueTypeNext
 				info._charstrings = b.stbtt__cff_get_index();
 			}
 
-			t = dataPtr.stbtt__find_table((uint)fontstart, "maxp");
+			t = stbtt__find_table(dataPtr, (uint)fontstart, "maxp");
 			if (t != 0)
 				info._numGlyphs = ttUSHORT(dataPtr + t + 4);
 			else

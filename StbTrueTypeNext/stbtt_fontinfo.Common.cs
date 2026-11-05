@@ -58,6 +58,41 @@ namespace StbTrueTypeNext
 		public const int STBTT_vline = 2;
 		public const int STBTT_vmove = 1;
 
+		private static uint stbtt__find_table(FakePtr<byte> data, uint fontstart, string tag)
+		{
+			int num_tables = ttUSHORT(data + fontstart + 4);
+			var tabledir = fontstart + 12;
+			int i;
+			for (i = 0; i < num_tables; ++i)
+			{
+				var loc = (uint)(tabledir + 16 * i);
+				if ((data + loc + 0)[0] == tag[0] && (data + loc + 0)[1] == tag[1] &&
+					(data + loc + 0)[2] == tag[2] && (data + loc + 0)[3] == tag[3])
+					return ttULONG(data + loc + 8);
+			}
+
+			return 0;
+		}
+
+		private static int stbtt__close_shape(STTVertex[] vertices, int num_vertices, int was_off, int start_off, int sx, int sy, int scx, int scy, int cx, int cy)
+		{
+			if (start_off != 0)
+			{
+				if (was_off != 0)
+					stbtt_fontinfo.stbtt_setvertex(ref vertices[num_vertices++], stbtt_fontinfo.STBTT_vcurve, (cx + scx) >> 1, (cy + scy) >> 1, cx, cy);
+				stbtt_fontinfo.stbtt_setvertex(ref vertices[num_vertices++], stbtt_fontinfo.STBTT_vcurve, sx, sy, scx, scy);
+			}
+			else
+			{
+				if (was_off != 0)
+					stbtt_fontinfo.stbtt_setvertex(ref vertices[num_vertices++], stbtt_fontinfo.STBTT_vcurve, sx, sy, cx, cy);
+				else
+					stbtt_fontinfo.stbtt_setvertex(ref vertices[num_vertices++], stbtt_fontinfo.STBTT_vline, sx, sy, 0, 0);
+			}
+
+			return num_vertices;
+		}
+
 		internal static void stbtt__add_point(Vector2[] points, int n, float x, float y)
 		{
 			if (points == null)
@@ -314,12 +349,12 @@ namespace StbTrueTypeNext
 				return 0;
 			if (flags != 0)
 			{
-				hd = fc.stbtt__find_table(offset, "head");
+				hd = stbtt__find_table(fc, offset, "head");
 				if ((ttUSHORT(fc + hd + 44) & 7) != (flags & 7))
 					return 0;
 			}
 
-			nm = fc.stbtt__find_table(offset, "name");
+			nm = stbtt__find_table(fc, offset, "name");
 			if (nm == 0)
 				return 0;
 			if (flags != 0)
