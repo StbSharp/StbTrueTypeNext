@@ -51,9 +51,9 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		internal static Buffer stbtt__cid_get_glyph_subrs(stbtt_fontinfo info, int glyph_index)
+		private Buffer stbtt__cid_get_glyph_subrs(int glyph_index)
 		{
-			var fdselect = info._fdselect;
+			var fdselect = _fdselect;
 			var nranges = 0;
 			var start = 0;
 			var end = 0;
@@ -88,7 +88,7 @@ namespace StbTrueTypeNext
 
 			if (fdselector == -1)
 				return Buffer.Null;
-			return Buffer.stbtt__get_subrs(info._cff, Buffer.stbtt__cff_index_get(info._fontdicts, fdselector));
+			return Buffer.stbtt__get_subrs(_cff, Buffer.stbtt__cff_index_get(_fontdicts, fdselector));
 		}
 
 		public static int stbtt__close_shape(STTVertex[] vertices, int num_vertices, int was_off, int start_off,
@@ -909,7 +909,7 @@ namespace StbTrueTypeNext
 						if (b0 == 0x0A && has_subrs == 0)
 						{
 							if (info._fdselect.size != 0)
-								subrs = stbtt__cid_get_glyph_subrs(info, glyph_index);
+								subrs = info.stbtt__cid_get_glyph_subrs(glyph_index);
 							has_subrs = 1;
 						}
 
