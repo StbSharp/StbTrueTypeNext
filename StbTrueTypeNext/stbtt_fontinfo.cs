@@ -1811,14 +1811,14 @@ namespace StbTrueTypeNext
 
 		public void stbtt_MakeCodepointBitmap(byte[] output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, int codepoint)
 		{
-			stbtt_MakeCodepointBitmapSubpixel(this, output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, codepoint);
+			stbtt_MakeCodepointBitmapSubpixel(output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, codepoint);
 		}
 
-		public static void stbtt_MakeCodepointBitmapSubpixel(stbtt_fontinfo info, byte[] output, int out_w, int out_h,
+		public void stbtt_MakeCodepointBitmapSubpixel(byte[] output, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int codepoint)
 		{
-			stbtt_MakeGlyphBitmapSubpixel(info, new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y,
-				info.stbtt_FindGlyphIndex(codepoint));
+			stbtt_MakeGlyphBitmapSubpixel(this, new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y,
+				this.stbtt_FindGlyphIndex(codepoint));
 		}
 
 		public static void stbtt_MakeCodepointBitmapSubpixelPrefilter(stbtt_fontinfo info, byte[] output, int out_w,
