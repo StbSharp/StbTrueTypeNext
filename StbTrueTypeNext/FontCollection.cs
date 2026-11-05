@@ -2,6 +2,50 @@
 {
 	public static class FontCollection
 	{
+		public static int stbtt_FindMatchingFont(byte[] font_collection, byte[] name_utf8, int flags)
+		{
+			var i = 0;
+			for (i = 0; ; ++i)
+			{
+				var off = stbtt_GetFontOffsetForIndex(font_collection, i);
+				if (off < 0)
+					return off;
+				if (stbtt__matches(new FakePtr<byte>(font_collection), (uint)off, name_utf8, flags) != 0)
+					return off;
+			}
+		}
+
+		public static int stbtt_GetFontOffsetForIndex(byte[] data, int index)
+		{
+			var dataPtr = new FakePtr<byte>(data);
+			if (stbtt__isfont(dataPtr) != 0)
+				return index == 0 ? 0 : -1;
+			if (dataPtr[0] == "ttcf"[0] && dataPtr[1] == "ttcf"[1] && dataPtr[2] == "ttcf"[2] &&
+				dataPtr[3] == "ttcf"[3])
+				if (Utility.ttULONG(dataPtr + 4) == 0x00010000 || Utility.ttULONG(dataPtr + 4) == 0x00020000)
+				{
+					var n = Utility.ttLONG(dataPtr + 8);
+					if (index >= n)
+						return -1;
+					return (int)Utility.ttULONG(dataPtr + 12 + index * 4);
+				}
+
+			return -1;
+		}
+
+		public static int stbtt_GetNumberOfFonts(byte[] data)
+		{
+			var dataPtr = new FakePtr<byte>(data);
+			if (stbtt__isfont(dataPtr) != 0)
+				return 1;
+			if (dataPtr[0] == "ttcf"[0] && dataPtr[1] == "ttcf"[1] && dataPtr[2] == "ttcf"[2] &&
+				dataPtr[3] == "ttcf"[3])
+				if (Utility.ttULONG(dataPtr + 4) == 0x00010000 || Utility.ttULONG(dataPtr + 4) == 0x00020000)
+					return Utility.ttLONG(dataPtr + 8);
+
+			return 0;
+		}
+
 		private static int stbtt_CompareUTF8toUTF16_bigendian_internal(FakePtr<byte> s1, int len1, FakePtr<byte> s2, int len2)
 		{
 			return len1 == stbtt__CompareUTF8toUTF16_bigendian_prefix(s1, len1, s2, len2) ? 1 : 0;
@@ -174,50 +218,6 @@
 					}
 				}
 			}
-
-			return 0;
-		}
-
-		public static int stbtt_FindMatchingFont(byte[] font_collection, byte[] name_utf8, int flags)
-		{
-			var i = 0;
-			for (i = 0; ; ++i)
-			{
-				var off = stbtt_GetFontOffsetForIndex(font_collection, i);
-				if (off < 0)
-					return off;
-				if (stbtt__matches(new FakePtr<byte>(font_collection), (uint)off, name_utf8, flags) != 0)
-					return off;
-			}
-		}
-
-		public static int stbtt_GetFontOffsetForIndex(byte[] data, int index)
-		{
-			var dataPtr = new FakePtr<byte>(data);
-			if (stbtt__isfont(dataPtr) != 0)
-				return index == 0 ? 0 : -1;
-			if (dataPtr[0] == "ttcf"[0] && dataPtr[1] == "ttcf"[1] && dataPtr[2] == "ttcf"[2] &&
-				dataPtr[3] == "ttcf"[3])
-				if (Utility.ttULONG(dataPtr + 4) == 0x00010000 || Utility.ttULONG(dataPtr + 4) == 0x00020000)
-				{
-					var n = Utility.ttLONG(dataPtr + 8);
-					if (index >= n)
-						return -1;
-					return (int)Utility.ttULONG(dataPtr + 12 + index * 4);
-				}
-
-			return -1;
-		}
-
-		public static int stbtt_GetNumberOfFonts(byte[] data)
-		{
-			var dataPtr = new FakePtr<byte>(data);
-			if (stbtt__isfont(dataPtr) != 0)
-				return 1;
-			if (dataPtr[0] == "ttcf"[0] && dataPtr[1] == "ttcf"[1] && dataPtr[2] == "ttcf"[2] &&
-				dataPtr[3] == "ttcf"[3])
-				if (Utility.ttULONG(dataPtr + 4) == 0x00010000 || Utility.ttULONG(dataPtr + 4) == 0x00020000)
-					return Utility.ttLONG(dataPtr + 8);
 
 			return 0;
 		}
