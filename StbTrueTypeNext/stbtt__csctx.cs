@@ -21,16 +21,15 @@
 				stbtt__csctx_v(this, StbTrueType.STBTT_vline, (int)first_x, (int)first_y, 0, 0, 0, 0);
 		}
 
-		public static void stbtt__csctx_rccurve_to(stbtt__csctx ctx, float dx1, float dy1, float dx2, float dy2,
-			float dx3, float dy3)
+		public void stbtt__csctx_rccurve_to(float dx1, float dy1, float dx2, float dy2, float dx3, float dy3)
 		{
-			var cx1 = ctx.x + dx1;
-			var cy1 = ctx.y + dy1;
+			var cx1 = x + dx1;
+			var cy1 = y + dy1;
 			var cx2 = cx1 + dx2;
 			var cy2 = cy1 + dy2;
-			ctx.x = cx2 + dx3;
-			ctx.y = cy2 + dy3;
-			stbtt__csctx_v(ctx, StbTrueType.STBTT_vcubic, (int)ctx.x, (int)ctx.y, (int)cx1, (int)cy1, (int)cx2, (int)cy2);
+			x = cx2 + dx3;
+			y = cy2 + dy3;
+			stbtt__csctx_v(this, StbTrueType.STBTT_vcubic, (int)x, (int)y, (int)cx1, (int)cy1, (int)cx2, (int)cy2);
 		}
 
 		public static void stbtt__csctx_rline_to(stbtt__csctx ctx, float dx, float dy)
