@@ -25,9 +25,9 @@ namespace StbTrueTypeNext
 		private int _numGlyphs;
 		private Buffer _subrs;
 		private int _svg;
-		private bool _useOldRasterizer;
-
 		public byte[] Data => _data;
+
+		public RasterizerVersion RasterizerVersion { get; set; } = RasterizerVersion.V2;
 
 		public static uint stbtt__find_table(FakePtr<byte> data, uint fontstart, string tag)
 		{
@@ -1387,7 +1387,7 @@ namespace StbTrueTypeNext
 			}
 
 			var gbm = new Bitmap(width, height);
-			gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info._useOldRasterizer);
+			gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.RasterizerVersion);
 
 			return gbm.Pixels.Data;
 		}
@@ -1898,7 +1898,7 @@ namespace StbTrueTypeNext
 			if (out_w != 0 && out_h != 0)
 			{
 				var gbm = new Bitmap(out_w, out_h, out_stride, output);
-				gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info._useOldRasterizer);
+				gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.RasterizerVersion);
 			}
 		}
 

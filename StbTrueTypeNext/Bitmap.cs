@@ -67,7 +67,7 @@ namespace StbTrueTypeNext
 		}
 
 		public void stbtt__rasterize(Vector2[] pts, int[] wcount,
-			float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, bool useOldRasterizer)
+			float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, RasterizerVersion rasterizerVersion)
 		{
 			var y_scale_inv = invert != 0 ? -scale_y : scale_y;
 			var i = 0;
@@ -76,7 +76,7 @@ namespace StbTrueTypeNext
 			var m = 0;
 
 			var vsubsample = 1;
-			if (useOldRasterizer)
+			if (rasterizerVersion == RasterizerVersion.V1)
 			{
 				vsubsample = (Height) < (8) ? 15 : 5;
 			}
@@ -121,13 +121,14 @@ namespace StbTrueTypeNext
 			// It is somehow used by below methods
 			es.Add(new Edge());
 
-			if (!useOldRasterizer)
+			switch (rasterizerVersion)
 			{
-				RasterizerV2.Rasterize(this, es, vsubsample, off_x, off_y);
-			}
-			else
-			{
-				RasterizerV1.Rasterize(this, es, vsubsample, off_x, off_y);
+				case RasterizerVersion.V1:
+					RasterizerV1.Rasterize(this, es, vsubsample, off_x, off_y);
+					break;
+				case RasterizerVersion.V2:
+					RasterizerV2.Rasterize(this, es, vsubsample, off_x, off_y);
+					break;
 			}
 		}
 
@@ -199,7 +200,7 @@ namespace StbTrueTypeNext
 		}
 
 		public void stbtt_Rasterize(float flatness_in_pixels, STTVertex[] vertices,
-			int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, bool useOldRasterizer)
+			int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, RasterizerVersion rasterizerVersion)
 		{
 			var scale = scale_x > scale_y ? scale_y : scale_x;
 
@@ -207,7 +208,7 @@ namespace StbTrueTypeNext
 			var windings = stbtt_FlattenCurves(vertices, num_verts, flatness_in_pixels / scale, out winding_lengths);
 			if (windings != null)
 			{
-				stbtt__rasterize(windings, winding_lengths, scale_x, scale_y, shift_x, shift_y, x_off, y_off, invert, useOldRasterizer);
+				stbtt__rasterize(windings, winding_lengths, scale_x, scale_y, shift_x, shift_y, x_off, y_off, invert, rasterizerVersion);
 			}
 		}
 	}
