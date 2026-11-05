@@ -1829,10 +1829,10 @@ namespace StbTrueTypeNext
 				shift_y, oversample_x, oversample_y, out sub_x, out sub_y, stbtt_FindGlyphIndex(codepoint));
 		}
 
-		public static void stbtt_MakeGlyphBitmap(stbtt_fontinfo info, byte[] output, int out_w, int out_h,
-			int out_stride, float scale_x, float scale_y, int glyph)
+		public void stbtt_MakeGlyphBitmap(byte[] output, int out_w, int out_h, int out_stride,
+			float scale_x, float scale_y, int glyph)
 		{
-			stbtt_MakeGlyphBitmap(info, new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, glyph);
+			stbtt_MakeGlyphBitmap(this, new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, glyph);
 		}
 
 		public static void stbtt_MakeGlyphBitmap(stbtt_fontinfo info, FakePtr<byte> output, int out_w, int out_h,
