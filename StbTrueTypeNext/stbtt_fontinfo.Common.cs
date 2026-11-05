@@ -472,17 +472,17 @@ namespace StbTrueTypeNext
 			var ipw = 1.0f / pw;
 			var iph = 1.0f / ph;
 			var b = chardata[char_index];
-			var round_x = (int)Math.Floor(xpos + b.xoff + 0.5f);
-			var round_y = (int)Math.Floor(ypos + b.yoff + 0.5f);
+			var round_x = (int)Math.Floor(xpos + b.XOff + 0.5f);
+			var round_y = (int)Math.Floor(ypos + b.YOff + 0.5f);
 			q.x0 = round_x + d3d_bias;
 			q.y0 = round_y + d3d_bias;
-			q.x1 = round_x + b.x1 - b.x0 + d3d_bias;
-			q.y1 = round_y + b.y1 - b.y0 + d3d_bias;
-			q.s0 = b.x0 * ipw;
-			q.t0 = b.y0 * iph;
-			q.s1 = b.x1 * ipw;
-			q.t1 = b.y1 * iph;
-			xpos += b.xadvance;
+			q.x1 = round_x + b.X1 - b.X0 + d3d_bias;
+			q.y1 = round_y + b.Y1 - b.Y0 + d3d_bias;
+			q.s0 = b.X0 * ipw;
+			q.t0 = b.Y0 * iph;
+			q.s1 = b.X1 * ipw;
+			q.t1 = b.Y1 * iph;
+			xpos += b.XAdvance;
 		}
 
 		public static int stbtt_GetFontOffsetForIndex(byte[] data, int index)
@@ -573,13 +573,13 @@ namespace StbTrueTypeNext
 		[StructLayout(LayoutKind.Sequential)]
 		public struct stbtt_bakedchar
 		{
-			public ushort x0;
-			public ushort y0;
-			public ushort x1;
-			public ushort y1;
-			public float xoff;
-			public float yoff;
-			public float xadvance;
+			public ushort X0;
+			public ushort Y0;
+			public ushort X1;
+			public ushort Y1;
+			public float XOff;
+			public float YOff;
+			public float XAdvance;
 		}
 	}
 }

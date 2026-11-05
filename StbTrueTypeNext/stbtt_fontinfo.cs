@@ -1929,13 +1929,13 @@ namespace StbTrueTypeNext
 				if (y + gh + 1 >= ph)
 					return -i;
 				stbtt_MakeGlyphBitmap(new FakePtr<byte>(pixels, x + y * pw), gw, gh, pw, scale, scale, g);
-				chardata[i].x0 = (ushort)(short)x;
-				chardata[i].y0 = (ushort)(short)y;
-				chardata[i].x1 = (ushort)(short)(x + gw);
-				chardata[i].y1 = (ushort)(short)(y + gh);
-				chardata[i].xadvance = scale * advance;
-				chardata[i].xoff = x0;
-				chardata[i].yoff = y0;
+				chardata[i].X0 = (ushort)(short)x;
+				chardata[i].Y0 = (ushort)(short)y;
+				chardata[i].X1 = (ushort)(short)(x + gw);
+				chardata[i].Y1 = (ushort)(short)(y + gh);
+				chardata[i].XAdvance = scale * advance;
+				chardata[i].XOff = x0;
+				chardata[i].YOff = y0;
 				x = x + gw + 1;
 				if (y + gh + 1 > bottom_y)
 					bottom_y = y + gh + 1;
