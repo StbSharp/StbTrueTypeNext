@@ -710,7 +710,7 @@ namespace StbTrueTypeNext
 			pixels.Set((byte)0, pw * ph);
 			x = y = 1;
 			bottom_y = 1;
-			scale = stbtt_ScaleForPixelHeight(f, pixel_height);
+			scale = f.stbtt_ScaleForPixelHeight(pixel_height);
 			for (i = 0; i < num_chars; ++i)
 			{
 				var advance = 0;
@@ -876,7 +876,7 @@ namespace StbTrueTypeNext
 			var i_lineGap = 0;
 			float scale = 0;
 			var info = FromMemory(fontdata, stbtt_GetFontOffsetForIndex(fontdata, index));
-			scale = size > 0 ? stbtt_ScaleForPixelHeight(info, size) : info.stbtt_ScaleForMappingEmToPixels(-size);
+			scale = size > 0 ? info.stbtt_ScaleForPixelHeight(size) : info.stbtt_ScaleForMappingEmToPixels(-size);
 			info.stbtt_GetFontVMetrics(out i_ascent, out i_descent, out i_lineGap);
 
 			ascent = i_ascent * scale;

@@ -1886,10 +1886,10 @@ namespace StbTrueTypeNext
 			return pixels / unitsPerEm;
 		}
 
-		public static float stbtt_ScaleForPixelHeight(stbtt_fontinfo info, float height)
+		public float stbtt_ScaleForPixelHeight(float height)
 		{
-			var dataPtr = new FakePtr<byte>(info._data);
-			var fheight = ttSHORT(dataPtr + info._hhea + 4) - ttSHORT(dataPtr + info._hhea + 6);
+			var dataPtr = new FakePtr<byte>(_data);
+			var fheight = ttSHORT(dataPtr + _hhea + 4) - ttSHORT(dataPtr + _hhea + 6);
 			return height / fheight;
 		}
 	}

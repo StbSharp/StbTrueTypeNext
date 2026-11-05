@@ -73,7 +73,7 @@ namespace StbTrueTypeNext.Tests
 			int iascent, idescent, ilineGap;
 			fontInfo.stbtt_GetFontVMetrics(out iascent, out idescent, out ilineGap);
 
-			var scale = stbtt_ScaleForPixelHeight(fontInfo, 32.0f);
+			var scale = fontInfo.stbtt_ScaleForPixelHeight(32.0f);
 			var ascent = iascent * scale;
 			var descent = idescent * scale;
 			var lineGap = ilineGap * scale;

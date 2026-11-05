@@ -28,7 +28,7 @@ class Program
 		info.stbtt_GetFontVMetrics(out ascent, out descent, out lineGap);
 		var lineHeight = ascent - descent + lineGap;
 
-		var scale = stbtt_ScaleForPixelHeight(info, fontSize);
+		var scale = info.stbtt_ScaleForPixelHeight(fontSize);
 
 		ascent = (int)(ascent * scale + 0.5f);
 		descent = (int)(descent * scale - 0.5f);
