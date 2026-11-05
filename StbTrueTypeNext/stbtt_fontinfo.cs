@@ -389,7 +389,7 @@ namespace StbTrueTypeNext
 				bounds = 1
 			};
 
-			var r = stbtt__run_charstring(this, glyph_index, c);
+			var r = stbtt__run_charstring(glyph_index, c);
 			x0 = r != 0 ? c.min_x : 0;
 			y0 = r != 0 ? c.min_y : 0;
 			x1 = r != 0 ? c.max_x : 0;
@@ -437,12 +437,12 @@ namespace StbTrueTypeNext
 				bounds = 1
 			};
 
-			if (stbtt__run_charstring(this, glyph_index, count_ctx) != 0)
+			if (stbtt__run_charstring(glyph_index, count_ctx) != 0)
 			{
 				var output_ctx = new CharStringContext();
 				pvertices = new STTVertex[count_ctx.num_vertices];
 				output_ctx.pvertices = pvertices;
-				if (stbtt__run_charstring(this, glyph_index, output_ctx) != 0)
+				if (stbtt__run_charstring(glyph_index, output_ctx) != 0)
 				{
 					return output_ctx.num_vertices;
 				}
@@ -728,7 +728,7 @@ namespace StbTrueTypeNext
 			return num_vertices;
 		}
 
-		internal static int stbtt__run_charstring(stbtt_fontinfo info, int glyph_index, CharStringContext c)
+		private int stbtt__run_charstring(int glyph_index, CharStringContext c)
 		{
 			var in_header = 1;
 			var maskbits = 0;
@@ -741,10 +741,10 @@ namespace StbTrueTypeNext
 			var clear_stack = 0;
 			var s = new float[48];
 			var subr_stack = new Buffer[10];
-			var subrs = info._subrs;
+			var subrs = _subrs;
 			var b = new Buffer();
 			float f = 0;
-			b = Buffer.stbtt__cff_index_get(info._charstrings, glyph_index);
+			b = Buffer.stbtt__cff_index_get(_charstrings, glyph_index);
 			while (b.cursor < b.size)
 			{
 				i = 0;
@@ -888,8 +888,8 @@ namespace StbTrueTypeNext
 					case 0x1D:
 						if (b0 == 0x0A && has_subrs == 0)
 						{
-							if (info._fdselect.size != 0)
-								subrs = info.stbtt__cid_get_glyph_subrs(glyph_index);
+							if (_fdselect.size != 0)
+								subrs = stbtt__cid_get_glyph_subrs(glyph_index);
 							has_subrs = 1;
 						}
 
@@ -899,7 +899,7 @@ namespace StbTrueTypeNext
 						if (subr_stack_height >= 10)
 							return 0;
 						subr_stack[subr_stack_height++] = b;
-						b = Buffer.stbtt__get_subr(b0 == 0x0A ? subrs : info._gsubrs, v);
+						b = Buffer.stbtt__get_subr(b0 == 0x0A ? subrs : _gsubrs, v);
 						if (b.size == 0)
 							return 0;
 						b.cursor = 0;
