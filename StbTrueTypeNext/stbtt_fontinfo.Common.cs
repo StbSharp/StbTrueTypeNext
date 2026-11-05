@@ -442,66 +442,6 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public static int stbtt_BakeFontBitmap(byte[] data, int offset, float pixel_height, byte[] pixels, int pw, int ph,
-			int first_char, int num_chars, stbtt_bakedchar[] chardata)
-		{
-			return stbtt_BakeFontBitmap_internal(data, offset, pixel_height, pixels, pw, ph, first_char, num_chars,
-				chardata);
-		}
-
-		public static int stbtt_BakeFontBitmap_internal(byte[] data, int offset, float pixel_height, byte[] pixels,
-			int pw, int ph, int first_char, int num_chars, stbtt_bakedchar[] chardata)
-		{
-			float scale = 0;
-			var x = 0;
-			var y = 0;
-			var bottom_y = 0;
-			var i = 0;
-
-			var f = FromMemory(data, offset);
-			pixels.Set((byte)0, pw * ph);
-			x = y = 1;
-			bottom_y = 1;
-			scale = f.stbtt_ScaleForPixelHeight(pixel_height);
-			for (i = 0; i < num_chars; ++i)
-			{
-				var advance = 0;
-				var lsb = 0;
-				var x0 = 0;
-				var y0 = 0;
-				var x1 = 0;
-				var y1 = 0;
-				var gw = 0;
-				var gh = 0;
-				var g = f.stbtt_FindGlyphIndex(first_char + i);
-				f.stbtt_GetGlyphHMetrics(g, out advance, out lsb);
-				f.stbtt_GetGlyphBitmapBox(g, scale, scale, out x0, out y0, out x1, out y1);
-				gw = x1 - x0;
-				gh = y1 - y0;
-				if (x + gw + 1 >= pw)
-				{
-					y = bottom_y;
-					x = 1;
-				}
-
-				if (y + gh + 1 >= ph)
-					return -i;
-				f.stbtt_MakeGlyphBitmap(new FakePtr<byte>(pixels, x + y * pw), gw, gh, pw, scale, scale, g);
-				chardata[i].x0 = (ushort)(short)x;
-				chardata[i].y0 = (ushort)(short)y;
-				chardata[i].x1 = (ushort)(short)(x + gw);
-				chardata[i].y1 = (ushort)(short)(y + gh);
-				chardata[i].xadvance = scale * advance;
-				chardata[i].xoff = x0;
-				chardata[i].yoff = y0;
-				x = x + gw + 1;
-				if (y + gh + 1 > bottom_y)
-					bottom_y = y + gh + 1;
-			}
-
-			return bottom_y;
-		}
-
 		public static int stbtt_CompareUTF8toUTF16_bigendian(FakePtr<byte> s1, int len1, FakePtr<byte> s2, int len2)
 		{
 			return stbtt_CompareUTF8toUTF16_bigendian_internal(s1, len1, s2, len2);

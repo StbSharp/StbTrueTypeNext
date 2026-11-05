@@ -1892,5 +1892,56 @@ namespace StbTrueTypeNext
 			var fheight = ttSHORT(dataPtr + _hhea + 4) - ttSHORT(dataPtr + _hhea + 6);
 			return height / fheight;
 		}
+
+		public int stbtt_BakeFontBitmap(float pixel_height, byte[] pixels, int pw, int ph, int first_char, int num_chars, stbtt_bakedchar[] chardata)
+		{
+			float scale = 0;
+			var x = 0;
+			var y = 0;
+			var bottom_y = 0;
+			var i = 0;
+
+			pixels.Set((byte)0, pw * ph);
+			x = y = 1;
+			bottom_y = 1;
+			scale = stbtt_ScaleForPixelHeight(pixel_height);
+			for (i = 0; i < num_chars; ++i)
+			{
+				var advance = 0;
+				var lsb = 0;
+				var x0 = 0;
+				var y0 = 0;
+				var x1 = 0;
+				var y1 = 0;
+				var gw = 0;
+				var gh = 0;
+				var g = stbtt_FindGlyphIndex(first_char + i);
+				stbtt_GetGlyphHMetrics(g, out advance, out lsb);
+				stbtt_GetGlyphBitmapBox(g, scale, scale, out x0, out y0, out x1, out y1);
+				gw = x1 - x0;
+				gh = y1 - y0;
+				if (x + gw + 1 >= pw)
+				{
+					y = bottom_y;
+					x = 1;
+				}
+
+				if (y + gh + 1 >= ph)
+					return -i;
+				stbtt_MakeGlyphBitmap(new FakePtr<byte>(pixels, x + y * pw), gw, gh, pw, scale, scale, g);
+				chardata[i].x0 = (ushort)(short)x;
+				chardata[i].y0 = (ushort)(short)y;
+				chardata[i].x1 = (ushort)(short)(x + gw);
+				chardata[i].y1 = (ushort)(short)(y + gh);
+				chardata[i].xadvance = scale * advance;
+				chardata[i].xoff = x0;
+				chardata[i].yoff = y0;
+				x = x + gw + 1;
+				if (y + gh + 1 > bottom_y)
+					bottom_y = y + gh + 1;
+			}
+
+			return bottom_y;
+		}
 	}
 }
