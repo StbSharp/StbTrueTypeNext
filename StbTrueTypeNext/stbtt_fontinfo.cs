@@ -1190,11 +1190,11 @@ namespace StbTrueTypeNext
 			stbtt_GetGlyphHMetrics(this, stbtt_FindGlyphIndex(codepoint), out advanceWidth, out leftSideBearing);
 		}
 
-		public static int stbtt_GetCodepointKernAdvance(stbtt_fontinfo info, int ch1, int ch2)
+		public int stbtt_GetCodepointKernAdvance(int ch1, int ch2)
 		{
-			if (info._kern == 0 && info._gpos == 0)
+			if (_kern == 0 && _gpos == 0)
 				return 0;
-			return stbtt_GetGlyphKernAdvance(info, info.stbtt_FindGlyphIndex(ch1), info.stbtt_FindGlyphIndex(ch2));
+			return stbtt_GetGlyphKernAdvance(this, stbtt_FindGlyphIndex(ch1), stbtt_FindGlyphIndex(ch2));
 		}
 
 		public static byte[] stbtt_GetCodepointSDF(stbtt_fontinfo info, float scale, int codepoint, int padding,
