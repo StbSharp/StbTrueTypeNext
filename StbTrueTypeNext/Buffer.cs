@@ -1,14 +1,14 @@
 namespace StbTrueTypeNext
 {
-	internal struct stbtt__buf
+	internal struct Buffer
 	{
-		public static readonly stbtt__buf Null = new stbtt__buf();
+		public static readonly Buffer Null = new Buffer();
 
 		public FakePtr<byte> data;
 		public int cursor;
 		public int size;
 
-		public stbtt__buf(FakePtr<byte> ptr, int sz)
+		public Buffer(FakePtr<byte> ptr, int sz)
 		{
 			data = ptr;
 			size = sz;
@@ -38,7 +38,7 @@ namespace StbTrueTypeNext
 			return data[cursor];
 		}
 
-		public stbtt__buf stbtt__buf_range(int o, int s)
+		public Buffer stbtt__buf_range(int o, int s)
 		{
 			var r = Null;
 			if (o < 0 || s < 0 || o > size || s > size - o)
@@ -58,7 +58,7 @@ namespace StbTrueTypeNext
 			stbtt__buf_seek(cursor + o);
 		}
 
-		public stbtt__buf stbtt__cff_get_index()
+		public Buffer stbtt__cff_get_index()
 		{
 			var count = 0;
 			var start = 0;
@@ -117,7 +117,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public stbtt__buf stbtt__dict_get(int key)
+		public Buffer stbtt__dict_get(int key)
 		{
 			stbtt__buf_seek(0);
 			while (cursor < size)
@@ -160,7 +160,7 @@ namespace StbTrueTypeNext
 			return false;
 		}
 
-		public static stbtt__buf stbtt__cff_index_get(stbtt__buf b, int i)
+		public static Buffer stbtt__cff_index_get(Buffer b, int i)
 		{
 			var count = 0;
 			var offsize = 0;
@@ -175,7 +175,7 @@ namespace StbTrueTypeNext
 			return b.stbtt__buf_range(2 + (count + 1) * offsize + start, end - start);
 		}
 
-		public static stbtt__buf stbtt__get_subr(stbtt__buf idx, int n)
+		public static Buffer stbtt__get_subr(Buffer idx, int n)
 		{
 			var count = idx.stbtt__cff_index_count();
 			var bias = 107;
@@ -189,7 +189,7 @@ namespace StbTrueTypeNext
 			return stbtt__cff_index_get(idx, n);
 		}
 
-		public static stbtt__buf stbtt__get_subrs(stbtt__buf cff, stbtt__buf fontdict)
+		public static Buffer stbtt__get_subrs(Buffer cff, Buffer fontdict)
 		{
 			var private_loc = new uint[] { 0, 0 };
 			fontdict.stbtt__dict_get_ints(18, 2, private_loc);

@@ -8,15 +8,15 @@ namespace StbTrueTypeNext
 
 		public class stbtt_fontinfo
 		{
-			internal stbtt__buf cff;
-			internal stbtt__buf charstrings;
+			internal Buffer cff;
+			internal Buffer charstrings;
 			public byte[] data = null;
-			internal stbtt__buf fdselect;
-			internal stbtt__buf fontdicts;
+			internal Buffer fdselect;
+			internal Buffer fontdicts;
 			public int fontstart;
 			public int glyf;
 			public int gpos;
-			internal stbtt__buf gsubrs;
+			internal Buffer gsubrs;
 			public int head;
 			public int hhea;
 			public int hmtx;
@@ -25,7 +25,7 @@ namespace StbTrueTypeNext
 			public int kern;
 			public int loca;
 			public int numGlyphs;
-			internal stbtt__buf subrs;
+			internal Buffer subrs;
 			public int svg;
 			public bool useOldRasterizer;
 		}

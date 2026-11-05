@@ -6,7 +6,7 @@ namespace StbTrueTypeNext
 {
 	partial class StbTrueType
 	{
-		internal static stbtt__buf stbtt__cid_get_glyph_subrs(stbtt_fontinfo info, int glyph_index)
+		internal static Buffer stbtt__cid_get_glyph_subrs(stbtt_fontinfo info, int glyph_index)
 		{
 			var fdselect = info.fdselect;
 			var nranges = 0;
@@ -42,8 +42,8 @@ namespace StbTrueTypeNext
 			}
 
 			if (fdselector == -1)
-				return stbtt__buf.Null;
-			return stbtt__buf.stbtt__get_subrs(info.cff, stbtt__buf.stbtt__cff_index_get(info.fontdicts, fdselector));
+				return Buffer.Null;
+			return Buffer.stbtt__get_subrs(info.cff, Buffer.stbtt__cff_index_get(info.fontdicts, fdselector));
 		}
 
 		public static int stbtt__close_shape(stbtt_vertex[] vertices, int num_vertices, int was_off, int start_off,
@@ -715,11 +715,11 @@ namespace StbTrueTypeNext
 			var has_subrs = 0;
 			var clear_stack = 0;
 			var s = new float[48];
-			var subr_stack = new stbtt__buf[10];
+			var subr_stack = new Buffer[10];
 			var subrs = info.subrs;
-			var b = new stbtt__buf();
+			var b = new Buffer();
 			float f = 0;
-			b = stbtt__buf.stbtt__cff_index_get(info.charstrings, glyph_index);
+			b = Buffer.stbtt__cff_index_get(info.charstrings, glyph_index);
 			while (b.cursor < b.size)
 			{
 				i = 0;
@@ -874,7 +874,7 @@ namespace StbTrueTypeNext
 						if (subr_stack_height >= 10)
 							return 0;
 						subr_stack[subr_stack_height++] = b;
-						b = stbtt__buf.stbtt__get_subr(b0 == 0x0A ? subrs : info.gsubrs, v);
+						b = Buffer.stbtt__get_subr(b0 == 0x0A ? subrs : info.gsubrs, v);
 						if (b.size == 0)
 							return 0;
 						b.cursor = 0;
@@ -1673,7 +1673,7 @@ namespace StbTrueTypeNext
 			var numTables = 0;
 			info.data = data;
 			info.fontstart = fontstart;
-			info.cff = stbtt__buf.Null;
+			info.cff = Buffer.Null;
 
 			var dataPtr = new FakePtr<byte>(data);
 			cmap = stbtt__find_table(dataPtr, (uint)fontstart, "cmap");
@@ -1693,22 +1693,22 @@ namespace StbTrueTypeNext
 			}
 			else
 			{
-				var b = new stbtt__buf();
-				var topdict = new stbtt__buf();
-				var topdictidx = new stbtt__buf();
+				var b = new Buffer();
+				var topdict = new Buffer();
+				var topdictidx = new Buffer();
 				uint cff = 0;
 				cff = stbtt__find_table(dataPtr, (uint)fontstart, "CFF ");
 				if (cff == 0)
 					return 0;
-				info.fontdicts = stbtt__buf.Null;
-				info.fdselect = stbtt__buf.Null;
-				info.cff = new stbtt__buf(dataPtr + cff, 512 * 1024 * 1024);
+				info.fontdicts = Buffer.Null;
+				info.fdselect = Buffer.Null;
+				info.cff = new Buffer(dataPtr + cff, 512 * 1024 * 1024);
 				b = info.cff;
 				b.stbtt__buf_skip(2);
 				b.stbtt__buf_seek(b.stbtt__buf_get8());
 				b.stbtt__cff_get_index();
 				topdictidx = b.stbtt__cff_get_index();
-				topdict = stbtt__buf.stbtt__cff_index_get(topdictidx, 0);
+				topdict = Buffer.stbtt__cff_index_get(topdictidx, 0);
 				b.stbtt__cff_get_index();
 				info.gsubrs = b.stbtt__cff_get_index();
 
@@ -1721,7 +1721,7 @@ namespace StbTrueTypeNext
 				topdict.stbtt__dict_get_ints(0x100 | 36, ref fdarrayoff);
 				topdict.stbtt__dict_get_ints(0x100 | 37, ref fdselectoff);
 
-				info.subrs = stbtt__buf.stbtt__get_subrs(b, topdict);
+				info.subrs = Buffer.stbtt__get_subrs(b, topdict);
 				if (cstype != 2)
 					return 0;
 				if (charstrings == 0)
