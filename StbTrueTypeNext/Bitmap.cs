@@ -131,7 +131,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		private static Vector2[] stbtt_FlattenCurves(Vertex[] vertices, int num_verts, float objspace_flatness, out int[] contour_lengths)
+		private static Vector2[] stbtt_FlattenCurves(STTVertex[] vertices, int num_verts, float objspace_flatness, out int[] contour_lengths)
 		{
 			Vector2[] points = null;
 			var num_points = 0;
@@ -198,7 +198,7 @@ namespace StbTrueTypeNext
 			return points;
 		}
 
-		public void stbtt_Rasterize(float flatness_in_pixels, Vertex[] vertices,
+		public void stbtt_Rasterize(float flatness_in_pixels, STTVertex[] vertices,
 			int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, bool useOldRasterizer)
 		{
 			var scale = scale_x > scale_y ? scale_y : scale_x;

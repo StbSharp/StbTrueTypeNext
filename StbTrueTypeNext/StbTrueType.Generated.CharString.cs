@@ -81,7 +81,7 @@ namespace StbTrueTypeNext
 			public int max_x;
 			public int min_y;
 			public int max_y;
-			public Vertex[] pvertices;
+			public STTVertex[] pvertices;
 			public int num_vertices;
 		}
 	}

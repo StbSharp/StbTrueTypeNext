@@ -1,6 +1,6 @@
 ﻿namespace StbTrueTypeNext
 {
-	public struct Vertex
+	public struct STTVertex
 	{
 		public short x;
 		public short y;
