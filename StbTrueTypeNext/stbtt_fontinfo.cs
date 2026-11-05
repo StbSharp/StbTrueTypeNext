@@ -1211,7 +1211,7 @@ namespace StbTrueTypeNext
 
 		public int stbtt_GetCodepointSVG(int unicode_codepoint, ref FakePtr<byte> svg)
 		{
-			return stbtt_GetGlyphSVG(this, stbtt_FindGlyphIndex(unicode_codepoint), ref svg);
+			return stbtt_GetGlyphSVG(stbtt_FindGlyphIndex(unicode_codepoint), ref svg);
 		}
 
 		public void stbtt_GetFontBoundingBox(out int x0, out int y0, out int x1, out int y1)
@@ -1646,15 +1646,15 @@ namespace StbTrueTypeNext
 			return stbtt__GetGlyphShapeT2(glyph_index, out pvertices);
 		}
 
-		public static int stbtt_GetGlyphSVG(stbtt_fontinfo info, int gl, ref FakePtr<byte> svg)
+		public int stbtt_GetGlyphSVG(int gl, ref FakePtr<byte> svg)
 		{
-			var data = new FakePtr<byte>(info._data);
-			if (info._svg == 0)
+			var data = new FakePtr<byte>(_data);
+			if (_svg == 0)
 				return 0;
-			var svg_doc = info.stbtt_FindSVGDoc(gl);
+			var svg_doc = stbtt_FindSVGDoc(gl);
 			if (!svg_doc.IsNull)
 			{
-				svg = data + info._svg + ttULONG(svg_doc + 4);
+				svg = data + _svg + ttULONG(svg_doc + 4);
 				return (int)ttULONG(svg_doc + 8);
 			}
 
