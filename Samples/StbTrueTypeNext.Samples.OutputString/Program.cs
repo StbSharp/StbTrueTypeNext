@@ -59,9 +59,9 @@ class Program
 				posY = 0;
 			}
 
-			var ptr = new FakePtr<byte>(buffer, posX + posY * bufferSize);
 			info.stbtt_MakeGlyphBitmap(
-				ptr,
+				buffer,
+				posX + posY * bufferSize,
 				x1 - x0,
 				y1 - y0,
 				bufferSize,

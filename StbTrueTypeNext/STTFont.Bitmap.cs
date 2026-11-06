@@ -32,7 +32,7 @@ namespace StbTrueTypeNext
 		}
 
 		public byte[] stbtt_GetGlyphBitmap(float scale_x, float scale_y, int glyph,
-	out int width, out int height, out int xoff, out int yoff)
+			out int width, out int height, out int xoff, out int yoff)
 		{
 			return stbtt_GetGlyphBitmapSubpixel(scale_x, scale_y, 0.0f, 0.0f, glyph, out width, out height, out xoff, out yoff);
 		}
@@ -130,10 +130,16 @@ namespace StbTrueTypeNext
 		public void stbtt_MakeGlyphBitmap(byte[] output, int out_w, int out_h, int out_stride,
 			float scale_x, float scale_y, int glyph)
 		{
-			stbtt_MakeGlyphBitmap(new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, glyph);
+			stbtt_MakeGlyphBitmap(output, 0, out_w, out_h, out_stride, scale_x, scale_y, glyph);
 		}
 
-		public void stbtt_MakeGlyphBitmap(FakePtr<byte> output, int out_w, int out_h, int out_stride,
+		public void stbtt_MakeGlyphBitmap(byte[] output, int offset, int out_w, int out_h, int out_stride,
+			float scale_x, float scale_y, int glyph)
+		{
+			stbtt_MakeGlyphBitmap(new FakePtr<byte>(output, offset), out_w, out_h, out_stride, scale_x, scale_y, glyph);
+		}
+
+		internal void stbtt_MakeGlyphBitmap(FakePtr<byte> output, int out_w, int out_h, int out_stride,
 			float scale_x, float scale_y, int glyph)
 		{
 			stbtt_MakeGlyphBitmapSubpixel(output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, glyph);
@@ -145,7 +151,7 @@ namespace StbTrueTypeNext
 			stbtt_MakeGlyphBitmapSubpixel(new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, glyph);
 		}
 
-		public void stbtt_MakeGlyphBitmapSubpixel(FakePtr<byte> output, int out_w, int out_h,
+		internal void stbtt_MakeGlyphBitmapSubpixel(FakePtr<byte> output, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int glyph)
 		{
 			var ix0 = 0;

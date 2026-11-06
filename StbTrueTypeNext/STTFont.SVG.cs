@@ -1,14 +1,29 @@
-﻿namespace StbTrueTypeNext
+﻿using System;
+
+namespace StbTrueTypeNext
 {
 	partial class STTFont
 	{
-		public int stbtt_GetCodepointSVG(int unicode_codepoint, ref FakePtr<byte> svg)
+		public byte[] stbtt_GetCodepointSVG(int unicode_codepoint) => stbtt_GetGlyphSVG(stbtt_FindGlyphIndex(unicode_codepoint));
+
+		public byte[] stbtt_GetGlyphSVG(int gl)
 		{
-			return stbtt_GetGlyphSVG(stbtt_FindGlyphIndex(unicode_codepoint), ref svg);
+			FakePtr<byte> svg;
+			var size = stbtt_GetGlyphSVGInternal(gl, out svg);
+			if (size == 0)
+			{
+				return null;
+			}
+
+			var result = new byte[size];
+			Array.Copy(svg.Data, svg.Offset, result, 0, size);
+
+			return result;
 		}
 
-		public int stbtt_GetGlyphSVG(int gl, ref FakePtr<byte> svg)
+		private int stbtt_GetGlyphSVGInternal(int gl, out FakePtr<byte> svg)
 		{
+			svg = FakePtr<byte>.Null;
 			var data = new FakePtr<byte>(_data);
 			if (_svg == 0)
 				return 0;

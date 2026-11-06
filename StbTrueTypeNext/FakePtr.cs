@@ -2,7 +2,7 @@
 
 namespace StbTrueTypeNext
 {
-	public struct FakePtr<T> where T : unmanaged
+	internal struct FakePtr<T> where T : unmanaged
 	{
 		public static readonly FakePtr<T> Null = new FakePtr<T>();
 
