@@ -1660,7 +1660,7 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public stbtt_kerningentry[] stbtt_GetKerningTable()
+		public KerningEntry[] stbtt_GetKerningTable()
 		{
 			var data = new FakePtr<byte>(_data, _kern);
 			var k = 0;
@@ -1673,12 +1673,12 @@ namespace StbTrueTypeNext
 				return null;
 			length = Utility.ttUSHORT(data + 10);
 
-			var table = new stbtt_kerningentry[length];
+			var table = new KerningEntry[length];
 			for (k = 0; k < length; k++)
 			{
-				table[k].glyph1 = Utility.ttUSHORT(data + 18 + k * 6);
-				table[k].glyph2 = Utility.ttUSHORT(data + 20 + k * 6);
-				table[k].advance = Utility.ttSHORT(data + 22 + k * 6);
+				table[k].Glyph1 = Utility.ttUSHORT(data + 18 + k * 6);
+				table[k].Glyph2 = Utility.ttUSHORT(data + 20 + k * 6);
+				table[k].Advance = Utility.ttSHORT(data + 22 + k * 6);
 			}
 
 			return table;
