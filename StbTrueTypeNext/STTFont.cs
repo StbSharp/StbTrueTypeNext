@@ -29,25 +29,25 @@ namespace StbTrueTypeNext
 
 		public STTRasterizerVersion RasterizerVersion { get; set; } = STTRasterizerVersion.V2;
 
-		private STTFont(byte[] data, int fontstart)
+		public STTFont(byte[] data, int offset = 0)
 		{
 			uint cmap = 0;
 			uint t = 0;
 			var i = 0;
 			var numTables = 0;
 			_data = data;
-			_fontstart = fontstart;
+			_fontstart = offset;
 			_cff = Buffer.Null;
 
 			var dataPtr = new FakePtr<byte>(data);
-			cmap = Utility.stbtt__find_table(dataPtr, (uint)fontstart, "cmap");
-			_loca = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "loca");
-			_head = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "head");
-			_glyf = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "glyf");
-			_hhea = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "hhea");
-			_hmtx = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "hmtx");
-			_kern = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "kern");
-			_gpos = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "GPOS");
+			cmap = Utility.stbtt__find_table(dataPtr, (uint)offset, "cmap");
+			_loca = (int)Utility.stbtt__find_table(dataPtr, (uint)offset, "loca");
+			_head = (int)Utility.stbtt__find_table(dataPtr, (uint)offset, "head");
+			_glyf = (int)Utility.stbtt__find_table(dataPtr, (uint)offset, "glyf");
+			_hhea = (int)Utility.stbtt__find_table(dataPtr, (uint)offset, "hhea");
+			_hmtx = (int)Utility.stbtt__find_table(dataPtr, (uint)offset, "hmtx");
+			_kern = (int)Utility.stbtt__find_table(dataPtr, (uint)offset, "kern");
+			_gpos = (int)Utility.stbtt__find_table(dataPtr, (uint)offset, "GPOS");
 
 			if (cmap == 0)
 			{
@@ -82,7 +82,7 @@ namespace StbTrueTypeNext
 				var topdict = new Buffer();
 				var topdictidx = new Buffer();
 				uint cff = 0;
-				cff = Utility.stbtt__find_table(dataPtr, (uint)fontstart, "CFF ");
+				cff = Utility.stbtt__find_table(dataPtr, (uint)offset, "CFF ");
 				if (cff == 0)
 				{
 					throw new Exception("Could not find 'CFF '");
@@ -136,7 +136,7 @@ namespace StbTrueTypeNext
 				_charstrings = b.stbtt__cff_get_index();
 			}
 
-			t = Utility.stbtt__find_table(dataPtr, (uint)fontstart, "maxp");
+			t = Utility.stbtt__find_table(dataPtr, (uint)offset, "maxp");
 			if (t != 0)
 				_numGlyphs = Utility.ttUSHORT(dataPtr + t + 4);
 			else
@@ -168,18 +168,6 @@ namespace StbTrueTypeNext
 			if (_indexMap == 0)
 				throw new Exception("The font does not have a table mapping from unicode codepoints to font indices.");
 			_indexToLocFormat = Utility.ttUSHORT(dataPtr + _head + 50);
-		}
-
-		public static STTFont FromMemory(byte[] data, int offset = 0) => new STTFont(data, offset);
-
-		public static STTFont FromStream(Stream s)
-		{
-			using (var ms = new MemoryStream())
-			{
-				s.CopyTo(ms);
-
-				return FromMemory(ms.ToArray());
-			}
 		}
 
 		public int stbtt_FindGlyphIndex(int unicode_codepoint)
