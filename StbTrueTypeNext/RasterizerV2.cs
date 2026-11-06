@@ -5,68 +5,68 @@ namespace StbTrueTypeNext
 {
 	internal static class RasterizerV2
 	{
-		private class stbtt__active_edge
+		private class ActiveEdge
 		{
-			public float fx;
-			public float fdx;
-			public float fdy;
-			public float direction;
-			public float sy;
-			public float ey;
+			public float X;
+			public float DeltaX;
+			public float DeltaY;
+			public float Direction;
+			public float StartY;
+			public float EndY;
 		}
 
-		private static stbtt__active_edge stbtt__new_active(ref Edge e, int off_x, float start_point)
+		private static ActiveEdge CreateActiveEdge(ref Edge e, int off_x, float start_point)
 		{
 			var dxdy = (e.X1 - e.X0) / (e.Y1 - e.Y0);
 
-			return new stbtt__active_edge
+			return new ActiveEdge
 			{
-				fdx = dxdy,
-				fdy = dxdy != 0.0f ? 1.0f / dxdy : 0.0f,
-				fx = e.X0 + dxdy * (start_point - e.Y0) - off_x,
-				direction = e.Invert ? 1.0f : -1.0f,
-				sy = e.Y0,
-				ey = e.Y1
+				DeltaX = dxdy,
+				DeltaY = dxdy != 0.0f ? 1.0f / dxdy : 0.0f,
+				X = e.X0 + dxdy * (start_point - e.Y0) - off_x,
+				Direction = e.Invert ? 1.0f : -1.0f,
+				StartY = e.Y0,
+				EndY = e.Y1
 			};
 		}
 
-		private static void stbtt__fill_active_edges_new(FakePtr<float> scanline, FakePtr<float> scanline_fill, int len, List<stbtt__active_edge> es, float y_top)
+		private static void FillActiveEdges(FakePtr<float> scanline, FakePtr<float> scanline_fill, int len, List<ActiveEdge> es, float y_top)
 		{
 			var y_bottom = y_top + 1;
 
 			for (var i = 0; i < es.Count; ++i)
 			{
 				var e = es[i];
-				if (e.fdx == 0)
+				if (e.DeltaX == 0)
 				{
-					var x0 = e.fx;
+					var x0 = e.X;
 					if (x0 < len)
 					{
 						if (x0 >= 0)
 						{
-							stbtt__handle_clipped_edge(scanline, (int)x0, e, x0, y_top, x0, y_bottom);
-							stbtt__handle_clipped_edge(scanline_fill - 1, (int)x0 + 1, e, x0, y_top, x0, y_bottom);
+							HandleClippedEdge(scanline, (int)x0, e, x0, y_top, x0, y_bottom);
+							HandleClippedEdge(scanline_fill - 1, (int)x0 + 1, e, x0, y_top, x0, y_bottom);
 						}
 						else
 						{
-							stbtt__handle_clipped_edge(scanline_fill - 1, 0, e, x0, y_top, x0, y_bottom);
+							HandleClippedEdge(scanline_fill - 1, 0, e, x0, y_top, x0, y_bottom);
 						}
 					}
 				}
 				else
 				{
-					var x0 = e.fx;
-					var dx = e.fdx;
+					var x0 = e.X;
+					var dx = e.DeltaX;
 					var xb = x0 + dx;
 					float x_top = 0;
 					float x_bottom = 0;
 					float sy0 = 0;
 					float sy1 = 0;
-					var dy = e.fdy;
-					if (e.sy > y_top)
+					var dy = e.DeltaY;
+					if (e.StartY > y_top)
 					{
-						x_top = x0 + dx * (e.sy - y_top);
-						sy0 = e.sy;
+						x_top = x0 + dx * (e.StartY - y_top);
+						sy0 = e.StartY;
 					}
 					else
 					{
@@ -74,10 +74,10 @@ namespace StbTrueTypeNext
 						sy0 = y_top;
 					}
 
-					if (e.ey < y_bottom)
+					if (e.EndY < y_bottom)
 					{
-						x_bottom = x0 + dx * (e.ey - y_top);
-						sy1 = e.ey;
+						x_bottom = x0 + dx * (e.EndY - y_top);
+						sy1 = e.EndY;
 					}
 					else
 					{
@@ -91,8 +91,8 @@ namespace StbTrueTypeNext
 						{
 							float height = 0;
 							var x = (int)x_top;
-							height = (sy1 - sy0) * e.direction;
-							scanline[x] += stbtt__position_trapezoid_area(height, x_top, x + 1.0f, x_bottom, x + 1.0f);
+							height = (sy1 - sy0) * e.Direction;
+							scanline[x] += PositionTrapezoidArea(height, x_top, x + 1.0f, x_bottom, x + 1.0f);
 							scanline_fill[x] += height;
 						}
 						else
@@ -129,9 +129,9 @@ namespace StbTrueTypeNext
 							y_final = y_top + dy * (x2 - x0);
 							if (y_crossing > y_bottom)
 								y_crossing = y_bottom;
-							sign = e.direction;
+							sign = e.Direction;
 							area = sign * (y_crossing - sy0);
-							scanline[x1] += stbtt__sized_triangle_area(area, x1 + 1 - x_top);
+							scanline[x1] += SizedTriangleArea(area, x1 + 1 - x_top);
 							if (y_final > y_bottom)
 							{
 								y_final = y_bottom;
@@ -146,7 +146,7 @@ namespace StbTrueTypeNext
 							}
 
 							scanline[x2] += area + sign *
-								stbtt__position_trapezoid_area(sy1 - y_final, x2, x2 + 1.0f, x_bottom, x2 + 1.0f);
+								PositionTrapezoidArea(sy1 - y_final, x2, x2 + 1.0f, x_bottom, x2 + 1.0f);
 							scanline_fill[x2] += sign * (sy1 - sy0);
 						}
 					}
@@ -164,39 +164,39 @@ namespace StbTrueTypeNext
 							var y2 = (x + 1 - x0) / dx + y_top;
 							if (x0 < x1 && x3 > x2)
 							{
-								stbtt__handle_clipped_edge(scanline, x, e, x0, y0, x1, y1);
-								stbtt__handle_clipped_edge(scanline, x, e, x1, y1, x2, y2);
-								stbtt__handle_clipped_edge(scanline, x, e, x2, y2, x3, y3);
+								HandleClippedEdge(scanline, x, e, x0, y0, x1, y1);
+								HandleClippedEdge(scanline, x, e, x1, y1, x2, y2);
+								HandleClippedEdge(scanline, x, e, x2, y2, x3, y3);
 							}
 							else if (x3 < x1 && x0 > x2)
 							{
-								stbtt__handle_clipped_edge(scanline, x, e, x0, y0, x2, y2);
-								stbtt__handle_clipped_edge(scanline, x, e, x2, y2, x1, y1);
-								stbtt__handle_clipped_edge(scanline, x, e, x1, y1, x3, y3);
+								HandleClippedEdge(scanline, x, e, x0, y0, x2, y2);
+								HandleClippedEdge(scanline, x, e, x2, y2, x1, y1);
+								HandleClippedEdge(scanline, x, e, x1, y1, x3, y3);
 							}
 							else if (x0 < x1 && x3 > x1)
 							{
-								stbtt__handle_clipped_edge(scanline, x, e, x0, y0, x1, y1);
-								stbtt__handle_clipped_edge(scanline, x, e, x1, y1, x3, y3);
+								HandleClippedEdge(scanline, x, e, x0, y0, x1, y1);
+								HandleClippedEdge(scanline, x, e, x1, y1, x3, y3);
 							}
 							else if (x3 < x1 && x0 > x1)
 							{
-								stbtt__handle_clipped_edge(scanline, x, e, x0, y0, x1, y1);
-								stbtt__handle_clipped_edge(scanline, x, e, x1, y1, x3, y3);
+								HandleClippedEdge(scanline, x, e, x0, y0, x1, y1);
+								HandleClippedEdge(scanline, x, e, x1, y1, x3, y3);
 							}
 							else if (x0 < x2 && x3 > x2)
 							{
-								stbtt__handle_clipped_edge(scanline, x, e, x0, y0, x2, y2);
-								stbtt__handle_clipped_edge(scanline, x, e, x2, y2, x3, y3);
+								HandleClippedEdge(scanline, x, e, x0, y0, x2, y2);
+								HandleClippedEdge(scanline, x, e, x2, y2, x3, y3);
 							}
 							else if (x3 < x2 && x0 > x2)
 							{
-								stbtt__handle_clipped_edge(scanline, x, e, x0, y0, x2, y2);
-								stbtt__handle_clipped_edge(scanline, x, e, x2, y2, x3, y3);
+								HandleClippedEdge(scanline, x, e, x0, y0, x2, y2);
+								HandleClippedEdge(scanline, x, e, x2, y2, x3, y3);
 							}
 							else
 							{
-								stbtt__handle_clipped_edge(scanline, x, e, x0, y0, x3, y3);
+								HandleClippedEdge(scanline, x, e, x0, y0, x3, y3);
 							}
 						}
 					}
@@ -204,37 +204,37 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		private static void stbtt__handle_clipped_edge(FakePtr<float> scanline, int x, stbtt__active_edge e, float x0, float y0,
+		private static void HandleClippedEdge(FakePtr<float> scanline, int x, ActiveEdge e, float x0, float y0,
 			float x1, float y1)
 		{
 			if (y0 == y1)
 				return;
-			if (y0 > e.ey)
+			if (y0 > e.EndY)
 				return;
-			if (y1 < e.sy)
+			if (y1 < e.StartY)
 				return;
-			if (y0 < e.sy)
+			if (y0 < e.StartY)
 			{
-				x0 += (x1 - x0) * (e.sy - y0) / (y1 - y0);
-				y0 = e.sy;
+				x0 += (x1 - x0) * (e.StartY - y0) / (y1 - y0);
+				y0 = e.StartY;
 			}
 
-			if (y1 > e.ey)
+			if (y1 > e.EndY)
 			{
-				x1 += (x1 - x0) * (e.ey - y1) / (y1 - y0);
-				y1 = e.ey;
+				x1 += (x1 - x0) * (e.EndY - y1) / (y1 - y0);
+				y1 = e.EndY;
 			}
 
 			if (x0 <= x && x1 <= x)
 			{
-				scanline[x] += e.direction * (y1 - y0);
+				scanline[x] += e.Direction * (y1 - y0);
 			}
 			else if (x0 >= x + 1 && x1 >= x + 1)
 			{
 			}
 			else
 			{
-				scanline[x] += e.direction * (y1 - y0) * (1 - (x0 - x + (x1 - x)) / 2);
+				scanline[x] += e.Direction * (y1 - y0) * (1 - (x0 - x + (x1 - x)) / 2);
 			}
 		}
 
@@ -261,7 +261,7 @@ namespace StbTrueTypeNext
 			es[es.Count - 1] = e;
 
 			var ei = 0;
-			var edges = new List<stbtt__active_edge>();
+			var edges = new List<ActiveEdge>();
 			while (j < result.Height)
 			{
 				// find center of pixel for this scanline
@@ -276,7 +276,7 @@ namespace StbTrueTypeNext
 				for (var i = edges.Count - 1; i >= 0; --i)
 				{
 					var z = edges[i];
-					if (z.ey <= scan_y_top)
+					if (z.EndY <= scan_y_top)
 					{
 						edges.RemoveAt(i); // delete from list
 					}
@@ -288,13 +288,13 @@ namespace StbTrueTypeNext
 					e = es[ei];
 					if (e.Y0 != e.Y1)
 					{
-						var z = stbtt__new_active(ref e, off_x, scan_y_top);
+						var z = CreateActiveEdge(ref e, off_x, scan_y_top);
 						if (j == 0 && off_y != 0)
 						{
-							if (z.ey < scan_y_top)
+							if (z.EndY < scan_y_top)
 							{
 								// this can happen due to subpixel positioning and some kind of fp rounding error i think
-								z.ey = scan_y_top;
+								z.EndY = scan_y_top;
 							}
 						}
 
@@ -304,7 +304,7 @@ namespace StbTrueTypeNext
 				}
 
 				// now process all active edges
-				stbtt__fill_active_edges_new(scanline, scanline2 + 1, result.Width, edges, scan_y_top);
+				FillActiveEdges(scanline, scanline2 + 1, result.Width, edges, scan_y_top);
 
 				float sum = 0;
 				for (var i = 0; i < result.Width; ++i)
@@ -324,7 +324,7 @@ namespace StbTrueTypeNext
 				for (var i = 0; i < edges.Count; ++i)
 				{
 					var z = edges[i];
-					z.fx += z.fdx;
+					z.X += z.DeltaX;
 				}
 
 				++y;
@@ -332,17 +332,17 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		private static float stbtt__position_trapezoid_area(float height, float tx0, float tx1, float bx0, float bx1)
+		private static float PositionTrapezoidArea(float height, float tx0, float tx1, float bx0, float bx1)
 		{
-			return stbtt__sized_trapezoid_area(height, tx1 - tx0, bx1 - bx0);
+			return SizedTrapezoidArea(height, tx1 - tx0, bx1 - bx0);
 		}
 
-		private static float stbtt__sized_trapezoid_area(float height, float top_width, float bottom_width)
+		private static float SizedTrapezoidArea(float height, float top_width, float bottom_width)
 		{
 			return (top_width + bottom_width) / 2.0f * height;
 		}
 
-		private static float stbtt__sized_triangle_area(float height, float width)
+		private static float SizedTriangleArea(float height, float width)
 		{
 			return height * width / 2;
 		}
