@@ -190,7 +190,7 @@ namespace StbTrueTypeNext
 
 		public int stbtt_GetGlyphShape(int glyph_index, out STBVertex[] pvertices)
 		{
-			if (_cff.size == 0)
+			if (_cff.Size == 0)
 			{
 				return stbtt__GetGlyphShapeTT(glyph_index, out pvertices);
 			}
@@ -206,7 +206,7 @@ namespace StbTrueTypeNext
 		public int stbtt_GetGlyphBox(int glyph_index, out int x0, out int y0, out int x1, out int y1)
 		{
 			x0 = y0 = x1 = y1 = 0;
-			if (_cff.size != 0)
+			if (_cff.Size != 0)
 			{
 				stbtt__GetGlyphInfoT2(glyph_index, out x0, out y0, out x1, out y1);
 			}
@@ -230,7 +230,7 @@ namespace StbTrueTypeNext
 		{
 			short numberOfContours = 0;
 			var g = 0;
-			if (_cff.size != 0)
+			if (_cff.Size != 0)
 			{
 				int x0, y0, x1, y1;
 				return stbtt__GetGlyphInfoT2(glyph_index, out x0, out y0, out x1, out y1) == 0 ? 1 : 0;
@@ -633,7 +633,7 @@ namespace StbTrueTypeNext
 			var b = new Buffer();
 			float f = 0;
 			b = Buffer.stbtt__cff_index_get(_charstrings, glyph_index);
-			while (b.cursor < b.size)
+			while (b.Cursor < b.Size)
 			{
 				i = 0;
 				clear_stack = 1;
@@ -776,7 +776,7 @@ namespace StbTrueTypeNext
 					case 0x1D:
 						if (b0 == 0x0A && has_subrs == 0)
 						{
-							if (_fdselect.size != 0)
+							if (_fdselect.Size != 0)
 								subrs = stbtt__cid_get_glyph_subrs(glyph_index);
 							has_subrs = 1;
 						}
@@ -788,9 +788,9 @@ namespace StbTrueTypeNext
 							return 0;
 						subr_stack[subr_stack_height++] = b;
 						b = Buffer.stbtt__get_subr(b0 == 0x0A ? subrs : _gsubrs, v);
-						if (b.size == 0)
+						if (b.Size == 0)
 							return 0;
-						b.cursor = 0;
+						b.Cursor = 0;
 						clear_stack = 0;
 						break;
 					case 0x0B:

@@ -129,7 +129,7 @@ namespace StbTrueTypeNext
 
 					b.stbtt__buf_seek((int)fdarrayoff);
 					_fontdicts = b.stbtt__cff_get_index();
-					_fdselect = b.stbtt__buf_range((int)fdselectoff, (int)(b.size - fdselectoff));
+					_fdselect = b.stbtt__buf_range((int)fdselectoff, (int)(b.Size - fdselectoff));
 				}
 
 				b.stbtt__buf_seek((int)charstrings);

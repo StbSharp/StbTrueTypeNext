@@ -4,22 +4,22 @@ namespace StbTrueTypeNext
 	{
 		public static readonly Buffer Null = new Buffer();
 
-		public FakePtr<byte> data;
-		public int cursor;
-		public int size;
+		public FakePtr<byte> Data;
+		public int Cursor;
+		public int Size;
 
 		public Buffer(FakePtr<byte> ptr, int sz)
 		{
-			data = ptr;
-			size = sz;
-			cursor = 0;
+			Data = ptr;
+			Size = sz;
+			Cursor = 0;
 		}
 
 		public byte stbtt__buf_get8()
 		{
-			if (cursor >= size)
+			if (Cursor >= Size)
 				return 0;
-			return data[cursor++];
+			return Data[Cursor++];
 		}
 
 		public uint stbtt__buf_get(int n)
@@ -33,29 +33,29 @@ namespace StbTrueTypeNext
 
 		public byte stbtt__buf_peek8()
 		{
-			if (cursor >= size)
+			if (Cursor >= Size)
 				return 0;
-			return data[cursor];
+			return Data[Cursor];
 		}
 
 		public Buffer stbtt__buf_range(int o, int s)
 		{
 			var r = Null;
-			if (o < 0 || s < 0 || o > size || s > size - o)
+			if (o < 0 || s < 0 || o > Size || s > Size - o)
 				return r;
-			r.data = data + o;
-			r.size = s;
+			r.Data = Data + o;
+			r.Size = s;
 			return r;
 		}
 
 		public void stbtt__buf_seek(int o)
 		{
-			cursor = o > size || o < 0 ? size : o;
+			Cursor = o > Size || o < 0 ? Size : o;
 		}
 
 		public void stbtt__buf_skip(int o)
 		{
-			stbtt__buf_seek(cursor + o);
+			stbtt__buf_seek(Cursor + o);
 		}
 
 		public Buffer stbtt__cff_get_index()
@@ -63,7 +63,7 @@ namespace StbTrueTypeNext
 			var count = 0;
 			var start = 0;
 			var offsize = 0;
-			start = cursor;
+			start = Cursor;
 			count = (int)stbtt__buf_get(2);
 			if (count != 0)
 			{
@@ -72,7 +72,7 @@ namespace StbTrueTypeNext
 				stbtt__buf_skip((int)(stbtt__buf_get(offsize) - 1));
 			}
 
-			return stbtt__buf_range(start, cursor - start);
+			return stbtt__buf_range(start, Cursor - start);
 		}
 
 		public int stbtt__cff_index_count()
@@ -104,7 +104,7 @@ namespace StbTrueTypeNext
 			if (b0 == 30)
 			{
 				stbtt__buf_skip(1);
-				while (cursor < size)
+				while (Cursor < Size)
 				{
 					v = stbtt__buf_get8();
 					if ((v & 0xF) == 0xF || v >> 4 == 0xF)
@@ -120,14 +120,14 @@ namespace StbTrueTypeNext
 		public Buffer stbtt__dict_get(int key)
 		{
 			stbtt__buf_seek(0);
-			while (cursor < size)
+			while (Cursor < Size)
 			{
-				var start = cursor;
+				var start = Cursor;
 				var end = 0;
 				var op = 0;
 				while (stbtt__buf_peek8() >= 28) stbtt__cff_skip_operand();
 
-				end = cursor;
+				end = Cursor;
 				op = stbtt__buf_get8();
 				if (op == 12)
 					op = stbtt__buf_get8() | 0x100;
@@ -142,7 +142,7 @@ namespace StbTrueTypeNext
 		{
 			var i = 0;
 			var operands = stbtt__dict_get(key);
-			for (i = 0; i < outcount && operands.cursor < operands.size; i++)
+			for (i = 0; i < outcount && operands.Cursor < operands.Size; i++)
 			{
 				_out_[i] = operands.stbtt__cff_int();
 			}
@@ -151,7 +151,7 @@ namespace StbTrueTypeNext
 		public bool stbtt__dict_get_ints(int key, ref uint _out_)
 		{
 			var operands = stbtt__dict_get(key);
-			if (operands.cursor < operands.size)
+			if (operands.Cursor < operands.Size)
 			{
 				_out_ = operands.stbtt__cff_int();
 				return true;
