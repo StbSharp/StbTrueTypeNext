@@ -2,19 +2,19 @@
 {
 	internal class RectPackContext
 	{
-		public int width;
-		public int height;
-		public int x;
-		public int y;
-		public int bottom_y;
+		public int Width;
+		public int Height;
+		public int X;
+		public int Y;
+		public int BottomY;
 
 		public void InitTarget(int pw, int ph)
 		{
-			width = pw;
-			height = ph;
-			x = 0;
-			y = 0;
-			bottom_y = 0;
+			Width = pw;
+			Height = ph;
+			X = 0;
+			Y = 0;
+			BottomY = 0;
 		}
 
 		public void PackRects(PackRect[] rects, int num_rects)
@@ -22,20 +22,20 @@
 			var i = 0;
 			for (i = 0; i < num_rects; ++i)
 			{
-				if (x + rects[i].W > width)
+				if (X + rects[i].W > Width)
 				{
-					x = 0;
-					y = bottom_y;
+					X = 0;
+					Y = BottomY;
 				}
 
-				if (y + rects[i].H > height)
+				if (Y + rects[i].H > Height)
 					break;
-				rects[i].X = x;
-				rects[i].Y = y;
+				rects[i].X = X;
+				rects[i].Y = Y;
 				rects[i].WasPacked = 1;
-				x += rects[i].W;
-				if (y + rects[i].H > bottom_y)
-					bottom_y = y + rects[i].H;
+				X += rects[i].W;
+				if (Y + rects[i].H > BottomY)
+					BottomY = Y + rects[i].H;
 			}
 
 			for (; i < num_rects; ++i) rects[i].WasPacked = 0;
