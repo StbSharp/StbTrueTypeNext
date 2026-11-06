@@ -110,24 +110,24 @@ namespace StbTrueTypeNext
 						continue;
 
 					var e = new Edge();
-					e.invert = 0;
+					e.Invert = false;
 					if (invert != 0 && p[j].y > p[k].y ||
 						invert == 0 && p[j].y < p[k].y)
 					{
-						e.invert = 1;
+						e.Invert = true;
 						a = j;
 						b = k;
 					}
 
-					e.x0 = p[a].x * scale_x + shift_x;
-					e.y0 = (p[a].y * y_scale_inv + shift_y) * vsubsample;
-					e.x1 = p[b].x * scale_x + shift_x;
-					e.y1 = (p[b].y * y_scale_inv + shift_y) * vsubsample;
+					e.X0 = p[a].x * scale_x + shift_x;
+					e.Y0 = (p[a].y * y_scale_inv + shift_y) * vsubsample;
+					e.X1 = p[b].x * scale_x + shift_x;
+					e.Y1 = (p[b].y * y_scale_inv + shift_y) * vsubsample;
 					es.Add(e);
 				}
 			}
 
-			es.Sort((a, b) => a.y0.CompareTo(b.y0));
+			es.Sort((a, b) => a.Y0.CompareTo(b.Y0));
 
 			// We need to add one additional value after the sorting
 			// It is somehow used by below methods

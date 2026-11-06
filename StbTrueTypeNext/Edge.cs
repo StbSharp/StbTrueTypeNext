@@ -2,10 +2,10 @@
 {
 	internal struct Edge
 	{
-		public float x0;
-		public float y0;
-		public float x1;
-		public float y1;
-		public int invert;
+		public float X0;
+		public float Y0;
+		public float X1;
+		public float Y1;
+		public bool Invert;
 	}
 }

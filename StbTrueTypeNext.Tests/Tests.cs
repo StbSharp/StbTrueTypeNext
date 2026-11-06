@@ -27,11 +27,17 @@ namespace StbTrueTypeNext.Tests
 		}
 
 		[Fact]
-		public void TestCreationAndDispose()
+		public void TestTtf()
 		{
 			var ttfData = _assembly.ReadResourceAsBytes("DroidSans.ttf");
 			var fontInfo = new STBFont(ttfData);
-			Assert.NotNull(fontInfo);
+		}
+
+		[Fact]
+		public void TestOtf()
+		{
+			var ttfData = _assembly.ReadResourceAsBytes("SourceSansPro-Regular.otf");
+			var fontInfo = new STBFont(ttfData);
 		}
 
 		[Fact]

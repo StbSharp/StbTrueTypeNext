@@ -17,16 +17,16 @@ namespace StbTrueTypeNext
 
 		private static stbtt__active_edge stbtt__new_active(ref Edge e, int off_x, float start_point)
 		{
-			var dxdy = (e.x1 - e.x0) / (e.y1 - e.y0);
+			var dxdy = (e.X1 - e.X0) / (e.Y1 - e.Y0);
 
 			return new stbtt__active_edge
 			{
 				fdx = dxdy,
 				fdy = dxdy != 0.0f ? 1.0f / dxdy : 0.0f,
-				fx = e.x0 + dxdy * (start_point - e.y0) - off_x,
-				direction = e.invert != 0 ? 1.0f : -1.0f,
-				sy = e.y0,
-				ey = e.y1
+				fx = e.X0 + dxdy * (start_point - e.Y0) - off_x,
+				direction = e.Invert ? 1.0f : -1.0f,
+				sy = e.Y0,
+				ey = e.Y1
 			};
 		}
 
@@ -257,7 +257,7 @@ namespace StbTrueTypeNext
 			y = off_y;
 
 			var e = es[es.Count - 1];
-			e.y0 = (float)(off_y + result.Height) + 1;
+			e.Y0 = (float)(off_y + result.Height) + 1;
 			es[es.Count - 1] = e;
 
 			var ei = 0;
@@ -283,10 +283,10 @@ namespace StbTrueTypeNext
 				}
 
 				// insert all edges that start before the bottom of this scanline
-				for (; es[ei].y0 <= scan_y_bottom; ++ei)
+				for (; es[ei].Y0 <= scan_y_bottom; ++ei)
 				{
 					e = es[ei];
-					if (e.y0 != e.y1)
+					if (e.Y0 != e.Y1)
 					{
 						var z = stbtt__new_active(ref e, off_x, scan_y_top);
 						if (j == 0 && off_y != 0)

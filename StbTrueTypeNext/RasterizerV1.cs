@@ -16,16 +16,16 @@ namespace StbTrueTypeNext
 		private static stbtt__active_edge_old_rasterizer stbtt__new_active_old_rasterizer(ref Edge e, int off_x, float start_point)
 		{
 			var z = new stbtt__active_edge_old_rasterizer();
-			float dxdy = (e.x1 - e.x0) / (e.y1 - e.y0);
+			float dxdy = (e.X1 - e.X0) / (e.Y1 - e.Y0);
 			if ((dxdy) < (0))
 				z.dx = (int)(-((int)(Math.Floor((double)((1 << 10) * -dxdy)))));
 			else
 				z.dx = ((int)(Math.Floor((double)((1 << 10) * dxdy))));
 
-			z.x = ((int)(Math.Floor((double)((1 << 10) * e.x0 + z.dx * (start_point - e.y0)))));
+			z.x = ((int)(Math.Floor((double)((1 << 10) * e.X0 + z.dx * (start_point - e.Y0)))));
 			z.x -= (int)(off_x * (1 << 10));
-			z.ey = (float)(e.y1);
-			z.direction = (int)((e.invert) != 0 ? 1 : -1);
+			z.ey = (float)(e.Y1);
+			z.direction = (int)(e.Invert ? 1 : -1);
 
 			return z;
 		}
@@ -99,7 +99,7 @@ namespace StbTrueTypeNext
 			y = off_y * vsubsample;
 
 			var e = es[es.Count - 1];
-			e.y0 = (off_y + result.Height) * (float)(vsubsample) + 1;
+			e.Y0 = (off_y + result.Height) * (float)(vsubsample) + 1;
 			es[es.Count - 1] = e;
 
 			var ei = 0;
@@ -130,10 +130,10 @@ namespace StbTrueTypeNext
 					edges.Sort((a, b) => a.x.CompareTo(b.x));
 
 					// insert all edges that start before the center of this scanline -- omit ones that also end on this scanline
-					for (; (es[ei].y0) <= (scan_y); ++ei)
+					for (; (es[ei].Y0) <= (scan_y); ++ei)
 					{
 						e = es[ei];
-						if ((e.y1) > (scan_y))
+						if ((e.Y1) > (scan_y))
 						{
 							var z = stbtt__new_active_old_rasterizer(ref e, (int)(off_x), (float)(scan_y));
 
