@@ -1,4 +1,6 @@
-﻿namespace StbTrueTypeNext
+﻿using System.Collections.Generic;
+
+namespace StbTrueTypeNext
 {
 	internal enum CharStringContextMode
 	{
@@ -13,8 +15,7 @@
 		private float _firstY;
 		private float _x;
 		private float _y;
-		public STBVertex[] pvertices;
-		public int num_vertices;
+		private readonly List<STBVertex> _vertices = new List<STBVertex>();
 
 		public CharStringContextMode Mode { get; set; } = CharStringContextMode.Draw;
 
@@ -22,6 +23,7 @@
 		public int MaxX { get; private set; }
 		public int MinY { get; private set; }
 		public int MaxY { get; private set; }
+		public int VerticesCount { get; private set; }
 
 		public void CloseShape()
 		{
@@ -68,12 +70,15 @@
 			}
 			else
 			{
-				pvertices[num_vertices].Set(type, x, y, cx, cy);
-				pvertices[num_vertices].CX1 = (short)cx1;
-				pvertices[num_vertices].CY1 = (short)cy1;
+				var newVertex = new STBVertex();
+				newVertex.Set(type, x, y, cx, cy);
+				newVertex.CX1 = (short)cx1;
+				newVertex.CY1 = (short)cy1;
+
+				_vertices.Add(newVertex);
 			}
 
-			num_vertices++;
+			VerticesCount++;
 		}
 
 		public void TrackVertex(int x, int y)
@@ -89,5 +94,7 @@
 
 			_started = true;
 		}
+
+		public STBVertex[] ToArray() => _vertices.ToArray();
 	}
 }

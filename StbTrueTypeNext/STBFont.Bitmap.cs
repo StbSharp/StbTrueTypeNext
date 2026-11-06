@@ -520,20 +520,11 @@ namespace StbTrueTypeNext
 
 		private int stbtt__GetGlyphShapeT2(int glyph_index, out STBVertex[] pvertices)
 		{
-			var count_ctx = new CharStringContext
-			{
-				Mode = CharStringContextMode.CalculateBounds
-			};
-
+			var count_ctx = new CharStringContext();
 			if (stbtt__run_charstring(glyph_index, count_ctx) != 0)
 			{
-				var output_ctx = new CharStringContext();
-				pvertices = new STBVertex[count_ctx.num_vertices];
-				output_ctx.pvertices = pvertices;
-				if (stbtt__run_charstring(glyph_index, output_ctx) != 0)
-				{
-					return output_ctx.num_vertices;
-				}
+				pvertices = count_ctx.ToArray();
+				return pvertices.Length;
 			}
 
 			pvertices = null;
@@ -573,7 +564,7 @@ namespace StbTrueTypeNext
 			x1 = r != 0 ? c.MaxX : 0;
 			y1 = r != 0 ? c.MaxY : 0;
 
-			return r != 0 ? c.num_vertices : 0;
+			return r != 0 ? c.VerticesCount : 0;
 		}
 
 		private Buffer stbtt__cid_get_glyph_subrs(int glyph_index)
