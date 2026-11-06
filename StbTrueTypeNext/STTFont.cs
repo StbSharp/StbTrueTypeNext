@@ -36,10 +36,7 @@ namespace StbTrueTypeNext
 		public static STTFont FromMemory(byte[] data, int offset = 0)
 		{
 			var info = new STTFont();
-			if (info.stbtt_InitFont_internal(data, offset) == 0)
-			{
-				throw new Exception("Unable to parse font");
-			}
+			info.stbtt_InitFont_internal(data, offset);
 
 			return info;
 		}
@@ -54,7 +51,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		private int stbtt_InitFont_internal(byte[] data, int fontstart)
+		private void stbtt_InitFont_internal(byte[] data, int fontstart)
 		{
 			uint cmap = 0;
 			uint t = 0;
@@ -73,12 +70,33 @@ namespace StbTrueTypeNext
 			_hmtx = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "hmtx");
 			_kern = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "kern");
 			_gpos = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "GPOS");
-			if (cmap == 0 || _head == 0 || _hhea == 0 || _hmtx == 0)
-				return 0;
+
+			if (cmap == 0)
+			{
+				throw new Exception("Could not find 'cmap'");
+			}
+
+			if (_head == 0)
+			{
+				throw new Exception("Could not find 'head'");
+			}
+
+			if (_hhea == 0)
+			{
+				throw new Exception("Could not find 'hhea'");
+			}
+
+			if (_hmtx == 0)
+			{
+				throw new Exception("Could not find 'htmx'");
+			}
+
 			if (_glyf != 0)
 			{
 				if (_loca == 0)
-					return 0;
+				{
+					throw new Exception("Could not find 'loca'");
+				}
 			}
 			else
 			{
@@ -88,7 +106,10 @@ namespace StbTrueTypeNext
 				uint cff = 0;
 				cff = Utility.stbtt__find_table(dataPtr, (uint)fontstart, "CFF ");
 				if (cff == 0)
-					return 0;
+				{
+					throw new Exception("Could not find 'CFF '");
+				}
+
 				_fontdicts = Buffer.Null;
 				_fdselect = Buffer.Null;
 				_cff = new Buffer(dataPtr + cff, 512 * 1024 * 1024);
@@ -112,13 +133,22 @@ namespace StbTrueTypeNext
 
 				_subrs = Buffer.stbtt__get_subrs(b, topdict);
 				if (cstype != 2)
-					return 0;
+				{
+					throw new Exception("cstype != 2");
+				}
+
 				if (charstrings == 0)
-					return 0;
+				{
+					throw new Exception("charstrings == 0");
+				}
+
 				if (fdarrayoff != 0)
 				{
 					if (fdselectoff == 0)
-						return 0;
+					{
+						throw new Exception("fdselectoff == 0");
+					}
+
 					b.stbtt__buf_seek((int)fdarrayoff);
 					_fontdicts = b.stbtt__cff_get_index();
 					_fdselect = b.stbtt__buf_range((int)fdselectoff, (int)(b.size - fdselectoff));
@@ -160,7 +190,6 @@ namespace StbTrueTypeNext
 			if (_indexMap == 0)
 				throw new Exception("The font does not have a table mapping from unicode codepoints to font indices.");
 			_indexToLocFormat = Utility.ttUSHORT(dataPtr + _head + 50);
-			return 1;
 		}
 
 		public int stbtt_FindGlyphIndex(int unicode_codepoint)
