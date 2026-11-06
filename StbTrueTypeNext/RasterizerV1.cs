@@ -5,32 +5,32 @@ namespace StbTrueTypeNext
 {
 	internal static class RasterizerV1
 	{
-		private class stbtt__active_edge_old_rasterizer
+		private class ActiveEdge
 		{
-			public int x;
-			public int dx;
-			public float ey;
-			public int direction;
+			public int X;
+			public int DeltaX;
+			public float EndY;
+			public int Direction;
 		}
 
-		private static stbtt__active_edge_old_rasterizer stbtt__new_active_old_rasterizer(ref Edge e, int off_x, float start_point)
+		private static ActiveEdge CreateActiveEdge(ref Edge e, int off_x, float start_point)
 		{
-			var z = new stbtt__active_edge_old_rasterizer();
+			var z = new ActiveEdge();
 			float dxdy = (e.X1 - e.X0) / (e.Y1 - e.Y0);
 			if ((dxdy) < (0))
-				z.dx = (int)(-((int)(Math.Floor((double)((1 << 10) * -dxdy)))));
+				z.DeltaX = (int)(-((int)(Math.Floor((double)((1 << 10) * -dxdy)))));
 			else
-				z.dx = ((int)(Math.Floor((double)((1 << 10) * dxdy))));
+				z.DeltaX = ((int)(Math.Floor((double)((1 << 10) * dxdy))));
 
-			z.x = ((int)(Math.Floor((double)((1 << 10) * e.X0 + z.dx * (start_point - e.Y0)))));
-			z.x -= (int)(off_x * (1 << 10));
-			z.ey = (float)(e.Y1);
-			z.direction = (int)(e.Invert ? 1 : -1);
+			z.X = ((int)(Math.Floor((double)((1 << 10) * e.X0 + z.DeltaX * (start_point - e.Y0)))));
+			z.X -= (int)(off_x * (1 << 10));
+			z.EndY = (float)(e.Y1);
+			z.Direction = (int)(e.Invert ? 1 : -1);
 
 			return z;
 		}
 
-		private static void stbtt__fill_active_edges_old_rasterizer(byte[] scanline, int len, List<stbtt__active_edge_old_rasterizer> edges, int max_weight)
+		private static void FillActiveEdges(byte[] scanline, int len, List<ActiveEdge> edges, int max_weight)
 		{
 			int x0 = 0;
 			int w = 0;
@@ -40,13 +40,13 @@ namespace StbTrueTypeNext
 				var e = edges[k];
 				if ((w) == (0))
 				{
-					x0 = (int)(e.x);
-					w += (int)(e.direction);
+					x0 = (int)(e.X);
+					w += (int)(e.Direction);
 				}
 				else
 				{
-					int x1 = e.x;
-					w += (int)(e.direction);
+					int x1 = e.X;
+					w += (int)(e.Direction);
 					if ((w) == (0))
 					{
 						int i = x0 >> 10;
@@ -80,7 +80,7 @@ namespace StbTrueTypeNext
 
 		public static void Rasterize(Bitmap result, List<Edge> es, int vsubsample, int off_x, int off_y)
 		{
-			var edges = new List<stbtt__active_edge_old_rasterizer>();
+			var edges = new List<ActiveEdge>();
 			int y = 0; int j = 0;
 			int max_weight = (255 / vsubsample); // weight per vertical scanline
 			int s = 0; // vertical subsample index
@@ -116,18 +116,18 @@ namespace StbTrueTypeNext
 					for (var i = edges.Count - 1; i >= 0; --i)
 					{
 						var z = edges[i];
-						if ((z.ey) <= (scan_y))
+						if ((z.EndY) <= (scan_y))
 						{
 							edges.RemoveAt(i); // delete from list
 						}
 						else
 						{
-							z.x += (int)(z.dx); // advance to position for current scanline
+							z.X += (int)(z.DeltaX); // advance to position for current scanline
 						}
 					}
 
 					// resort the list if needed
-					edges.Sort((a, b) => a.x.CompareTo(b.x));
+					edges.Sort((a, b) => a.X.CompareTo(b.X));
 
 					// insert all edges that start before the center of this scanline -- omit ones that also end on this scanline
 					for (; (es[ei].Y0) <= (scan_y); ++ei)
@@ -135,14 +135,14 @@ namespace StbTrueTypeNext
 						e = es[ei];
 						if ((e.Y1) > (scan_y))
 						{
-							var z = stbtt__new_active_old_rasterizer(ref e, (int)(off_x), (float)(scan_y));
+							var z = CreateActiveEdge(ref e, (int)(off_x), (float)(scan_y));
 
 							// find insertion point
 							if (edges.Count == 0)
 							{
 								edges.Add(z);
 							}
-							else if ((z.x) < edges[0].x)
+							else if ((z.X) < edges[0].X)
 							{
 								// insert at front
 								edges.Insert(0, z);
@@ -150,7 +150,7 @@ namespace StbTrueTypeNext
 							else
 							{
 								var i = 0;
-								for (; i < edges.Count && edges[i].x < z.x; ++i)
+								for (; i < edges.Count && edges[i].X < z.X; ++i)
 								{
 								}
 
@@ -159,7 +159,7 @@ namespace StbTrueTypeNext
 						}
 					}
 
-					stbtt__fill_active_edges_old_rasterizer(scanline, (int)(result.Width), edges, (int)(max_weight));
+					FillActiveEdges(scanline, (int)(result.Width), edges, (int)(max_weight));
 					++y;
 				}
 
