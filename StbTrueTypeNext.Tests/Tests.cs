@@ -3,10 +3,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using StbTrueTypeNext.Tests.Utility;
-using static StbTrueTypeNext.StbTrueTypeFont;
+using static StbTrueTypeNext.STTFont;
 using Xunit;
 using Xunit.Sdk;
-using FontsList = System.Collections.Generic.List<StbTrueTypeNext.StbTrueTypeFont>;
+using FontsList = System.Collections.Generic.List<StbTrueTypeNext.STTFont>;
 
 namespace StbTrueTypeNext.Tests
 {
@@ -23,7 +23,7 @@ namespace StbTrueTypeNext.Tests
 			var ttfData = File.ReadAllBytes(@"C:\Windows\Fonts\webdings.ttf");
 			Assert.Throws<Exception>(() =>
 			{
-				var fontInfo = StbTrueTypeFont.FromMemory(ttfData);
+				var fontInfo = STTFont.FromMemory(ttfData);
 			});
 		}
 
@@ -31,7 +31,7 @@ namespace StbTrueTypeNext.Tests
 		public void TestCreationAndDispose()
 		{
 			var ttfData = _assembly.ReadResourceAsBytes("DroidSans.ttf");
-			var fontInfo = StbTrueTypeFont.FromMemory(ttfData);
+			var fontInfo = STTFont.FromMemory(ttfData);
 			Assert.NotNull(fontInfo);
 		}
 
@@ -62,13 +62,13 @@ namespace StbTrueTypeNext.Tests
 			for (int i = 0; i < numberOfFonts; i++)
 			{
 				int offset = FontCollection.stbtt_GetFontOffsetForIndex(ttcContent, i);
-				fonts.Add(StbTrueTypeFont.FromMemory(ttcContent, offset));
+				fonts.Add(STTFont.FromMemory(ttcContent, offset));
 			}
 
 			Assert.Equal(numberOfFonts, fonts.Count);
 		}
 
-		private void TestRasterize(StbTrueTypeFont fontInfo, string text, float size)
+		private void TestRasterize(STTFont fontInfo, string text, float size)
 		{
 			int iascent, idescent, ilineGap;
 			fontInfo.stbtt_GetFontVMetrics(out iascent, out idescent, out ilineGap);
@@ -115,7 +115,7 @@ namespace StbTrueTypeNext.Tests
 		public void TestNewRasterizer()
 		{
 			var ttfData = _assembly.ReadResourceAsBytes("DroidSans.ttf");
-			var fontInfo = StbTrueTypeFont.FromMemory(ttfData);
+			var fontInfo = STTFont.FromMemory(ttfData);
 			Assert.NotNull(fontInfo);
 
 			TestRasterize(fontInfo, "Hello, World!", 32.0f);
@@ -125,7 +125,7 @@ namespace StbTrueTypeNext.Tests
 		public void TestOldRasterizer()
 		{
 			var ttfData = _assembly.ReadResourceAsBytes("DroidSans.ttf");
-			var fontInfo = StbTrueTypeFont.FromMemory(ttfData);
+			var fontInfo = STTFont.FromMemory(ttfData);
 			Assert.NotNull(fontInfo);
 
 			fontInfo.RasterizerVersion = RasterizerVersion.V1;

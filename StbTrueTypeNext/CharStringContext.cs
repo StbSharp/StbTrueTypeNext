@@ -18,7 +18,7 @@
 		public void stbtt__csctx_close_shape()
 		{
 			if (first_x != x || first_y != y)
-				stbtt__csctx_v(StbTrueTypeFont.STBTT_vline, (int)first_x, (int)first_y, 0, 0, 0, 0);
+				stbtt__csctx_v(STTFont.STBTT_vline, (int)first_x, (int)first_y, 0, 0, 0, 0);
 		}
 
 		public void stbtt__csctx_rccurve_to(float dx1, float dy1, float dx2, float dy2, float dx3, float dy3)
@@ -29,14 +29,14 @@
 			var cy2 = cy1 + dy2;
 			x = cx2 + dx3;
 			y = cy2 + dy3;
-			stbtt__csctx_v(StbTrueTypeFont.STBTT_vcubic, (int)x, (int)y, (int)cx1, (int)cy1, (int)cx2, (int)cy2);
+			stbtt__csctx_v(STTFont.STBTT_vcubic, (int)x, (int)y, (int)cx1, (int)cy1, (int)cx2, (int)cy2);
 		}
 
 		public void stbtt__csctx_rline_to(float dx, float dy)
 		{
 			x += dx;
 			y += dy;
-			stbtt__csctx_v(StbTrueTypeFont.STBTT_vline, (int)x, (int)y, 0, 0, 0, 0);
+			stbtt__csctx_v(STTFont.STBTT_vline, (int)x, (int)y, 0, 0, 0, 0);
 		}
 
 		public void stbtt__csctx_rmove_to(float dx, float dy)
@@ -44,7 +44,7 @@
 			stbtt__csctx_close_shape();
 			first_x = x = x + dx;
 			first_y = y = y + dy;
-			stbtt__csctx_v(StbTrueTypeFont.STBTT_vmove, (int)x, (int)y, 0, 0, 0, 0);
+			stbtt__csctx_v(STTFont.STBTT_vmove, (int)x, (int)y, 0, 0, 0, 0);
 		}
 
 		public void stbtt__csctx_v(byte type, int x, int y, int cx, int cy, int cx1, int cy1)
@@ -52,7 +52,7 @@
 			if (bounds != 0)
 			{
 				stbtt__track_vertex(x, y);
-				if (type == StbTrueTypeFont.STBTT_vcubic)
+				if (type == STTFont.STBTT_vcubic)
 				{
 					stbtt__track_vertex(cx, cy);
 					stbtt__track_vertex(cx1, cy1);

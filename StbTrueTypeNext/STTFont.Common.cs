@@ -2,7 +2,7 @@ using System;
 
 namespace StbTrueTypeNext
 {
-	partial class StbTrueTypeFont
+	partial class STTFont
 	{
 		public const int STBTT_MAC_EID_ARABIC = 4;
 		public const int STBTT_MAC_EID_CHINESE_TRAD = 2;

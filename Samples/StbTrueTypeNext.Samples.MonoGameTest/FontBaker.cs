@@ -39,7 +39,7 @@ public class FontBaker
 		if (!characterRanges.Any())
 			throw new ArgumentException("characterRanges must have a least one value.");
 
-		var font = StbTrueTypeFont.FromMemory(ttf);
+		var font = STTFont.FromMemory(ttf);
 		var scaleFactor = font.stbtt_ScaleForPixelHeight(fontPixelHeight);
 
 		int ascent, descent, lineGap;
