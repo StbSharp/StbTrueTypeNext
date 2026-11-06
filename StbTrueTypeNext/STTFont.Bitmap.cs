@@ -192,6 +192,50 @@ namespace StbTrueTypeNext
 			return stbtt__GetGlyphShapeT2(glyph_index, out pvertices);
 		}
 
+		public int stbtt_GetCodepointBox(int codepoint, out int x0, out int y0, out int x1, out int y1)
+		{
+			return stbtt_GetGlyphBox(stbtt_FindGlyphIndex(codepoint), out x0, out y0, out x1, out y1);
+		}
+
+		public int stbtt_GetGlyphBox(int glyph_index, out int x0, out int y0, out int x1, out int y1)
+		{
+			x0 = y0 = x1 = y1 = 0;
+			if (_cff.size != 0)
+			{
+				stbtt__GetGlyphInfoT2(glyph_index, out x0, out y0, out x1, out y1);
+			}
+			else
+			{
+				var g = stbtt__GetGlyfOffset(glyph_index);
+				if (g < 0)
+					return 0;
+
+				var dataPtr = new FakePtr<byte>(_data);
+				x0 = Utility.ttSHORT(dataPtr + g + 2);
+				y0 = Utility.ttSHORT(dataPtr + g + 4);
+				x1 = Utility.ttSHORT(dataPtr + g + 6);
+				y1 = Utility.ttSHORT(dataPtr + g + 8);
+			}
+
+			return 1;
+		}
+
+		public int stbtt_IsGlyphEmpty(int glyph_index)
+		{
+			short numberOfContours = 0;
+			var g = 0;
+			if (_cff.size != 0)
+			{
+				int x0, y0, x1, y1;
+				return stbtt__GetGlyphInfoT2(glyph_index, out x0, out y0, out x1, out y1) == 0 ? 1 : 0;
+			}
+			g = stbtt__GetGlyfOffset(glyph_index);
+			if (g < 0)
+				return 1;
+			numberOfContours = Utility.ttSHORT(new FakePtr<byte>(_data, g));
+			return numberOfContours == 0 ? 1 : 0;
+		}
+
 		private int stbtt__GetGlyphShapeTT(int glyph_index, out STTVertex[] pvertices)
 		{
 			short numberOfContours = 0;
@@ -508,6 +552,393 @@ namespace StbTrueTypeNext
 			}
 
 			return num_vertices;
+		}
+
+		private int stbtt__GetGlyphInfoT2(int glyph_index, out int x0, out int y0, out int x1, out int y1)
+		{
+			var c = new CharStringContext
+			{
+				bounds = 1
+			};
+
+			var r = stbtt__run_charstring(glyph_index, c);
+			x0 = r != 0 ? c.min_x : 0;
+			y0 = r != 0 ? c.min_y : 0;
+			x1 = r != 0 ? c.max_x : 0;
+			y1 = r != 0 ? c.max_y : 0;
+
+			return r != 0 ? c.num_vertices : 0;
+		}
+
+		private Buffer stbtt__cid_get_glyph_subrs(int glyph_index)
+		{
+			var fdselect = _fdselect;
+			var nranges = 0;
+			var start = 0;
+			var end = 0;
+			var v = 0;
+			var fmt = 0;
+			var fdselector = -1;
+			var i = 0;
+			fdselect.stbtt__buf_seek(0);
+			fmt = fdselect.stbtt__buf_get8();
+			if (fmt == 0)
+			{
+				fdselect.stbtt__buf_skip(glyph_index);
+				fdselector = fdselect.stbtt__buf_get8();
+			}
+			else if (fmt == 3)
+			{
+				nranges = (int)fdselect.stbtt__buf_get(2);
+				start = (int)fdselect.stbtt__buf_get(2);
+				for (i = 0; i < nranges; i++)
+				{
+					v = fdselect.stbtt__buf_get8();
+					end = (int)fdselect.stbtt__buf_get(2);
+					if (glyph_index >= start && glyph_index < end)
+					{
+						fdselector = v;
+						break;
+					}
+
+					start = end;
+				}
+			}
+
+			if (fdselector == -1)
+				return Buffer.Null;
+			return Buffer.stbtt__get_subrs(_cff, Buffer.stbtt__cff_index_get(_fontdicts, fdselector));
+		}
+
+		private int stbtt__run_charstring(int glyph_index, CharStringContext c)
+		{
+			var in_header = 1;
+			var maskbits = 0;
+			var subr_stack_height = 0;
+			var sp = 0;
+			var v = 0;
+			var i = 0;
+			var b0 = 0;
+			var has_subrs = 0;
+			var clear_stack = 0;
+			var s = new float[48];
+			var subr_stack = new Buffer[10];
+			var subrs = _subrs;
+			var b = new Buffer();
+			float f = 0;
+			b = Buffer.stbtt__cff_index_get(_charstrings, glyph_index);
+			while (b.cursor < b.size)
+			{
+				i = 0;
+				clear_stack = 1;
+				b0 = b.stbtt__buf_get8();
+				switch (b0)
+				{
+					case 0x13:
+					case 0x14:
+						if (in_header != 0)
+							maskbits += sp / 2;
+						in_header = 0;
+						b.stbtt__buf_skip((maskbits + 7) / 8);
+						break;
+					case 0x01:
+					case 0x03:
+					case 0x12:
+					case 0x17:
+						maskbits += sp / 2;
+						break;
+					case 0x15:
+						in_header = 0;
+						if (sp < 2)
+							return 0;
+						c.stbtt__csctx_rmove_to(s[sp - 2], s[sp - 1]);
+						break;
+					case 0x04:
+						in_header = 0;
+						if (sp < 1)
+							return 0;
+						c.stbtt__csctx_rmove_to(0, s[sp - 1]);
+						break;
+					case 0x16:
+						in_header = 0;
+						if (sp < 1)
+							return 0;
+						c.stbtt__csctx_rmove_to(s[sp - 1], 0);
+						break;
+					case 0x05:
+						if (sp < 2)
+							return 0;
+						for (; i + 1 < sp; i += 2) c.stbtt__csctx_rline_to(s[i], s[i + 1]);
+
+						break;
+					case 0x07:
+					case 0x06:
+						if (sp < 1)
+							return 0;
+						var goto_vlineto = b0 == 0x07 ? 1 : 0;
+						for (; ; )
+						{
+							if (goto_vlineto == 0)
+							{
+								if (i >= sp)
+									break;
+								c.stbtt__csctx_rline_to(s[i], 0);
+								i++;
+							}
+
+							goto_vlineto = 0;
+							if (i >= sp)
+								break;
+							c.stbtt__csctx_rline_to(0, s[i]);
+							i++;
+						}
+
+						break;
+					case 0x1F:
+					case 0x1E:
+						if (sp < 4)
+							return 0;
+						var goto_hvcurveto = b0 == 0x1F ? 1 : 0;
+						for (; ; )
+						{
+							if (goto_hvcurveto == 0)
+							{
+								if (i + 3 >= sp)
+									break;
+								c.stbtt__csctx_rccurve_to(0, s[i], s[i + 1], s[i + 2], s[i + 3],
+									sp - i == 5 ? s[i + 4] : 0.0f);
+								i += 4;
+							}
+
+							goto_hvcurveto = 0;
+							if (i + 3 >= sp)
+								break;
+							c.stbtt__csctx_rccurve_to(s[i], 0, s[i + 1], s[i + 2], sp - i == 5 ? s[i + 4] : 0.0f,
+								s[i + 3]);
+							i += 4;
+						}
+
+						break;
+					case 0x08:
+						if (sp < 6)
+							return 0;
+						for (; i + 5 < sp; i += 6)
+							c.stbtt__csctx_rccurve_to(s[i], s[i + 1], s[i + 2], s[i + 3], s[i + 4], s[i + 5]);
+
+						break;
+					case 0x18:
+						if (sp < 8)
+							return 0;
+						for (; i + 5 < sp - 2; i += 6)
+							c.stbtt__csctx_rccurve_to(s[i], s[i + 1], s[i + 2], s[i + 3], s[i + 4], s[i + 5]);
+
+						if (i + 1 >= sp)
+							return 0;
+						c.stbtt__csctx_rline_to(s[i], s[i + 1]);
+						break;
+					case 0x19:
+						if (sp < 8)
+							return 0;
+						for (; i + 1 < sp - 6; i += 2) c.stbtt__csctx_rline_to(s[i], s[i + 1]);
+
+						if (i + 5 >= sp)
+							return 0;
+						c.stbtt__csctx_rccurve_to(s[i], s[i + 1], s[i + 2], s[i + 3], s[i + 4], s[i + 5]);
+						break;
+					case 0x1A:
+					case 0x1B:
+						if (sp < 4)
+							return 0;
+						f = (float)0.0;
+						if ((sp & 1) != 0)
+						{
+							f = s[i];
+							i++;
+						}
+
+						for (; i + 3 < sp; i += 4)
+						{
+							if (b0 == 0x1B)
+								c.stbtt__csctx_rccurve_to(s[i], f, s[i + 1], s[i + 2], s[i + 3], (float)0.0);
+							else
+								c.stbtt__csctx_rccurve_to(f, s[i], s[i + 1], s[i + 2], (float)0.0, s[i + 3]);
+							f = (float)0.0;
+						}
+
+						break;
+					case 0x0A:
+					case 0x1D:
+						if (b0 == 0x0A && has_subrs == 0)
+						{
+							if (_fdselect.size != 0)
+								subrs = stbtt__cid_get_glyph_subrs(glyph_index);
+							has_subrs = 1;
+						}
+
+						if (sp < 1)
+							return 0;
+						v = (int)s[--sp];
+						if (subr_stack_height >= 10)
+							return 0;
+						subr_stack[subr_stack_height++] = b;
+						b = Buffer.stbtt__get_subr(b0 == 0x0A ? subrs : _gsubrs, v);
+						if (b.size == 0)
+							return 0;
+						b.cursor = 0;
+						clear_stack = 0;
+						break;
+					case 0x0B:
+						if (subr_stack_height <= 0)
+							return 0;
+						b = subr_stack[--subr_stack_height];
+						clear_stack = 0;
+						break;
+					case 0x0E:
+						c.stbtt__csctx_close_shape();
+						return 1;
+					case 0x0C:
+						{
+							float dx1 = 0;
+							float dx2 = 0;
+							float dx3 = 0;
+							float dx4 = 0;
+							float dx5 = 0;
+							float dx6 = 0;
+							float dy1 = 0;
+							float dy2 = 0;
+							float dy3 = 0;
+							float dy4 = 0;
+							float dy5 = 0;
+							float dy6 = 0;
+							float dx = 0;
+							float dy = 0;
+							int b1 = b.stbtt__buf_get8();
+							switch (b1)
+							{
+								case 0x22:
+									if (sp < 7)
+										return 0;
+									dx1 = s[0];
+									dx2 = s[1];
+									dy2 = s[2];
+									dx3 = s[3];
+									dx4 = s[4];
+									dx5 = s[5];
+									dx6 = s[6];
+									c.stbtt__csctx_rccurve_to(dx1, 0, dx2, dy2, dx3, 0);
+									c.stbtt__csctx_rccurve_to(dx4, 0, dx5, -dy2, dx6, 0);
+									break;
+								case 0x23:
+									if (sp < 13)
+										return 0;
+									dx1 = s[0];
+									dy1 = s[1];
+									dx2 = s[2];
+									dy2 = s[3];
+									dx3 = s[4];
+									dy3 = s[5];
+									dx4 = s[6];
+									dy4 = s[7];
+									dx5 = s[8];
+									dy5 = s[9];
+									dx6 = s[10];
+									dy6 = s[11];
+									c.stbtt__csctx_rccurve_to(dx1, dy1, dx2, dy2, dx3, dy3);
+									c.stbtt__csctx_rccurve_to(dx4, dy4, dx5, dy5, dx6, dy6);
+									break;
+								case 0x24:
+									if (sp < 9)
+										return 0;
+									dx1 = s[0];
+									dy1 = s[1];
+									dx2 = s[2];
+									dy2 = s[3];
+									dx3 = s[4];
+									dx4 = s[5];
+									dx5 = s[6];
+									dy5 = s[7];
+									dx6 = s[8];
+									c.stbtt__csctx_rccurve_to(dx1, dy1, dx2, dy2, dx3, 0);
+									c.stbtt__csctx_rccurve_to(dx4, 0, dx5, dy5, dx6, -(dy1 + dy2 + dy5));
+									break;
+								case 0x25:
+									if (sp < 11)
+										return 0;
+									dx1 = s[0];
+									dy1 = s[1];
+									dx2 = s[2];
+									dy2 = s[3];
+									dx3 = s[4];
+									dy3 = s[5];
+									dx4 = s[6];
+									dy4 = s[7];
+									dx5 = s[8];
+									dy5 = s[9];
+									dx6 = dy6 = s[10];
+									dx = dx1 + dx2 + dx3 + dx4 + dx5;
+									dy = dy1 + dy2 + dy3 + dy4 + dy5;
+									if (Math.Abs(dx) > Math.Abs(dy))
+										dy6 = -dy;
+									else
+										dx6 = -dx;
+									c.stbtt__csctx_rccurve_to(dx1, dy1, dx2, dy2, dx3, dy3);
+									c.stbtt__csctx_rccurve_to(dx4, dy4, dx5, dy5, dx6, dy6);
+									break;
+								default:
+									return 0;
+							}
+						}
+
+						break;
+					default:
+						if (b0 != 255 && b0 != 28 && b0 < 32)
+							return 0;
+						if (b0 == 255)
+						{
+							f = (float)(int)b.stbtt__buf_get(4) / 0x10000;
+						}
+						else
+						{
+							b.stbtt__buf_skip(-1);
+							f = (short)b.stbtt__cff_int();
+						}
+
+						if (sp >= 48)
+							return 0;
+						s[sp++] = f;
+						clear_stack = 0;
+						break;
+				}
+
+				if (clear_stack != 0)
+					sp = 0;
+			}
+
+			return 0;
+		}
+
+		private int stbtt__GetGlyfOffset(int glyph_index)
+		{
+			var g1 = 0;
+			var g2 = 0;
+			if (glyph_index >= _numGlyphs)
+				return -1;
+			if (_indexToLocFormat >= 2)
+				return -1;
+
+			var dataPtr = new FakePtr<byte>(_data);
+			if (_indexToLocFormat == 0)
+			{
+				g1 = _glyf + Utility.ttUSHORT(dataPtr + _loca + glyph_index * 2) * 2;
+				g2 = _glyf + Utility.ttUSHORT(dataPtr + _loca + glyph_index * 2 + 2) * 2;
+			}
+			else
+			{
+				g1 = (int)(_glyf + Utility.ttULONG(dataPtr + _loca + glyph_index * 4));
+				g2 = (int)(_glyf + Utility.ttULONG(dataPtr + _loca + glyph_index * 4 + 4));
+			}
+
+			return g1 == g2 ? -1 : g1;
 		}
 	}
 }

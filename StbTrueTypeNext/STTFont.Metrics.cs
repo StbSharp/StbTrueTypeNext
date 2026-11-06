@@ -2,34 +2,6 @@
 {
 	partial class STTFont
 	{
-		public int stbtt_GetCodepointBox(int codepoint, out int x0, out int y0, out int x1, out int y1)
-		{
-			return stbtt_GetGlyphBox(stbtt_FindGlyphIndex(codepoint), out x0, out y0, out x1, out y1);
-		}
-
-		public int stbtt_GetGlyphBox(int glyph_index, out int x0, out int y0, out int x1, out int y1)
-		{
-			x0 = y0 = x1 = y1 = 0;
-			if (_cff.size != 0)
-			{
-				stbtt__GetGlyphInfoT2(glyph_index, out x0, out y0, out x1, out y1);
-			}
-			else
-			{
-				var g = stbtt__GetGlyfOffset(glyph_index);
-				if (g < 0)
-					return 0;
-
-				var dataPtr = new FakePtr<byte>(_data);
-				x0 = Utility.ttSHORT(dataPtr + g + 2);
-				y0 = Utility.ttSHORT(dataPtr + g + 4);
-				x1 = Utility.ttSHORT(dataPtr + g + 6);
-				y1 = Utility.ttSHORT(dataPtr + g + 8);
-			}
-
-			return 1;
-		}
-
 		public void stbtt_GetCodepointHMetrics(int codepoint, out int advanceWidth, out int leftSideBearing)
 		{
 			stbtt_GetGlyphHMetrics(stbtt_FindGlyphIndex(codepoint), out advanceWidth, out leftSideBearing);
@@ -96,38 +68,6 @@
 			ascent = i_ascent * scale;
 			descent = i_descent * scale;
 			lineGap = i_lineGap * scale;
-		}
-
-		public int stbtt_IsGlyphEmpty(int glyph_index)
-		{
-			short numberOfContours = 0;
-			var g = 0;
-			if (_cff.size != 0)
-			{
-				int x0, y0, x1, y1;
-				return stbtt__GetGlyphInfoT2(glyph_index, out x0, out y0, out x1, out y1) == 0 ? 1 : 0;
-			}
-			g = stbtt__GetGlyfOffset(glyph_index);
-			if (g < 0)
-				return 1;
-			numberOfContours = Utility.ttSHORT(new FakePtr<byte>(_data, g));
-			return numberOfContours == 0 ? 1 : 0;
-		}
-
-		private int stbtt__GetGlyphInfoT2(int glyph_index, out int x0, out int y0, out int x1, out int y1)
-		{
-			var c = new CharStringContext
-			{
-				bounds = 1
-			};
-
-			var r = stbtt__run_charstring(glyph_index, c);
-			x0 = r != 0 ? c.min_x : 0;
-			y0 = r != 0 ? c.min_y : 0;
-			x1 = r != 0 ? c.max_x : 0;
-			y1 = r != 0 ? c.max_y : 0;
-
-			return r != 0 ? c.num_vertices : 0;
 		}
 	}
 }
