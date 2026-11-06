@@ -17,7 +17,7 @@ namespace StbTrueTypeNext
 		{
 			get => _pixels[index];
 
-			set =>_pixels[index] = value;
+			set => _pixels[index] = value;
 		}
 
 		public Bitmap(int width, int height)
@@ -65,7 +65,20 @@ namespace StbTrueTypeNext
 			_pixels = pixels;
 		}
 
-		public void RasterizeInternal(Vector2[] pts, int[] wcount,
+		public void Rasterize(float flatness_in_pixels, STBVertex[] vertices,
+			int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, STBRasterizerVersion rasterizerVersion)
+		{
+			var scale = scale_x > scale_y ? scale_y : scale_x;
+
+			int[] winding_lengths;
+			var windings = FlattenCurves(vertices, num_verts, flatness_in_pixels / scale, out winding_lengths);
+			if (windings != null)
+			{
+				RasterizeInternal(windings, winding_lengths, scale_x, scale_y, shift_x, shift_y, x_off, y_off, invert, rasterizerVersion);
+			}
+		}
+
+		private void RasterizeInternal(Vector2[] pts, int[] wcount,
 			float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, STBRasterizerVersion rasterizerVersion)
 		{
 			var y_scale_inv = invert != 0 ? -scale_y : scale_y;
@@ -196,19 +209,6 @@ namespace StbTrueTypeNext
 			}
 
 			return points;
-		}
-
-		public void Rasterize(float flatness_in_pixels, STBVertex[] vertices,
-			int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, STBRasterizerVersion rasterizerVersion)
-		{
-			var scale = scale_x > scale_y ? scale_y : scale_x;
-
-			int[] winding_lengths;
-			var windings = FlattenCurves(vertices, num_verts, flatness_in_pixels / scale, out winding_lengths);
-			if (windings != null)
-			{
-				RasterizeInternal(windings, winding_lengths, scale_x, scale_y, shift_x, shift_y, x_off, y_off, invert, rasterizerVersion);
-			}
 		}
 
 		private static void AddPoint(Vector2[] points, int n, float x, float y)
