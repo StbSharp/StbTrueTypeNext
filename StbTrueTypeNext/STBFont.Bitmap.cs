@@ -586,21 +586,21 @@ namespace StbTrueTypeNext
 			var fmt = 0;
 			var fdselector = -1;
 			var i = 0;
-			fdselect.stbtt__buf_seek(0);
-			fmt = fdselect.stbtt__buf_get8();
+			fdselect.Seek(0);
+			fmt = fdselect.ReadByte();
 			if (fmt == 0)
 			{
-				fdselect.stbtt__buf_skip(glyph_index);
-				fdselector = fdselect.stbtt__buf_get8();
+				fdselect.Skip(glyph_index);
+				fdselector = fdselect.ReadByte();
 			}
 			else if (fmt == 3)
 			{
-				nranges = (int)fdselect.stbtt__buf_get(2);
-				start = (int)fdselect.stbtt__buf_get(2);
+				nranges = (int)fdselect.ReadUint(2);
+				start = (int)fdselect.ReadUint(2);
 				for (i = 0; i < nranges; i++)
 				{
-					v = fdselect.stbtt__buf_get8();
-					end = (int)fdselect.stbtt__buf_get(2);
+					v = fdselect.ReadByte();
+					end = (int)fdselect.ReadUint(2);
 					if (glyph_index >= start && glyph_index < end)
 					{
 						fdselector = v;
@@ -637,7 +637,7 @@ namespace StbTrueTypeNext
 			{
 				i = 0;
 				clear_stack = 1;
-				b0 = b.stbtt__buf_get8();
+				b0 = b.ReadByte();
 				switch (b0)
 				{
 					case 0x13:
@@ -645,7 +645,7 @@ namespace StbTrueTypeNext
 						if (in_header != 0)
 							maskbits += sp / 2;
 						in_header = 0;
-						b.stbtt__buf_skip((maskbits + 7) / 8);
+						b.Skip((maskbits + 7) / 8);
 						break;
 					case 0x01:
 					case 0x03:
@@ -818,7 +818,7 @@ namespace StbTrueTypeNext
 							float dy6 = 0;
 							float dx = 0;
 							float dy = 0;
-							int b1 = b.stbtt__buf_get8();
+							int b1 = b.ReadByte();
 							switch (b1)
 							{
 								case 0x22:
@@ -901,11 +901,11 @@ namespace StbTrueTypeNext
 							return 0;
 						if (b0 == 255)
 						{
-							f = (float)(int)b.stbtt__buf_get(4) / 0x10000;
+							f = (float)(int)b.ReadUint(4) / 0x10000;
 						}
 						else
 						{
-							b.stbtt__buf_skip(-1);
+							b.Skip(-1);
 							f = (short)b.stbtt__cff_int();
 						}
 

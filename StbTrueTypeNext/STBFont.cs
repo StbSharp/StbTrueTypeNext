@@ -92,8 +92,8 @@ namespace StbTrueTypeNext
 				_fdselect = Buffer.Null;
 				_cff = new Buffer(dataPtr + cff, 512 * 1024 * 1024);
 				b = _cff;
-				b.stbtt__buf_skip(2);
-				b.stbtt__buf_seek(b.stbtt__buf_get8());
+				b.Skip(2);
+				b.Seek(b.ReadByte());
 				b.stbtt__cff_get_index();
 				topdictidx = b.stbtt__cff_get_index();
 				topdict = Buffer.stbtt__cff_index_get(topdictidx, 0);
@@ -127,12 +127,12 @@ namespace StbTrueTypeNext
 						throw new Exception("fdselectoff == 0");
 					}
 
-					b.stbtt__buf_seek((int)fdarrayoff);
+					b.Seek((int)fdarrayoff);
 					_fontdicts = b.stbtt__cff_get_index();
-					_fdselect = b.stbtt__buf_range((int)fdselectoff, (int)(b.Size - fdselectoff));
+					_fdselect = b.CreateRange((int)fdselectoff, (int)(b.Size - fdselectoff));
 				}
 
-				b.stbtt__buf_seek((int)charstrings);
+				b.Seek((int)charstrings);
 				_charstrings = b.stbtt__cff_get_index();
 			}
 

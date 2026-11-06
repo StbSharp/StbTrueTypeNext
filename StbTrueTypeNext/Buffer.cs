@@ -15,30 +15,30 @@ namespace StbTrueTypeNext
 			Cursor = 0;
 		}
 
-		public byte stbtt__buf_get8()
+		public byte ReadByte()
 		{
 			if (Cursor >= Size)
 				return 0;
 			return Data[Cursor++];
 		}
 
-		public uint stbtt__buf_get(int n)
+		public uint ReadUint(int n)
 		{
 			uint v = 0;
 			var i = 0;
-			for (i = 0; i < n; i++) v = (v << 8) | stbtt__buf_get8();
+			for (i = 0; i < n; i++) v = (v << 8) | ReadByte();
 
 			return v;
 		}
 
-		public byte stbtt__buf_peek8()
+		public byte PeekByte()
 		{
 			if (Cursor >= Size)
 				return 0;
 			return Data[Cursor];
 		}
 
-		public Buffer stbtt__buf_range(int o, int s)
+		public Buffer CreateRange(int o, int s)
 		{
 			var r = Null;
 			if (o < 0 || s < 0 || o > Size || s > Size - o)
@@ -48,14 +48,14 @@ namespace StbTrueTypeNext
 			return r;
 		}
 
-		public void stbtt__buf_seek(int o)
+		public void Seek(int o)
 		{
 			Cursor = o > Size || o < 0 ? Size : o;
 		}
 
-		public void stbtt__buf_skip(int o)
+		public void Skip(int o)
 		{
-			stbtt__buf_seek(Cursor + o);
+			Seek(Cursor + o);
 		}
 
 		public Buffer stbtt__cff_get_index()
@@ -64,49 +64,49 @@ namespace StbTrueTypeNext
 			var start = 0;
 			var offsize = 0;
 			start = Cursor;
-			count = (int)stbtt__buf_get(2);
+			count = (int)ReadUint(2);
 			if (count != 0)
 			{
-				offsize = stbtt__buf_get8();
-				stbtt__buf_skip(offsize * count);
-				stbtt__buf_skip((int)(stbtt__buf_get(offsize) - 1));
+				offsize = ReadByte();
+				Skip(offsize * count);
+				Skip((int)(ReadUint(offsize) - 1));
 			}
 
-			return stbtt__buf_range(start, Cursor - start);
+			return CreateRange(start, Cursor - start);
 		}
 
 		public int stbtt__cff_index_count()
 		{
-			stbtt__buf_seek(0);
-			return (int)stbtt__buf_get(2);
+			Seek(0);
+			return (int)ReadUint(2);
 		}
 
 		public uint stbtt__cff_int()
 		{
-			int b0 = stbtt__buf_get8();
+			int b0 = ReadByte();
 			if (b0 >= 32 && b0 <= 246)
 				return (uint)(b0 - 139);
 			if (b0 >= 247 && b0 <= 250)
-				return (uint)((b0 - 247) * 256 + stbtt__buf_get8() + 108);
+				return (uint)((b0 - 247) * 256 + ReadByte() + 108);
 			if (b0 >= 251 && b0 <= 254)
-				return (uint)(-(b0 - 251) * 256 - stbtt__buf_get8() - 108);
+				return (uint)(-(b0 - 251) * 256 - ReadByte() - 108);
 			if (b0 == 28)
-				return stbtt__buf_get(2);
+				return ReadUint(2);
 			if (b0 == 29)
-				return stbtt__buf_get(4);
+				return ReadUint(4);
 			return 0;
 		}
 
 		public void stbtt__cff_skip_operand()
 		{
 			var v = 0;
-			int b0 = stbtt__buf_peek8();
+			int b0 = PeekByte();
 			if (b0 == 30)
 			{
-				stbtt__buf_skip(1);
+				Skip(1);
 				while (Cursor < Size)
 				{
-					v = stbtt__buf_get8();
+					v = ReadByte();
 					if ((v & 0xF) == 0xF || v >> 4 == 0xF)
 						break;
 				}
@@ -119,23 +119,23 @@ namespace StbTrueTypeNext
 
 		public Buffer stbtt__dict_get(int key)
 		{
-			stbtt__buf_seek(0);
+			Seek(0);
 			while (Cursor < Size)
 			{
 				var start = Cursor;
 				var end = 0;
 				var op = 0;
-				while (stbtt__buf_peek8() >= 28) stbtt__cff_skip_operand();
+				while (PeekByte() >= 28) stbtt__cff_skip_operand();
 
 				end = Cursor;
-				op = stbtt__buf_get8();
+				op = ReadByte();
 				if (op == 12)
-					op = stbtt__buf_get8() | 0x100;
+					op = ReadByte() | 0x100;
 				if (op == key)
-					return stbtt__buf_range(start, end - start);
+					return CreateRange(start, end - start);
 			}
 
-			return stbtt__buf_range(0, 0);
+			return CreateRange(0, 0);
 		}
 
 		public void stbtt__dict_get_ints(int key, int outcount, uint[] _out_)
@@ -166,13 +166,13 @@ namespace StbTrueTypeNext
 			var offsize = 0;
 			var start = 0;
 			var end = 0;
-			b.stbtt__buf_seek(0);
-			count = (int)b.stbtt__buf_get(2);
-			offsize = b.stbtt__buf_get8();
-			b.stbtt__buf_skip(i * offsize);
-			start = (int)b.stbtt__buf_get(offsize);
-			end = (int)b.stbtt__buf_get(offsize);
-			return b.stbtt__buf_range(2 + (count + 1) * offsize + start, end - start);
+			b.Seek(0);
+			count = (int)b.ReadUint(2);
+			offsize = b.ReadByte();
+			b.Skip(i * offsize);
+			start = (int)b.ReadUint(offsize);
+			end = (int)b.ReadUint(offsize);
+			return b.CreateRange(2 + (count + 1) * offsize + start, end - start);
 		}
 
 		public static Buffer stbtt__get_subr(Buffer idx, int n)
@@ -195,14 +195,14 @@ namespace StbTrueTypeNext
 			fontdict.stbtt__dict_get_ints(18, 2, private_loc);
 			if (private_loc[1] == 0 || private_loc[0] == 0)
 				return Null;
-			var pdict = cff.stbtt__buf_range((int)private_loc[1], (int)private_loc[0]);
+			var pdict = cff.CreateRange((int)private_loc[1], (int)private_loc[0]);
 			uint subrsoff = 0;
 			if (!pdict.stbtt__dict_get_ints(19, ref subrsoff))
 			{
 				return Null;
 			}
 
-			cff.stbtt__buf_seek((int)(private_loc[1] + subrsoff));
+			cff.Seek((int)(private_loc[1] + subrsoff));
 			return cff.stbtt__cff_get_index();
 		}
 	}
