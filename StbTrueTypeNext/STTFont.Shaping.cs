@@ -311,5 +311,25 @@ namespace StbTrueTypeNext
 			pvertices = null;
 			return 0;
 		}
+
+		private static int stbtt__close_shape(STTVertex[] vertices, int num_vertices, int was_off, int start_off, int sx, int sy, int scx, int scy, int cx, int cy)
+		{
+			if (start_off != 0)
+			{
+				if (was_off != 0)
+					vertices[num_vertices++].Set(Constants.STBTT_vcurve, (cx + scx) >> 1, (cy + scy) >> 1, cx, cy);
+
+				vertices[num_vertices++].Set(Constants.STBTT_vcurve, sx, sy, scx, scy);
+			}
+			else
+			{
+				if (was_off != 0)
+					vertices[num_vertices++].Set(Constants.STBTT_vcurve, sx, sy, cx, cy);
+				else
+					vertices[num_vertices++].Set(Constants.STBTT_vline, sx, sy, 0, 0);
+			}
+
+			return num_vertices;
+		}
 	}
 }

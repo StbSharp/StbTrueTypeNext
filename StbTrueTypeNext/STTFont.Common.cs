@@ -1,5 +1,3 @@
-using System;
-
 namespace StbTrueTypeNext
 {
 	partial class STTFont
@@ -51,25 +49,5 @@ namespace StbTrueTypeNext
 		public const int STBTT_UNICODE_EID_UNICODE_1_1 = 1;
 		public const int STBTT_UNICODE_EID_UNICODE_2_0_BMP = 3;
 		public const int STBTT_UNICODE_EID_UNICODE_2_0_FULL = 4;
-
-		private static int stbtt__close_shape(STTVertex[] vertices, int num_vertices, int was_off, int start_off, int sx, int sy, int scx, int scy, int cx, int cy)
-		{
-			if (start_off != 0)
-			{
-				if (was_off != 0)
-					vertices[num_vertices++].Set(Constants.STBTT_vcurve, (cx + scx) >> 1, (cy + scy) >> 1, cx, cy);
-
-				vertices[num_vertices++].Set(Constants.STBTT_vcurve, sx, sy, scx, scy);
-			}
-			else
-			{
-				if (was_off != 0)
-					vertices[num_vertices++].Set(Constants.STBTT_vcurve, sx, sy, cx, cy);
-				else
-					vertices[num_vertices++].Set(Constants.STBTT_vline, sx, sy, 0, 0);
-			}
-
-			return num_vertices;
-		}
 	}
 }
