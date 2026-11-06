@@ -29,29 +29,7 @@ namespace StbTrueTypeNext
 
 		public STTRasterizerVersion RasterizerVersion { get; set; } = STTRasterizerVersion.V2;
 
-		private STTFont()
-		{
-		}
-
-		public static STTFont FromMemory(byte[] data, int offset = 0)
-		{
-			var info = new STTFont();
-			info.stbtt_InitFont_internal(data, offset);
-
-			return info;
-		}
-
-		public static STTFont FromStream(Stream s)
-		{
-			using (var ms = new MemoryStream())
-			{
-				s.CopyTo(ms);
-
-				return FromMemory(ms.ToArray());
-			}
-		}
-
-		private void stbtt_InitFont_internal(byte[] data, int fontstart)
+		private STTFont(byte[] data, int fontstart)
 		{
 			uint cmap = 0;
 			uint t = 0;
@@ -190,6 +168,18 @@ namespace StbTrueTypeNext
 			if (_indexMap == 0)
 				throw new Exception("The font does not have a table mapping from unicode codepoints to font indices.");
 			_indexToLocFormat = Utility.ttUSHORT(dataPtr + _head + 50);
+		}
+
+		public static STTFont FromMemory(byte[] data, int offset = 0) => new STTFont(data, offset);
+
+		public static STTFont FromStream(Stream s)
+		{
+			using (var ms = new MemoryStream())
+			{
+				s.CopyTo(ms);
+
+				return FromMemory(ms.ToArray());
+			}
 		}
 
 		public int stbtt_FindGlyphIndex(int unicode_codepoint)
