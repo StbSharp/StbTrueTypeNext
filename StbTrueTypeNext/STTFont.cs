@@ -94,28 +94,6 @@ namespace StbTrueTypeNext
 			return Buffer.stbtt__get_subrs(_cff, Buffer.stbtt__cff_index_get(_fontdicts, fdselector));
 		}
 
-		private int stbtt__get_svg()
-		{
-			uint t = 0;
-
-			var dataPtr = new FakePtr<byte>(_data);
-			if (_svg < 0)
-			{
-				t = Utility.stbtt__find_table(dataPtr, (uint)_fontstart, "SVG ");
-				if (t != 0)
-				{
-					var offset = Utility.ttULONG(dataPtr + t + 2);
-					_svg = (int)(t + offset);
-				}
-				else
-				{
-					_svg = 0;
-				}
-			}
-
-			return _svg;
-		}
-
 		private int stbtt__GetGlyfOffset(int glyph_index)
 		{
 			var g1 = 0;
@@ -1139,23 +1117,6 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		private FakePtr<byte> stbtt_FindSVGDoc(int gl)
-		{
-			var i = 0;
-			var data = new FakePtr<byte>(_data);
-			var svg_doc_list = data + stbtt__get_svg();
-			int numEntries = Utility.ttUSHORT(svg_doc_list);
-			var svg_docs = svg_doc_list + 2;
-			for (i = 0; i < numEntries; i++)
-			{
-				var svg_doc = svg_docs + 12 * i;
-				if (gl >= Utility.ttUSHORT(svg_doc) && gl <= Utility.ttUSHORT(svg_doc + 2))
-					return svg_doc;
-			}
-
-			return FakePtr<byte>.Null;
-		}
-
 		public byte[] stbtt_GetCodepointBitmap(float scale_x, float scale_y, int codepoint,
 			out int width, out int height, out int xoff, out int yoff)
 		{
@@ -1210,11 +1171,6 @@ namespace StbTrueTypeNext
 		public int stbtt_GetCodepointShape(int unicode_codepoint, out STTVertex[] vertices)
 		{
 			return stbtt_GetGlyphShape(stbtt_FindGlyphIndex(unicode_codepoint), out vertices);
-		}
-
-		public int stbtt_GetCodepointSVG(int unicode_codepoint, ref FakePtr<byte> svg)
-		{
-			return stbtt_GetGlyphSVG(stbtt_FindGlyphIndex(unicode_codepoint), ref svg);
 		}
 
 		public void stbtt_GetFontBoundingBox(out int x0, out int y0, out int x1, out int y1)
@@ -1424,21 +1380,6 @@ namespace StbTrueTypeNext
 			}
 
 			return stbtt__GetGlyphShapeT2(glyph_index, out pvertices);
-		}
-
-		public int stbtt_GetGlyphSVG(int gl, ref FakePtr<byte> svg)
-		{
-			var data = new FakePtr<byte>(_data);
-			if (_svg == 0)
-				return 0;
-			var svg_doc = stbtt_FindSVGDoc(gl);
-			if (!svg_doc.IsNull)
-			{
-				svg = data + _svg + Utility.ttULONG(svg_doc + 4);
-				return (int)Utility.ttULONG(svg_doc + 8);
-			}
-
-			return 0;
 		}
 
 		public STTKerningEntry[] stbtt_GetKerningTable()
