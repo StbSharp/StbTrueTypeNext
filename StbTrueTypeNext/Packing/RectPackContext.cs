@@ -8,7 +8,7 @@
 		public int y;
 		public int bottom_y;
 
-		public void stbrp_init_target(int pw, int ph)
+		public void InitTarget(int pw, int ph)
 		{
 			width = pw;
 			height = ph;
@@ -17,28 +17,28 @@
 			bottom_y = 0;
 		}
 
-		public void stbrp_pack_rects(PackRect[] rects, int num_rects)
+		public void PackRects(PackRect[] rects, int num_rects)
 		{
 			var i = 0;
 			for (i = 0; i < num_rects; ++i)
 			{
-				if (x + rects[i].w > width)
+				if (x + rects[i].W > width)
 				{
 					x = 0;
 					y = bottom_y;
 				}
 
-				if (y + rects[i].h > height)
+				if (y + rects[i].H > height)
 					break;
-				rects[i].x = x;
-				rects[i].y = y;
-				rects[i].was_packed = 1;
-				x += rects[i].w;
-				if (y + rects[i].h > bottom_y)
-					bottom_y = y + rects[i].h;
+				rects[i].X = x;
+				rects[i].Y = y;
+				rects[i].WasPacked = 1;
+				x += rects[i].W;
+				if (y + rects[i].H > bottom_y)
+					bottom_y = y + rects[i].H;
 			}
 
-			for (; i < num_rects; ++i) rects[i].was_packed = 0;
+			for (; i < num_rects; ++i) rects[i].WasPacked = 0;
 		}
 	}
 }

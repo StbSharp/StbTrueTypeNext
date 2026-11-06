@@ -19,7 +19,7 @@ public class FontBaker
 		_bitmap = new byte[width * height];
 		_context = new Packer();
 
-		_context.stbtt_PackBegin(_bitmap, width, height, width, 1);
+		_context.Begin(_bitmap, width, height, width, 1);
 
 		_glyphs = new Dictionary<int, GlyphInfo>();
 	}
@@ -51,7 +51,7 @@ public class FontBaker
 				continue;
 
 			var cd = new PackedChar[range.End - range.Start + 1];
-			_context.stbtt_PackFontRange(font, fontPixelHeight,
+			_context.PackFontRange(font, fontPixelHeight,
 				range.Start,
 				range.End - range.Start + 1,
 				cd);
@@ -79,7 +79,7 @@ public class FontBaker
 
 	public FontBakerResult End()
 	{
-		_context.stbtt_PackEnd();
+		_context.End();
 		return new FontBakerResult(_glyphs, _bitmap, bitmapWidth, bitmapHeight);
 	}
 }

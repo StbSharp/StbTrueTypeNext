@@ -14,7 +14,7 @@ namespace StbTrueTypeNext.Packing
 		public float XOff2;
 		public float YOff2;
 
-		public void stbtt_GetPackedQuad(int pw, int ph, ref float xpos, ref float ypos, ref STBQuad q, int align_to_integer)
+		public void GetPackedQuad(int pw, int ph, ref float xpos, ref float ypos, ref STBQuad q, int align_to_integer)
 		{
 			var ipw = 1.0f / pw;
 			var iph = 1.0f / ph;
