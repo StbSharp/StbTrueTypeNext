@@ -65,7 +65,7 @@ namespace StbTrueTypeNext
 			_pixels = pixels;
 		}
 
-		public void stbtt__rasterize(Vector2[] pts, int[] wcount,
+		public void RasterizeInternal(Vector2[] pts, int[] wcount,
 			float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, STBRasterizerVersion rasterizerVersion)
 		{
 			var y_scale_inv = invert != 0 ? -scale_y : scale_y;
@@ -131,7 +131,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		private static Vector2[] stbtt_FlattenCurves(STBVertex[] vertices, int num_verts, float objspace_flatness, out int[] contour_lengths)
+		private static Vector2[] FlattenCurves(STBVertex[] vertices, int num_verts, float objspace_flatness, out int[] contour_lengths)
 		{
 			Vector2[] points = null;
 			var num_points = 0;
@@ -170,21 +170,21 @@ namespace StbTrueTypeNext
 							start = num_points;
 							x = vertices[i].X;
 							y = vertices[i].Y;
-							stbtt__add_point(points, num_points++, x, y);
+							AddPoint(points, num_points++, x, y);
 							break;
 						case Constants.STBTT_vline:
 							x = vertices[i].X;
 							y = vertices[i].Y;
-							stbtt__add_point(points, num_points++, x, y);
+							AddPoint(points, num_points++, x, y);
 							break;
 						case Constants.STBTT_vcurve:
-							stbtt__tesselate_curve(points, ref num_points, x, y, vertices[i].CX, vertices[i].CY,
+							TesselateCurve(points, ref num_points, x, y, vertices[i].CX, vertices[i].CY,
 								vertices[i].X, vertices[i].Y, objspace_flatness_squared, 0);
 							x = vertices[i].X;
 							y = vertices[i].Y;
 							break;
 						case Constants.STBTT_vcubic:
-							stbtt__tesselate_cubic(points, ref num_points, x, y, vertices[i].CX, vertices[i].CY,
+							TesselateCubic(points, ref num_points, x, y, vertices[i].CX, vertices[i].CY,
 								vertices[i].CX1, vertices[i].CY1, vertices[i].X, vertices[i].Y,
 								objspace_flatness_squared, 0);
 							x = vertices[i].X;
@@ -198,20 +198,20 @@ namespace StbTrueTypeNext
 			return points;
 		}
 
-		public void stbtt_Rasterize(float flatness_in_pixels, STBVertex[] vertices,
+		public void Rasterize(float flatness_in_pixels, STBVertex[] vertices,
 			int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, STBRasterizerVersion rasterizerVersion)
 		{
 			var scale = scale_x > scale_y ? scale_y : scale_x;
 
 			int[] winding_lengths;
-			var windings = stbtt_FlattenCurves(vertices, num_verts, flatness_in_pixels / scale, out winding_lengths);
+			var windings = FlattenCurves(vertices, num_verts, flatness_in_pixels / scale, out winding_lengths);
 			if (windings != null)
 			{
-				stbtt__rasterize(windings, winding_lengths, scale_x, scale_y, shift_x, shift_y, x_off, y_off, invert, rasterizerVersion);
+				RasterizeInternal(windings, winding_lengths, scale_x, scale_y, shift_x, shift_y, x_off, y_off, invert, rasterizerVersion);
 			}
 		}
 
-		private static void stbtt__add_point(Vector2[] points, int n, float x, float y)
+		private static void AddPoint(Vector2[] points, int n, float x, float y)
 		{
 			if (points == null)
 				return;
@@ -219,7 +219,7 @@ namespace StbTrueTypeNext
 			points[n].y = y;
 		}
 
-		private static void stbtt__tesselate_cubic(Vector2[] points, ref int num_points, float x0, float y0, float x1,
+		private static void TesselateCubic(Vector2[] points, ref int num_points, float x0, float y0, float x1,
 			float y1, float x2, float y2, float x3, float y3, float objspace_flatness_squared, int n)
 		{
 			var dx0 = x1 - x0;
@@ -250,19 +250,19 @@ namespace StbTrueTypeNext
 				var yb = (y12 + y23) / 2;
 				var mx = (xa + xb) / 2;
 				var my = (ya + yb) / 2;
-				stbtt__tesselate_cubic(points, ref num_points, x0, y0, x01, y01, xa, ya, mx, my, objspace_flatness_squared,
+				TesselateCubic(points, ref num_points, x0, y0, x01, y01, xa, ya, mx, my, objspace_flatness_squared,
 					n + 1);
-				stbtt__tesselate_cubic(points, ref num_points, mx, my, xb, yb, x23, y23, x3, y3, objspace_flatness_squared,
+				TesselateCubic(points, ref num_points, mx, my, xb, yb, x23, y23, x3, y3, objspace_flatness_squared,
 					n + 1);
 			}
 			else
 			{
-				stbtt__add_point(points, num_points, x3, y3);
+				AddPoint(points, num_points, x3, y3);
 				++num_points;
 			}
 		}
 
-		private static int stbtt__tesselate_curve(Vector2[] points, ref int num_points, float x0, float y0, float x1,
+		private static int TesselateCurve(Vector2[] points, ref int num_points, float x0, float y0, float x1,
 			float y1, float x2, float y2, float objspace_flatness_squared, int n)
 		{
 			var mx = (x0 + 2 * x1 + x2) / 4;
@@ -273,14 +273,14 @@ namespace StbTrueTypeNext
 				return 1;
 			if (dx * dx + dy * dy > objspace_flatness_squared)
 			{
-				stbtt__tesselate_curve(points, ref num_points, x0, y0, (x0 + x1) / 2.0f, (y0 + y1) / 2.0f, mx, my,
+				TesselateCurve(points, ref num_points, x0, y0, (x0 + x1) / 2.0f, (y0 + y1) / 2.0f, mx, my,
 					objspace_flatness_squared, n + 1);
-				stbtt__tesselate_curve(points, ref num_points, mx, my, (x1 + x2) / 2.0f, (y1 + y2) / 2.0f, x2, y2,
+				TesselateCurve(points, ref num_points, mx, my, (x1 + x2) / 2.0f, (y1 + y2) / 2.0f, x2, y2,
 					objspace_flatness_squared, n + 1);
 			}
 			else
 			{
-				stbtt__add_point(points, num_points, x2, y2);
+				AddPoint(points, num_points, x2, y2);
 				++num_points;
 			}
 

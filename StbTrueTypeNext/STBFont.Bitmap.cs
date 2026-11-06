@@ -102,7 +102,7 @@ namespace StbTrueTypeNext
 			}
 
 			var gbm = new Bitmap(width, height);
-			gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, RasterizerVersion);
+			gbm.Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, RasterizerVersion);
 
 			return gbm.Pixels.Data;
 		}
@@ -165,7 +165,7 @@ namespace StbTrueTypeNext
 			if (out_w != 0 && out_h != 0)
 			{
 				var gbm = new Bitmap(out_w, out_h, out_stride, output);
-				gbm.stbtt_Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, RasterizerVersion);
+				gbm.Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, RasterizerVersion);
 			}
 		}
 
