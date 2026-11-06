@@ -8,7 +8,7 @@
 
 	internal class CharStringContext
 	{
-		public int started;
+		private bool _started;
 		public float first_x;
 		public float first_y;
 		public float x;
@@ -77,15 +77,16 @@
 
 		public void TrackVertex(int x, int y)
 		{
-			if (x > max_x || started == 0)
+			if (x > max_x || !_started)
 				max_x = x;
-			if (y > max_y || started == 0)
+			if (y > max_y || !_started)
 				max_y = y;
-			if (x < min_x || started == 0)
+			if (x < min_x || !_started)
 				min_x = x;
-			if (y < min_y || started == 0)
+			if (y < min_y || !_started)
 				min_y = y;
-			started = 1;
+
+			_started = true;
 		}
 	}
 }
