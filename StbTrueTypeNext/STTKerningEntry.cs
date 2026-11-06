@@ -1,6 +1,6 @@
 ﻿namespace StbTrueTypeNext
 {
-	public struct KerningEntry
+	public struct STTKerningEntry
 	{
 		public int Glyph1;
 		public int Glyph2;
