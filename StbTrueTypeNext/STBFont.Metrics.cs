@@ -1,6 +1,6 @@
 ﻿namespace StbTrueTypeNext
 {
-	partial class STTFont
+	partial class STBFont
 	{
 		public void stbtt_GetCodepointHMetrics(int codepoint, out int advanceWidth, out int leftSideBearing)
 		{

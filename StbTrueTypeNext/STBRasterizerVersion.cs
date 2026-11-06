@@ -1,6 +1,6 @@
 ﻿namespace StbTrueTypeNext
 {
-	public enum STTRasterizerVersion
+	public enum STBRasterizerVersion
 	{
 		V1,
 		V2

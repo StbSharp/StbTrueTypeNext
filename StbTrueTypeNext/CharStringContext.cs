@@ -12,7 +12,7 @@
 		public int max_x;
 		public int min_y;
 		public int max_y;
-		public STTVertex[] pvertices;
+		public STBVertex[] pvertices;
 		public int num_vertices;
 
 		public void stbtt__csctx_close_shape()

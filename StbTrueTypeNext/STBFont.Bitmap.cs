@@ -2,7 +2,7 @@
 
 namespace StbTrueTypeNext
 {
-	partial class STTFont
+	partial class STBFont
 	{
 		public byte[] stbtt_GetCodepointBitmap(float scale_x, float scale_y, int codepoint,
 			out int width, out int height, out int xoff, out int yoff)
@@ -75,7 +75,7 @@ namespace StbTrueTypeNext
 			var iy0 = 0;
 			var ix1 = 0;
 			var iy1 = 0;
-			STTVertex[] vertices;
+			STBVertex[] vertices;
 			var num_verts = stbtt_GetGlyphShape(glyph, out vertices);
 			if (scale_x == 0)
 				scale_x = scale_y;
@@ -158,7 +158,7 @@ namespace StbTrueTypeNext
 			var iy0 = 0;
 			var ix1 = 0;
 			var iy1 = 0;
-			STTVertex[] vertices;
+			STBVertex[] vertices;
 			var num_verts = stbtt_GetGlyphShape(glyph, out vertices);
 			stbtt_GetGlyphBitmapBoxSubpixel(glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
 
@@ -183,12 +183,12 @@ namespace StbTrueTypeNext
 			sub_y = Utility.stbtt__oversample_shift(prefilter_y);
 		}
 
-		public int stbtt_GetCodepointShape(int unicode_codepoint, out STTVertex[] vertices)
+		public int stbtt_GetCodepointShape(int unicode_codepoint, out STBVertex[] vertices)
 		{
 			return stbtt_GetGlyphShape(stbtt_FindGlyphIndex(unicode_codepoint), out vertices);
 		}
 
-		public int stbtt_GetGlyphShape(int glyph_index, out STTVertex[] pvertices)
+		public int stbtt_GetGlyphShape(int glyph_index, out STBVertex[] pvertices)
 		{
 			if (_cff.size == 0)
 			{
@@ -242,7 +242,7 @@ namespace StbTrueTypeNext
 			return numberOfContours == 0 ? 1 : 0;
 		}
 
-		private int stbtt__GetGlyphShapeTT(int glyph_index, out STTVertex[] pvertices)
+		private int stbtt__GetGlyphShapeTT(int glyph_index, out STBVertex[] pvertices)
 		{
 			short numberOfContours = 0;
 			var data = new FakePtr<byte>(_data);
@@ -252,7 +252,7 @@ namespace StbTrueTypeNext
 			if (g < 0)
 				return 0;
 
-			STTVertex[] vertices = null;
+			STBVertex[] vertices = null;
 
 			numberOfContours = Utility.ttSHORT(data + g);
 			if (numberOfContours > 0)
@@ -281,7 +281,7 @@ namespace StbTrueTypeNext
 				var points = data + g + 10 + numberOfContours * 2 + 2 + ins;
 				n = 1 + Utility.ttUSHORT(endPtsOfContours + numberOfContours * 2 - 2);
 				m = n + 2 * numberOfContours;
-				vertices = new STTVertex[m];
+				vertices = new STBVertex[m];
 				next_move = 0;
 				flagcount = 0;
 				off = m - n;
@@ -422,8 +422,8 @@ namespace StbTrueTypeNext
 					ushort gidx = 0;
 					var comp_num_verts = 0;
 					var i = 0;
-					STTVertex[] comp_verts = null;
-					STTVertex[] tmp = null;
+					STBVertex[] comp_verts = null;
+					STBVertex[] tmp = null;
 
 					mtx[0] = mtx[3] = 1;
 					mtx[1] = mtx[2] = mtx[4] = mtx[5] = 0;
@@ -499,7 +499,7 @@ namespace StbTrueTypeNext
 							comp_verts[i] = v;
 						}
 
-						tmp = new STTVertex[num_vertices + comp_num_verts];
+						tmp = new STBVertex[num_vertices + comp_num_verts];
 						if (num_vertices > 0 && vertices != null)
 						{
 							Array.Copy(vertices, tmp, num_vertices);
@@ -518,7 +518,7 @@ namespace StbTrueTypeNext
 			return num_vertices;
 		}
 
-		private int stbtt__GetGlyphShapeT2(int glyph_index, out STTVertex[] pvertices)
+		private int stbtt__GetGlyphShapeT2(int glyph_index, out STBVertex[] pvertices)
 		{
 			var count_ctx = new CharStringContext
 			{
@@ -528,7 +528,7 @@ namespace StbTrueTypeNext
 			if (stbtt__run_charstring(glyph_index, count_ctx) != 0)
 			{
 				var output_ctx = new CharStringContext();
-				pvertices = new STTVertex[count_ctx.num_vertices];
+				pvertices = new STBVertex[count_ctx.num_vertices];
 				output_ctx.pvertices = pvertices;
 				if (stbtt__run_charstring(glyph_index, output_ctx) != 0)
 				{
@@ -540,7 +540,7 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		private static int stbtt__close_shape(STTVertex[] vertices, int num_vertices, int was_off, int start_off, int sx, int sy, int scx, int scy, int cx, int cy)
+		private static int stbtt__close_shape(STBVertex[] vertices, int num_vertices, int was_off, int start_off, int sx, int sy, int scx, int scy, int cx, int cy)
 		{
 			if (start_off != 0)
 			{

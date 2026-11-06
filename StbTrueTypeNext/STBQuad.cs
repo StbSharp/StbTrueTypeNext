@@ -1,6 +1,6 @@
 ﻿namespace StbTrueTypeNext
 {
-	public struct STTQuad
+	public struct STBQuad
 	{
 		public float X0;
 		public float Y0;

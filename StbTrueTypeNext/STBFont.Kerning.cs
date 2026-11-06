@@ -1,6 +1,6 @@
 ﻿namespace StbTrueTypeNext
 {
-	partial class STTFont
+	partial class STBFont
 	{
 		public int stbtt_GetCodepointKernAdvance(int ch1, int ch2)
 		{
@@ -23,7 +23,7 @@
 			return xAdvance;
 		}
 
-		public STTKerningEntry[] stbtt_GetKerningTable()
+		public STBKerningEntry[] stbtt_GetKerningTable()
 		{
 			var data = new FakePtr<byte>(_data, _kern);
 			var k = 0;
@@ -36,7 +36,7 @@
 				return null;
 			length = Utility.ttUSHORT(data + 10);
 
-			var table = new STTKerningEntry[length];
+			var table = new STBKerningEntry[length];
 			for (k = 0; k < length; k++)
 			{
 				table[k].Glyph1 = Utility.ttUSHORT(data + 18 + k * 6);

@@ -2,7 +2,7 @@
 
 namespace StbTrueTypeNext
 {
-	partial class STTFont
+	partial class STBFont
 	{
 		public byte[] stbtt_GetCodepointSVG(int unicode_codepoint) => stbtt_GetGlyphSVG(stbtt_FindGlyphIndex(unicode_codepoint));
 

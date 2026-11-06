@@ -1,6 +1,6 @@
 namespace StbTrueTypeNext
 {
-	partial class STTFont
+	partial class STBFont
 	{
 		public const int STBTT_MAC_EID_ARABIC = 4;
 		public const int STBTT_MAC_EID_CHINESE_TRAD = 2;

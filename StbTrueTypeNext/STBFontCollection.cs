@@ -1,6 +1,6 @@
 ﻿namespace StbTrueTypeNext
 {
-	public static class STTFontCollection
+	public static class STBFontCollection
 	{
 		public static int stbtt_FindMatchingFont(byte[] font_collection, byte[] name_utf8, int flags)
 		{

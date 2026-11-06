@@ -2,7 +2,7 @@
 
 namespace StbTrueTypeNext
 {
-	public struct STTBakedChar
+	public struct STBBakedChar
 	{
 		public ushort X0;
 		public ushort Y0;
@@ -12,7 +12,7 @@ namespace StbTrueTypeNext
 		public float YOff;
 		public float XAdvance;
 
-		public void stbtt_GetBakedQuad(int pw, int ph, ref float xpos, ref float ypos, ref STTQuad q, int opengl_fillrule)
+		public void stbtt_GetBakedQuad(int pw, int ph, ref float xpos, ref float ypos, ref STBQuad q, int opengl_fillrule)
 		{
 			var d3d_bias = opengl_fillrule != 0 ? 0 : -0.5f;
 			var ipw = 1.0f / pw;

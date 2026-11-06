@@ -37,7 +37,7 @@
 		{
 		}
 
-		public int stbtt_PackFontRange(STTFont font, float font_size,
+		public int stbtt_PackFontRange(STBFont font, float font_size,
 			int first_unicode_codepoint_in_range, int num_chars_in_range, PackedChar[] chardata_for_range)
 		{
 			var range = new PackRange
@@ -54,7 +54,7 @@
 			return stbtt_PackFontRanges(font, ranges);
 		}
 
-		public int stbtt_PackFontRanges(STTFont font, PackRange[] ranges)
+		public int stbtt_PackFontRanges(STBFont font, PackRange[] ranges)
 		{
 			var i = 0;
 			var j = 0;
@@ -84,7 +84,7 @@
 			return stbtt_PackFontRangesRenderIntoRects(font, ranges, rects);
 		}
 
-		private int stbtt_PackFontRangesGatherRects(STTFont info, PackRange[] ranges, PackRect[] rects)
+		private int stbtt_PackFontRangesGatherRects(STBFont info, PackRange[] ranges, PackRect[] rects)
 		{
 			var i = 0;
 			var j = 0;
@@ -134,7 +134,7 @@
 
 		private void stbtt_PackFontRangesPackRects(PackRect[] rects, int num_rects) => _pack_info.stbrp_pack_rects(rects, num_rects);
 
-		private int stbtt_PackFontRangesRenderIntoRects(STTFont info, PackRange[] ranges, PackRect[] rects)
+		private int stbtt_PackFontRangesRenderIntoRects(STBFont info, PackRange[] ranges, PackRect[] rects)
 		{
 			var i = 0;
 			var j = 0;

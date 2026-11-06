@@ -4,7 +4,7 @@ using System.Text;
 
 namespace StbTrueTypeNext
 {
-	public partial class STTFont
+	public partial class STBFont
 	{
 		private Buffer _cff;
 		private Buffer _charstrings;
@@ -27,9 +27,9 @@ namespace StbTrueTypeNext
 		private int _svg;
 		public byte[] Data => _data;
 
-		public STTRasterizerVersion RasterizerVersion { get; set; } = STTRasterizerVersion.V2;
+		public STBRasterizerVersion RasterizerVersion { get; set; } = STBRasterizerVersion.V2;
 
-		public STTFont(byte[] data, int offset = 0)
+		public STBFont(byte[] data, int offset = 0)
 		{
 			uint cmap = 0;
 			uint t = 0;
@@ -322,7 +322,7 @@ namespace StbTrueTypeNext
 			return height / fheight;
 		}
 
-		public int stbtt_BakeFontBitmap(float pixel_height, byte[] pixels, int pw, int ph, int first_char, int num_chars, STTBakedChar[] chardata)
+		public int stbtt_BakeFontBitmap(float pixel_height, byte[] pixels, int pw, int ph, int first_char, int num_chars, STBBakedChar[] chardata)
 		{
 			float scale = 0;
 			var x = 0;

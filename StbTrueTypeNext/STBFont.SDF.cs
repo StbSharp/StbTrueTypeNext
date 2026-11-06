@@ -2,7 +2,7 @@
 
 namespace StbTrueTypeNext
 {
-	partial class STTFont
+	partial class STBFont
 	{
 		public byte[] stbtt_GetCodepointSDF(float scale, int codepoint, int padding,
 			byte onedge_value, float pixel_dist_scale, out int width, out int height, out int xoff, out int yoff)
@@ -47,7 +47,7 @@ namespace StbTrueTypeNext
 				var y = 0;
 				var i = 0;
 				var j = 0;
-				STTVertex[] verts;
+				STBVertex[] verts;
 				var num_verts = stbtt_GetGlyphShape(glyph, out verts);
 				data = new byte[w * h];
 				var precompute = new float[num_verts];
@@ -234,7 +234,7 @@ namespace StbTrueTypeNext
 			return data;
 		}
 
-		private static int stbtt__compute_crossings_x(float x, float y, int nverts, STTVertex[] verts)
+		private static int stbtt__compute_crossings_x(float x, float y, int nverts, STBVertex[] verts)
 		{
 			var i = 0;
 			var orig = new float[2];

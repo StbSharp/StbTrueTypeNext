@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using static StbTrueTypeNext.STTFont;
 
 namespace StbTrueTypeNext
 {
@@ -67,7 +66,7 @@ namespace StbTrueTypeNext
 		}
 
 		public void stbtt__rasterize(Vector2[] pts, int[] wcount,
-			float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, STTRasterizerVersion rasterizerVersion)
+			float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, STBRasterizerVersion rasterizerVersion)
 		{
 			var y_scale_inv = invert != 0 ? -scale_y : scale_y;
 			var i = 0;
@@ -76,7 +75,7 @@ namespace StbTrueTypeNext
 			var m = 0;
 
 			var vsubsample = 1;
-			if (rasterizerVersion == STTRasterizerVersion.V1)
+			if (rasterizerVersion == STBRasterizerVersion.V1)
 			{
 				vsubsample = (Height) < (8) ? 15 : 5;
 			}
@@ -123,16 +122,16 @@ namespace StbTrueTypeNext
 
 			switch (rasterizerVersion)
 			{
-				case STTRasterizerVersion.V1:
+				case STBRasterizerVersion.V1:
 					RasterizerV1.Rasterize(this, es, vsubsample, off_x, off_y);
 					break;
-				case STTRasterizerVersion.V2:
+				case STBRasterizerVersion.V2:
 					RasterizerV2.Rasterize(this, es, vsubsample, off_x, off_y);
 					break;
 			}
 		}
 
-		private static Vector2[] stbtt_FlattenCurves(STTVertex[] vertices, int num_verts, float objspace_flatness, out int[] contour_lengths)
+		private static Vector2[] stbtt_FlattenCurves(STBVertex[] vertices, int num_verts, float objspace_flatness, out int[] contour_lengths)
 		{
 			Vector2[] points = null;
 			var num_points = 0;
@@ -199,8 +198,8 @@ namespace StbTrueTypeNext
 			return points;
 		}
 
-		public void stbtt_Rasterize(float flatness_in_pixels, STTVertex[] vertices,
-			int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, STTRasterizerVersion rasterizerVersion)
+		public void stbtt_Rasterize(float flatness_in_pixels, STBVertex[] vertices,
+			int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, STBRasterizerVersion rasterizerVersion)
 		{
 			var scale = scale_x > scale_y ? scale_y : scale_x;
 
