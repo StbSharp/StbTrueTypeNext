@@ -4,6 +4,11 @@ namespace StbTrueTypeNext
 {
 	partial class STTFont
 	{
+		public int stbtt_GetCodepointShape(int unicode_codepoint, out STTVertex[] vertices)
+		{
+			return stbtt_GetGlyphShape(stbtt_FindGlyphIndex(unicode_codepoint), out vertices);
+		}
+
 		public int stbtt_GetGlyphShape(int glyph_index, out STTVertex[] pvertices)
 		{
 			if (_cff.size == 0)

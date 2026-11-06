@@ -4,6 +4,13 @@ namespace StbTrueTypeNext
 {
 	partial class STTFont
 	{
+		public byte[] stbtt_GetCodepointSDF(float scale, int codepoint, int padding,
+			byte onedge_value, float pixel_dist_scale, out int width, out int height, out int xoff, out int yoff)
+		{
+			return stbtt_GetGlyphSDF(scale, stbtt_FindGlyphIndex(codepoint), padding, onedge_value,
+				pixel_dist_scale, out width, out height, out xoff, out yoff);
+		}
+
 		public byte[] stbtt_GetGlyphSDF(float scale, int glyph, int padding, byte onedge_value, float pixel_dist_scale,
 			out int width, out int height, out int xoff, out int yoff)
 		{
