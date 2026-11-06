@@ -58,7 +58,7 @@ namespace StbTrueTypeNext
 			Seek(Cursor + o);
 		}
 
-		public Buffer stbtt__cff_get_index()
+		public Buffer ReadCffIndex()
 		{
 			var count = 0;
 			var start = 0;
@@ -75,13 +75,13 @@ namespace StbTrueTypeNext
 			return CreateRange(start, Cursor - start);
 		}
 
-		public int stbtt__cff_index_count()
+		public int ReadCffIndexCount()
 		{
 			Seek(0);
 			return (int)ReadUint(2);
 		}
 
-		public uint stbtt__cff_int()
+		public uint ReadCffUint()
 		{
 			int b0 = ReadByte();
 			if (b0 >= 32 && b0 <= 246)
@@ -97,7 +97,7 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public void stbtt__cff_skip_operand()
+		public void SkipCffOperand()
 		{
 			var v = 0;
 			int b0 = PeekByte();
@@ -113,11 +113,11 @@ namespace StbTrueTypeNext
 			}
 			else
 			{
-				stbtt__cff_int();
+				ReadCffUint();
 			}
 		}
 
-		public Buffer stbtt__dict_get(int key)
+		public Buffer ReadCffDict(int key)
 		{
 			Seek(0);
 			while (Cursor < Size)
@@ -125,7 +125,7 @@ namespace StbTrueTypeNext
 				var start = Cursor;
 				var end = 0;
 				var op = 0;
-				while (PeekByte() >= 28) stbtt__cff_skip_operand();
+				while (PeekByte() >= 28) SkipCffOperand();
 
 				end = Cursor;
 				op = ReadByte();
@@ -138,22 +138,22 @@ namespace StbTrueTypeNext
 			return CreateRange(0, 0);
 		}
 
-		public void stbtt__dict_get_ints(int key, int outcount, uint[] _out_)
+		public void ReadCffDictUints(int key, int outcount, uint[] _out_)
 		{
 			var i = 0;
-			var operands = stbtt__dict_get(key);
+			var operands = ReadCffDict(key);
 			for (i = 0; i < outcount && operands.Cursor < operands.Size; i++)
 			{
-				_out_[i] = operands.stbtt__cff_int();
+				_out_[i] = operands.ReadCffUint();
 			}
 		}
 
-		public bool stbtt__dict_get_ints(int key, ref uint _out_)
+		public bool ReadCffDictUint(int key, ref uint _out_)
 		{
-			var operands = stbtt__dict_get(key);
+			var operands = ReadCffDict(key);
 			if (operands.Cursor < operands.Size)
 			{
-				_out_ = operands.stbtt__cff_int();
+				_out_ = operands.ReadCffUint();
 				return true;
 			}
 
@@ -177,7 +177,7 @@ namespace StbTrueTypeNext
 
 		public static Buffer stbtt__get_subr(Buffer idx, int n)
 		{
-			var count = idx.stbtt__cff_index_count();
+			var count = idx.ReadCffIndexCount();
 			var bias = 107;
 			if (count >= 33900)
 				bias = 32768;
@@ -192,18 +192,18 @@ namespace StbTrueTypeNext
 		public static Buffer stbtt__get_subrs(Buffer cff, Buffer fontdict)
 		{
 			var private_loc = new uint[] { 0, 0 };
-			fontdict.stbtt__dict_get_ints(18, 2, private_loc);
+			fontdict.ReadCffDictUints(18, 2, private_loc);
 			if (private_loc[1] == 0 || private_loc[0] == 0)
 				return Null;
 			var pdict = cff.CreateRange((int)private_loc[1], (int)private_loc[0]);
 			uint subrsoff = 0;
-			if (!pdict.stbtt__dict_get_ints(19, ref subrsoff))
+			if (!pdict.ReadCffDictUint(19, ref subrsoff))
 			{
 				return Null;
 			}
 
 			cff.Seek((int)(private_loc[1] + subrsoff));
-			return cff.stbtt__cff_get_index();
+			return cff.ReadCffIndex();
 		}
 	}
 }

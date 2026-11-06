@@ -906,7 +906,7 @@ namespace StbTrueTypeNext
 						else
 						{
 							b.Skip(-1);
-							f = (short)b.stbtt__cff_int();
+							f = (short)b.ReadCffUint();
 						}
 
 						if (sp >= 48)

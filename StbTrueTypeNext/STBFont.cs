@@ -94,20 +94,20 @@ namespace StbTrueTypeNext
 				b = _cff;
 				b.Skip(2);
 				b.Seek(b.ReadByte());
-				b.stbtt__cff_get_index();
-				topdictidx = b.stbtt__cff_get_index();
+				b.ReadCffIndex();
+				topdictidx = b.ReadCffIndex();
 				topdict = Buffer.stbtt__cff_index_get(topdictidx, 0);
-				b.stbtt__cff_get_index();
-				_gsubrs = b.stbtt__cff_get_index();
+				b.ReadCffIndex();
+				_gsubrs = b.ReadCffIndex();
 
 				uint cstype = 2;
 				uint charstrings = 0;
 				uint fdarrayoff = 0;
 				uint fdselectoff = 0;
-				topdict.stbtt__dict_get_ints(17, ref charstrings);
-				topdict.stbtt__dict_get_ints(0x100 | 6, ref cstype);
-				topdict.stbtt__dict_get_ints(0x100 | 36, ref fdarrayoff);
-				topdict.stbtt__dict_get_ints(0x100 | 37, ref fdselectoff);
+				topdict.ReadCffDictUint(17, ref charstrings);
+				topdict.ReadCffDictUint(0x100 | 6, ref cstype);
+				topdict.ReadCffDictUint(0x100 | 36, ref fdarrayoff);
+				topdict.ReadCffDictUint(0x100 | 37, ref fdselectoff);
 
 				_subrs = Buffer.stbtt__get_subrs(b, topdict);
 				if (cstype != 2)
@@ -128,12 +128,12 @@ namespace StbTrueTypeNext
 					}
 
 					b.Seek((int)fdarrayoff);
-					_fontdicts = b.stbtt__cff_get_index();
+					_fontdicts = b.ReadCffIndex();
 					_fdselect = b.CreateRange((int)fdselectoff, (int)(b.Size - fdselectoff));
 				}
 
 				b.Seek((int)charstrings);
-				_charstrings = b.stbtt__cff_get_index();
+				_charstrings = b.ReadCffIndex();
 			}
 
 			t = Utility.stbtt__find_table(dataPtr, (uint)offset, "maxp");
