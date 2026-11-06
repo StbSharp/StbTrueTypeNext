@@ -613,7 +613,7 @@ namespace StbTrueTypeNext
 
 			if (fdselector == -1)
 				return Buffer.Null;
-			return Buffer.stbtt__get_subrs(_cff, Buffer.stbtt__cff_index_get(_fontdicts, fdselector));
+			return Buffer.ReadCffSubrs(_cff, Buffer.ReadCffIndexBy(_fontdicts, fdselector));
 		}
 
 		private int stbtt__run_charstring(int glyph_index, CharStringContext c)
@@ -632,7 +632,7 @@ namespace StbTrueTypeNext
 			var subrs = _subrs;
 			var b = new Buffer();
 			float f = 0;
-			b = Buffer.stbtt__cff_index_get(_charstrings, glyph_index);
+			b = Buffer.ReadCffIndexBy(_charstrings, glyph_index);
 			while (b.Cursor < b.Size)
 			{
 				i = 0;
@@ -787,7 +787,7 @@ namespace StbTrueTypeNext
 						if (subr_stack_height >= 10)
 							return 0;
 						subr_stack[subr_stack_height++] = b;
-						b = Buffer.stbtt__get_subr(b0 == 0x0A ? subrs : _gsubrs, v);
+						b = Buffer.ReadCffSubrBy(b0 == 0x0A ? subrs : _gsubrs, v);
 						if (b.Size == 0)
 							return 0;
 						b.Cursor = 0;

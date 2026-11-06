@@ -96,7 +96,7 @@ namespace StbTrueTypeNext
 				b.Seek(b.ReadByte());
 				b.ReadCffIndex();
 				topdictidx = b.ReadCffIndex();
-				topdict = Buffer.stbtt__cff_index_get(topdictidx, 0);
+				topdict = Buffer.ReadCffIndexBy(topdictidx, 0);
 				b.ReadCffIndex();
 				_gsubrs = b.ReadCffIndex();
 
@@ -109,7 +109,7 @@ namespace StbTrueTypeNext
 				topdict.ReadCffDictUint(0x100 | 36, ref fdarrayoff);
 				topdict.ReadCffDictUint(0x100 | 37, ref fdselectoff);
 
-				_subrs = Buffer.stbtt__get_subrs(b, topdict);
+				_subrs = Buffer.ReadCffSubrs(b, topdict);
 				if (cstype != 2)
 				{
 					throw new Exception("cstype != 2");

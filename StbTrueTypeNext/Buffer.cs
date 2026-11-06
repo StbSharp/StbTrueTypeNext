@@ -160,7 +160,7 @@ namespace StbTrueTypeNext
 			return false;
 		}
 
-		public static Buffer stbtt__cff_index_get(Buffer b, int i)
+		public static Buffer ReadCffIndexBy(Buffer b, int i)
 		{
 			var count = 0;
 			var offsize = 0;
@@ -175,7 +175,7 @@ namespace StbTrueTypeNext
 			return b.CreateRange(2 + (count + 1) * offsize + start, end - start);
 		}
 
-		public static Buffer stbtt__get_subr(Buffer idx, int n)
+		public static Buffer ReadCffSubrBy(Buffer idx, int n)
 		{
 			var count = idx.ReadCffIndexCount();
 			var bias = 107;
@@ -186,10 +186,10 @@ namespace StbTrueTypeNext
 			n += bias;
 			if (n < 0 || n >= count)
 				return Null;
-			return stbtt__cff_index_get(idx, n);
+			return ReadCffIndexBy(idx, n);
 		}
 
-		public static Buffer stbtt__get_subrs(Buffer cff, Buffer fontdict)
+		public static Buffer ReadCffSubrs(Buffer cff, Buffer fontdict)
 		{
 			var private_loc = new uint[] { 0, 0 };
 			fontdict.ReadCffDictUints(18, 2, private_loc);
