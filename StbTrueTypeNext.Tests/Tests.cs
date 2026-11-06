@@ -57,11 +57,11 @@ namespace StbTrueTypeNext.Tests
 			FontsList fonts;
 			int numberOfFonts;
 
-			numberOfFonts = FontCollection.stbtt_GetNumberOfFonts(ttcContent);
+			numberOfFonts = STTFontCollection.stbtt_GetNumberOfFonts(ttcContent);
 			fonts = new FontsList(numberOfFonts);
 			for (int i = 0; i < numberOfFonts; i++)
 			{
-				int offset = FontCollection.stbtt_GetFontOffsetForIndex(ttcContent, i);
+				int offset = STTFontCollection.stbtt_GetFontOffsetForIndex(ttcContent, i);
 				fonts.Add(STTFont.FromMemory(ttcContent, offset));
 			}
 
@@ -128,7 +128,7 @@ namespace StbTrueTypeNext.Tests
 			var fontInfo = STTFont.FromMemory(ttfData);
 			Assert.NotNull(fontInfo);
 
-			fontInfo.RasterizerVersion = RasterizerVersion.V1;
+			fontInfo.RasterizerVersion = STTRasterizerVersion.V1;
 
 			TestRasterize(fontInfo, "Hello, World!", 32.0f);
 		}

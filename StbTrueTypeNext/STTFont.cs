@@ -27,7 +27,7 @@ namespace StbTrueTypeNext
 		private int _svg;
 		public byte[] Data => _data;
 
-		public RasterizerVersion RasterizerVersion { get; set; } = RasterizerVersion.V2;
+		public STTRasterizerVersion RasterizerVersion { get; set; } = STTRasterizerVersion.V2;
 
 		private STTFont()
 		{
@@ -1664,7 +1664,7 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public KerningEntry[] stbtt_GetKerningTable()
+		public STTKerningEntry[] stbtt_GetKerningTable()
 		{
 			var data = new FakePtr<byte>(_data, _kern);
 			var k = 0;
@@ -1677,7 +1677,7 @@ namespace StbTrueTypeNext
 				return null;
 			length = Utility.ttUSHORT(data + 10);
 
-			var table = new KerningEntry[length];
+			var table = new STTKerningEntry[length];
 			for (k = 0; k < length; k++)
 			{
 				table[k].Glyph1 = Utility.ttUSHORT(data + 18 + k * 6);
@@ -1911,7 +1911,7 @@ namespace StbTrueTypeNext
 			lineGap = i_lineGap * scale;
 		}
 
-		public int stbtt_BakeFontBitmap(float pixel_height, byte[] pixels, int pw, int ph, int first_char, int num_chars, stbtt_bakedchar[] chardata)
+		public int stbtt_BakeFontBitmap(float pixel_height, byte[] pixels, int pw, int ph, int first_char, int num_chars, STTBakedChar[] chardata)
 		{
 			float scale = 0;
 			var x = 0;

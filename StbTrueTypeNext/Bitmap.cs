@@ -67,7 +67,7 @@ namespace StbTrueTypeNext
 		}
 
 		public void stbtt__rasterize(Vector2[] pts, int[] wcount,
-			float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, RasterizerVersion rasterizerVersion)
+			float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, STTRasterizerVersion rasterizerVersion)
 		{
 			var y_scale_inv = invert != 0 ? -scale_y : scale_y;
 			var i = 0;
@@ -76,7 +76,7 @@ namespace StbTrueTypeNext
 			var m = 0;
 
 			var vsubsample = 1;
-			if (rasterizerVersion == RasterizerVersion.V1)
+			if (rasterizerVersion == STTRasterizerVersion.V1)
 			{
 				vsubsample = (Height) < (8) ? 15 : 5;
 			}
@@ -123,10 +123,10 @@ namespace StbTrueTypeNext
 
 			switch (rasterizerVersion)
 			{
-				case RasterizerVersion.V1:
+				case STTRasterizerVersion.V1:
 					RasterizerV1.Rasterize(this, es, vsubsample, off_x, off_y);
 					break;
-				case RasterizerVersion.V2:
+				case STTRasterizerVersion.V2:
 					RasterizerV2.Rasterize(this, es, vsubsample, off_x, off_y);
 					break;
 			}
@@ -200,7 +200,7 @@ namespace StbTrueTypeNext
 		}
 
 		public void stbtt_Rasterize(float flatness_in_pixels, STTVertex[] vertices,
-			int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, RasterizerVersion rasterizerVersion)
+			int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, STTRasterizerVersion rasterizerVersion)
 		{
 			var scale = scale_x > scale_y ? scale_y : scale_x;
 

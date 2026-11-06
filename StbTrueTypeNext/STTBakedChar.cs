@@ -2,7 +2,7 @@
 
 namespace StbTrueTypeNext
 {
-	public struct stbtt_bakedchar
+	public struct STTBakedChar
 	{
 		public ushort X0;
 		public ushort Y0;
