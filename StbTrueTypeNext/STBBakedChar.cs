@@ -12,9 +12,9 @@ namespace StbTrueTypeNext
 		public float YOff;
 		public float XAdvance;
 
-		public void stbtt_GetBakedQuad(int pw, int ph, ref float xpos, ref float ypos, ref STBQuad q, int opengl_fillrule)
+		public void GetBakedQuad(int pw, int ph, ref float xpos, ref float ypos, ref STBQuad q, bool opengl_fillrule)
 		{
-			var d3d_bias = opengl_fillrule != 0 ? 0 : -0.5f;
+			var d3d_bias = opengl_fillrule ? 0 : -0.5f;
 			var ipw = 1.0f / pw;
 			var iph = 1.0f / ph;
 			var round_x = (int)Math.Floor(xpos + XOff + 0.5f);
