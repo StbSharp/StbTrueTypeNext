@@ -568,10 +568,10 @@ namespace StbTrueTypeNext
 			};
 
 			var r = stbtt__run_charstring(glyph_index, c);
-			x0 = r != 0 ? c.min_x : 0;
-			y0 = r != 0 ? c.min_y : 0;
-			x1 = r != 0 ? c.max_x : 0;
-			y1 = r != 0 ? c.max_y : 0;
+			x0 = r != 0 ? c.MinX : 0;
+			y0 = r != 0 ? c.MinY : 0;
+			x1 = r != 0 ? c.MaxX : 0;
+			y1 = r != 0 ? c.MaxY : 0;
 
 			return r != 0 ? c.num_vertices : 0;
 		}

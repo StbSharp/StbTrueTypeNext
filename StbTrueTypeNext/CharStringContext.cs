@@ -13,14 +13,15 @@
 		private float _firstY;
 		private float _x;
 		private float _y;
-		public int min_x;
-		public int max_x;
-		public int min_y;
-		public int max_y;
 		public STBVertex[] pvertices;
 		public int num_vertices;
 
 		public CharStringContextMode Mode { get; set; } = CharStringContextMode.Draw;
+
+		public int MinX { get; private set; }
+		public int MaxX { get; private set; }
+		public int MinY { get; private set; }
+		public int MaxY { get; private set; }
 
 		public void CloseShape()
 		{
@@ -77,14 +78,14 @@
 
 		public void TrackVertex(int x, int y)
 		{
-			if (x > max_x || !_started)
-				max_x = x;
-			if (y > max_y || !_started)
-				max_y = y;
-			if (x < min_x || !_started)
-				min_x = x;
-			if (y < min_y || !_started)
-				min_y = y;
+			if (x > MaxX || !_started)
+				MaxX = x;
+			if (y > MaxY || !_started)
+				MaxY = y;
+			if (x < MinX || !_started)
+				MinX = x;
+			if (y < MinY || !_started)
+				MinY = y;
 
 			_started = true;
 		}
