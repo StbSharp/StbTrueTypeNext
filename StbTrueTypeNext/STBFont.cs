@@ -346,7 +346,7 @@ namespace StbTrueTypeNext
 				var gh = 0;
 				var g = stbtt_FindGlyphIndex(first_char + i);
 				stbtt_GetGlyphHMetrics(g, out advance, out lsb);
-				stbtt_GetGlyphBitmapBox(g, scale, scale, out x0, out y0, out x1, out y1);
+				GetGlyphBitmapBox(g, scale, scale, out x0, out y0, out x1, out y1);
 				gw = x1 - x0;
 				gh = y1 - y0;
 				if (x + gw + 1 >= pw)
@@ -357,7 +357,7 @@ namespace StbTrueTypeNext
 
 				if (y + gh + 1 >= ph)
 					return -i;
-				stbtt_MakeGlyphBitmap(new FakePtr<byte>(pixels, x + y * pw), gw, gh, pw, scale, scale, g);
+				MakeGlyphBitmap(new FakePtr<byte>(pixels, x + y * pw), gw, gh, pw, scale, scale, g);
 				chardata[i].X0 = (ushort)(short)x;
 				chardata[i].Y0 = (ushort)(short)y;
 				chardata[i].X1 = (ushort)(short)(x + gw);

@@ -115,7 +115,7 @@
 					}
 					else
 					{
-						info.stbtt_GetGlyphBitmapBoxSubpixel(glyph, scale * _h_oversample, scale * _v_oversample,
+						info.GetGlyphBitmapBoxSubpixel(glyph, scale * _h_oversample, scale * _v_oversample,
 							0, 0, out x0, out y0, out x1, out y1);
 						rects[k].W = (int)(x1 - x0 + _padding + _h_oversample - 1);
 						rects[k].H = (int)(y1 - y0 + _padding + _v_oversample - 1);
@@ -181,9 +181,9 @@
 						r.W -= pad;
 						r.H -= pad;
 						info.stbtt_GetGlyphHMetrics(glyph, out advance, out lsb);
-						info.stbtt_GetGlyphBitmapBox(glyph, scale * _h_oversample, scale * _v_oversample,
+						info.GetGlyphBitmapBox(glyph, scale * _h_oversample, scale * _v_oversample,
 							out x0, out y0, out x1, out y1);
-						info.stbtt_MakeGlyphBitmapSubpixel(new FakePtr<byte>(_pixels, r.X + r.Y * _stride_in_bytes),
+						info.MakeGlyphBitmapSubpixel(new FakePtr<byte>(_pixels, r.X + r.Y * _stride_in_bytes),
 							(int)(r.W - _h_oversample + 1), (int)(r.H - _v_oversample + 1),
 							_stride_in_bytes, scale * _h_oversample, scale * _v_oversample, 0, 0, glyph);
 						if (_h_oversample > 1)

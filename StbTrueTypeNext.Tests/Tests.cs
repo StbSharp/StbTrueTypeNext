@@ -103,7 +103,7 @@ namespace StbTrueTypeNext.Tests
 				fontInfo.stbtt_GetGlyphHMetrics(glyphId, out advanceWidth, out leftSideBearing);
 
 				int x0, y0, x1, y1;
-				fontInfo.stbtt_GetGlyphBitmapBox(glyphId, scale, scale, out x0, out y0, out x1, out y1);
+				fontInfo.GetGlyphBitmapBox(glyphId, scale, scale, out x0, out y0, out x1, out y1);
 
 				var width = x1 - x0;
 				var height = y1 - y0;
@@ -112,7 +112,7 @@ namespace StbTrueTypeNext.Tests
 				Assert.NotEqual(0, height);
 				var data = new byte[width * height];
 
-				fontInfo.stbtt_MakeGlyphBitmap(data, width, height, width, scale, scale, glyphId);
+				fontInfo.MakeGlyphBitmap(data, width, height, width, scale, scale, glyphId);
 			}
 		}
 

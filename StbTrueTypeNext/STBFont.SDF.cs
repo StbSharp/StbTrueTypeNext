@@ -27,7 +27,7 @@ namespace StbTrueTypeNext
 			var h = 0;
 			if (scale == 0)
 				return null;
-			stbtt_GetGlyphBitmapBoxSubpixel(glyph, scale, scale, 0.0f, 0.0f, out ix0, out iy0, out ix1, out iy1);
+			GetGlyphBitmapBoxSubpixel(glyph, scale, scale, 0.0f, 0.0f, out ix0, out iy0, out ix1, out iy1);
 			if (ix0 == ix1 || iy0 == iy1)
 				return null;
 			ix0 -= padding;
@@ -48,7 +48,7 @@ namespace StbTrueTypeNext
 				var i = 0;
 				var j = 0;
 				STBVertex[] verts;
-				var num_verts = stbtt_GetGlyphShape(glyph, out verts);
+				var num_verts = GetGlyphShape(glyph, out verts);
 				data = new byte[w * h];
 				var precompute = new float[num_verts];
 				for (i = 0, j = num_verts - 1; i < num_verts; j = i++)

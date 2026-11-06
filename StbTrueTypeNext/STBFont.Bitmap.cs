@@ -4,53 +4,53 @@ namespace StbTrueTypeNext
 {
 	partial class STBFont
 	{
-		public byte[] stbtt_GetCodepointBitmap(float scale_x, float scale_y, int codepoint,
+		public byte[] GetCodepointBitmap(float scale_x, float scale_y, int codepoint,
 			out int width, out int height, out int xoff, out int yoff)
 		{
-			return stbtt_GetCodepointBitmapSubpixel(scale_x, scale_y, 0.0f, 0.0f, codepoint,
+			return GetCodepointBitmapSubpixel(scale_x, scale_y, 0.0f, 0.0f, codepoint,
 				out width, out height, out xoff, out yoff);
 		}
 
-		public void stbtt_GetCodepointBitmapBox(int codepoint, float scale_x, float scale_y,
+		public void GetCodepointBitmapBox(int codepoint, float scale_x, float scale_y,
 			out int ix0, out int iy0, out int ix1, out int iy1)
 		{
-			stbtt_GetCodepointBitmapBoxSubpixel(codepoint, scale_x, scale_y, 0.0f, 0.0f, out ix0, out iy0, out ix1, out iy1);
+			GetCodepointBitmapBoxSubpixel(codepoint, scale_x, scale_y, 0.0f, 0.0f, out ix0, out iy0, out ix1, out iy1);
 		}
 
-		public void stbtt_GetCodepointBitmapBoxSubpixel(int codepoint, float scale_x,
+		public void GetCodepointBitmapBoxSubpixel(int codepoint, float scale_x,
 			float scale_y, float shift_x, float shift_y, out int ix0, out int iy0, out int ix1, out int iy1)
 		{
-			stbtt_GetGlyphBitmapBoxSubpixel(stbtt_FindGlyphIndex(codepoint), scale_x, scale_y, shift_x,
+			GetGlyphBitmapBoxSubpixel(stbtt_FindGlyphIndex(codepoint), scale_x, scale_y, shift_x,
 				shift_y, out ix0, out iy0, out ix1, out iy1);
 		}
 
-		public byte[] stbtt_GetCodepointBitmapSubpixel(float scale_x, float scale_y,
+		public byte[] GetCodepointBitmapSubpixel(float scale_x, float scale_y,
 			float shift_x, float shift_y, int codepoint, out int width, out int height, out int xoff, out int yoff)
 		{
-			return stbtt_GetGlyphBitmapSubpixel(scale_x, scale_y, shift_x, shift_y,
+			return GetGlyphBitmapSubpixel(scale_x, scale_y, shift_x, shift_y,
 				stbtt_FindGlyphIndex(codepoint), out width, out height, out xoff, out yoff);
 		}
 
-		public byte[] stbtt_GetGlyphBitmap(float scale_x, float scale_y, int glyph,
+		public byte[] GetGlyphBitmap(float scale_x, float scale_y, int glyph,
 			out int width, out int height, out int xoff, out int yoff)
 		{
-			return stbtt_GetGlyphBitmapSubpixel(scale_x, scale_y, 0.0f, 0.0f, glyph, out width, out height, out xoff, out yoff);
+			return GetGlyphBitmapSubpixel(scale_x, scale_y, 0.0f, 0.0f, glyph, out width, out height, out xoff, out yoff);
 		}
 
-		public void stbtt_GetGlyphBitmapBox(int glyph, float scale_x, float scale_y,
+		public void GetGlyphBitmapBox(int glyph, float scale_x, float scale_y,
 			out int ix0, out int iy0, out int ix1, out int iy1)
 		{
-			stbtt_GetGlyphBitmapBoxSubpixel(glyph, scale_x, scale_y, 0.0f, 0.0f, out ix0, out iy0, out ix1, out iy1);
+			GetGlyphBitmapBoxSubpixel(glyph, scale_x, scale_y, 0.0f, 0.0f, out ix0, out iy0, out ix1, out iy1);
 		}
 
-		public void stbtt_GetGlyphBitmapBoxSubpixel(int glyph, float scale_x, float scale_y,
+		public void GetGlyphBitmapBoxSubpixel(int glyph, float scale_x, float scale_y,
 			float shift_x, float shift_y, out int ix0, out int iy0, out int ix1, out int iy1)
 		{
 			var x0 = 0;
 			var y0 = 0;
 			var x1 = 0;
 			var y1 = 0;
-			if (stbtt_GetGlyphBox(glyph, out x0, out y0, out x1, out y1) == 0)
+			if (GetGlyphBox(glyph, out x0, out y0, out x1, out y1) == 0)
 			{
 				ix0 = 0;
 				iy0 = 0;
@@ -66,7 +66,7 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public byte[] stbtt_GetGlyphBitmapSubpixel(float scale_x, float scale_y, float shift_x, float shift_y, int glyph,
+		public byte[] GetGlyphBitmapSubpixel(float scale_x, float scale_y, float shift_x, float shift_y, int glyph,
 			out int width, out int height, out int xoff, out int yoff)
 		{
 			width = height = xoff = yoff = 0;
@@ -76,7 +76,7 @@ namespace StbTrueTypeNext
 			var ix1 = 0;
 			var iy1 = 0;
 			STBVertex[] vertices;
-			var num_verts = stbtt_GetGlyphShape(glyph, out vertices);
+			var num_verts = GetGlyphShape(glyph, out vertices);
 			if (scale_x == 0)
 				scale_x = scale_y;
 			if (scale_y == 0)
@@ -89,7 +89,7 @@ namespace StbTrueTypeNext
 				scale_y = scale_x;
 			}
 
-			stbtt_GetGlyphBitmapBoxSubpixel(glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
+			GetGlyphBitmapBoxSubpixel(glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
 
 			width = ix1 - ix0;
 			height = iy1 - iy0;
@@ -107,51 +107,51 @@ namespace StbTrueTypeNext
 			return gbm.Pixels.Data;
 		}
 
-		public void stbtt_MakeCodepointBitmap(byte[] output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, int codepoint)
+		public void MakeCodepointBitmap(byte[] output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, int codepoint)
 		{
-			stbtt_MakeCodepointBitmapSubpixel(output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, codepoint);
+			MakeCodepointBitmapSubpixel(output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, codepoint);
 		}
 
-		public void stbtt_MakeCodepointBitmapSubpixel(byte[] output, int out_w, int out_h,
+		public void MakeCodepointBitmapSubpixel(byte[] output, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int codepoint)
 		{
-			stbtt_MakeGlyphBitmapSubpixel(new FakePtr<byte>(output), out_w, out_h, out_stride,
+			MakeGlyphBitmapSubpixel(new FakePtr<byte>(output), out_w, out_h, out_stride,
 				scale_x, scale_y, shift_x, shift_y, stbtt_FindGlyphIndex(codepoint));
 		}
 
-		public void stbtt_MakeCodepointBitmapSubpixelPrefilter(byte[] output, int out_w,
+		public void MakeCodepointBitmapSubpixelPrefilter(byte[] output, int out_w,
 			int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int oversample_x,
 			int oversample_y, out float sub_x, out float sub_y, int codepoint)
 		{
-			stbtt_MakeGlyphBitmapSubpixelPrefilter(output, out_w, out_h, out_stride, scale_x, scale_y, shift_x,
+			MakeGlyphBitmapSubpixelPrefilter(output, out_w, out_h, out_stride, scale_x, scale_y, shift_x,
 				shift_y, oversample_x, oversample_y, out sub_x, out sub_y, stbtt_FindGlyphIndex(codepoint));
 		}
 
-		public void stbtt_MakeGlyphBitmap(byte[] output, int out_w, int out_h, int out_stride,
+		public void MakeGlyphBitmap(byte[] output, int out_w, int out_h, int out_stride,
 			float scale_x, float scale_y, int glyph)
 		{
-			stbtt_MakeGlyphBitmap(output, 0, out_w, out_h, out_stride, scale_x, scale_y, glyph);
+			MakeGlyphBitmap(output, 0, out_w, out_h, out_stride, scale_x, scale_y, glyph);
 		}
 
-		public void stbtt_MakeGlyphBitmap(byte[] output, int offset, int out_w, int out_h, int out_stride,
+		public void MakeGlyphBitmap(byte[] output, int offset, int out_w, int out_h, int out_stride,
 			float scale_x, float scale_y, int glyph)
 		{
-			stbtt_MakeGlyphBitmap(new FakePtr<byte>(output, offset), out_w, out_h, out_stride, scale_x, scale_y, glyph);
+			MakeGlyphBitmap(new FakePtr<byte>(output, offset), out_w, out_h, out_stride, scale_x, scale_y, glyph);
 		}
 
-		internal void stbtt_MakeGlyphBitmap(FakePtr<byte> output, int out_w, int out_h, int out_stride,
+		internal void MakeGlyphBitmap(FakePtr<byte> output, int out_w, int out_h, int out_stride,
 			float scale_x, float scale_y, int glyph)
 		{
-			stbtt_MakeGlyphBitmapSubpixel(output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, glyph);
+			MakeGlyphBitmapSubpixel(output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, glyph);
 		}
 
-		public void stbtt_MakeGlyphBitmapSubpixel(byte[] output, int out_w, int out_h,
+		public void MakeGlyphBitmapSubpixel(byte[] output, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int glyph)
 		{
-			stbtt_MakeGlyphBitmapSubpixel(new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, glyph);
+			MakeGlyphBitmapSubpixel(new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, glyph);
 		}
 
-		internal void stbtt_MakeGlyphBitmapSubpixel(FakePtr<byte> output, int out_w, int out_h,
+		internal void MakeGlyphBitmapSubpixel(FakePtr<byte> output, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int glyph)
 		{
 			var ix0 = 0;
@@ -159,8 +159,8 @@ namespace StbTrueTypeNext
 			var ix1 = 0;
 			var iy1 = 0;
 			STBVertex[] vertices;
-			var num_verts = stbtt_GetGlyphShape(glyph, out vertices);
-			stbtt_GetGlyphBitmapBoxSubpixel(glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
+			var num_verts = GetGlyphShape(glyph, out vertices);
+			GetGlyphBitmapBoxSubpixel(glyph, scale_x, scale_y, shift_x, shift_y, out ix0, out iy0, out ix1, out iy1);
 
 			if (out_w != 0 && out_h != 0)
 			{
@@ -169,11 +169,11 @@ namespace StbTrueTypeNext
 			}
 		}
 
-		public void stbtt_MakeGlyphBitmapSubpixelPrefilter(byte[] output, int out_w, int out_h, int out_stride,
+		public void MakeGlyphBitmapSubpixelPrefilter(byte[] output, int out_w, int out_h, int out_stride,
 			float scale_x, float scale_y, float shift_x, float shift_y, int prefilter_x, int prefilter_y,
 			out float sub_x, out float sub_y, int glyph)
 		{
-			stbtt_MakeGlyphBitmapSubpixel(output, out_w - (prefilter_x - 1), out_h - (prefilter_y - 1),
+			MakeGlyphBitmapSubpixel(output, out_w - (prefilter_x - 1), out_h - (prefilter_y - 1),
 				out_stride, scale_x, scale_y, shift_x, shift_y, glyph);
 			if (prefilter_x > 1)
 				Utility.stbtt__h_prefilter(output, out_w, out_h, out_stride, (uint)prefilter_x);
@@ -183,36 +183,36 @@ namespace StbTrueTypeNext
 			sub_y = Utility.stbtt__oversample_shift(prefilter_y);
 		}
 
-		public int stbtt_GetCodepointShape(int unicode_codepoint, out STBVertex[] vertices)
+		public int GetCodepointShape(int unicode_codepoint, out STBVertex[] vertices)
 		{
-			return stbtt_GetGlyphShape(stbtt_FindGlyphIndex(unicode_codepoint), out vertices);
+			return GetGlyphShape(stbtt_FindGlyphIndex(unicode_codepoint), out vertices);
 		}
 
-		public int stbtt_GetGlyphShape(int glyph_index, out STBVertex[] pvertices)
+		public int GetGlyphShape(int glyph_index, out STBVertex[] pvertices)
 		{
 			if (_cff.Size == 0)
 			{
-				return stbtt__GetGlyphShapeTT(glyph_index, out pvertices);
+				return GetGlyphShapeTT(glyph_index, out pvertices);
 			}
 
-			return stbtt__GetGlyphShapeT2(glyph_index, out pvertices);
+			return GetGlyphShapeT2(glyph_index, out pvertices);
 		}
 
-		public int stbtt_GetCodepointBox(int codepoint, out int x0, out int y0, out int x1, out int y1)
+		public int GetCodepointBox(int codepoint, out int x0, out int y0, out int x1, out int y1)
 		{
-			return stbtt_GetGlyphBox(stbtt_FindGlyphIndex(codepoint), out x0, out y0, out x1, out y1);
+			return GetGlyphBox(stbtt_FindGlyphIndex(codepoint), out x0, out y0, out x1, out y1);
 		}
 
-		public int stbtt_GetGlyphBox(int glyph_index, out int x0, out int y0, out int x1, out int y1)
+		public int GetGlyphBox(int glyph_index, out int x0, out int y0, out int x1, out int y1)
 		{
 			x0 = y0 = x1 = y1 = 0;
 			if (_cff.Size != 0)
 			{
-				stbtt__GetGlyphInfoT2(glyph_index, out x0, out y0, out x1, out y1);
+				GetGlyphInfoT2(glyph_index, out x0, out y0, out x1, out y1);
 			}
 			else
 			{
-				var g = stbtt__GetGlyfOffset(glyph_index);
+				var g = GetGlyphOffset(glyph_index);
 				if (g < 0)
 					return 0;
 
@@ -226,28 +226,28 @@ namespace StbTrueTypeNext
 			return 1;
 		}
 
-		public int stbtt_IsGlyphEmpty(int glyph_index)
+		public int IsGlyphEmpty(int glyph_index)
 		{
 			short numberOfContours = 0;
 			var g = 0;
 			if (_cff.Size != 0)
 			{
 				int x0, y0, x1, y1;
-				return stbtt__GetGlyphInfoT2(glyph_index, out x0, out y0, out x1, out y1) == 0 ? 1 : 0;
+				return GetGlyphInfoT2(glyph_index, out x0, out y0, out x1, out y1) == 0 ? 1 : 0;
 			}
-			g = stbtt__GetGlyfOffset(glyph_index);
+			g = GetGlyphOffset(glyph_index);
 			if (g < 0)
 				return 1;
 			numberOfContours = Utility.ttSHORT(new FakePtr<byte>(_data, g));
 			return numberOfContours == 0 ? 1 : 0;
 		}
 
-		private int stbtt__GetGlyphShapeTT(int glyph_index, out STBVertex[] pvertices)
+		private int GetGlyphShapeTT(int glyph_index, out STBVertex[] pvertices)
 		{
 			short numberOfContours = 0;
 			var data = new FakePtr<byte>(_data);
 			var num_vertices = 0;
-			var g = stbtt__GetGlyfOffset(glyph_index);
+			var g = GetGlyphOffset(glyph_index);
 			pvertices = null;
 			if (g < 0)
 				return 0;
@@ -353,7 +353,7 @@ namespace StbTrueTypeNext
 					if (next_move == i)
 					{
 						if (i != 0)
-							num_vertices = stbtt__close_shape(vertices, num_vertices, was_off, start_off, sx, sy, scx,
+							num_vertices = CloseShape(vertices, num_vertices, was_off, start_off, sx, sy, scx,
 								scy, cx, cy);
 						start_off = (flags & 1) != 0 ? 0 : 1;
 						if (start_off != 0)
@@ -405,7 +405,7 @@ namespace StbTrueTypeNext
 					}
 				}
 
-				num_vertices = stbtt__close_shape(vertices, num_vertices, was_off, start_off, sx, sy, scx, scy, cx, cy);
+				num_vertices = CloseShape(vertices, num_vertices, was_off, start_off, sx, sy, scx, scy, cx, cy);
 			}
 			else if (numberOfContours < 0)
 			{
@@ -479,7 +479,7 @@ namespace StbTrueTypeNext
 
 					m = (float)Math.Sqrt(mtx[0] * mtx[0] + mtx[1] * mtx[1]);
 					n = (float)Math.Sqrt(mtx[2] * mtx[2] + mtx[3] * mtx[3]);
-					comp_num_verts = stbtt_GetGlyphShape(gidx, out comp_verts);
+					comp_num_verts = GetGlyphShape(gidx, out comp_verts);
 					if (comp_num_verts > 0)
 					{
 						for (i = 0; i < comp_num_verts; ++i)
@@ -518,10 +518,10 @@ namespace StbTrueTypeNext
 			return num_vertices;
 		}
 
-		private int stbtt__GetGlyphShapeT2(int glyph_index, out STBVertex[] pvertices)
+		private int GetGlyphShapeT2(int glyph_index, out STBVertex[] pvertices)
 		{
 			var count_ctx = new CharStringContext();
-			if (stbtt__run_charstring(glyph_index, count_ctx) != 0)
+			if (RunCharString(glyph_index, count_ctx) != 0)
 			{
 				pvertices = count_ctx.ToArray();
 				return pvertices.Length;
@@ -531,7 +531,7 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		private static int stbtt__close_shape(STBVertex[] vertices, int num_vertices, int was_off, int start_off, int sx, int sy, int scx, int scy, int cx, int cy)
+		private static int CloseShape(STBVertex[] vertices, int num_vertices, int was_off, int start_off, int sx, int sy, int scx, int scy, int cx, int cy)
 		{
 			if (start_off != 0)
 			{
@@ -551,14 +551,14 @@ namespace StbTrueTypeNext
 			return num_vertices;
 		}
 
-		private int stbtt__GetGlyphInfoT2(int glyph_index, out int x0, out int y0, out int x1, out int y1)
+		private int GetGlyphInfoT2(int glyph_index, out int x0, out int y0, out int x1, out int y1)
 		{
 			var c = new CharStringContext
 			{
 				Mode = CharStringContextMode.CalculateBounds
 			};
 
-			var r = stbtt__run_charstring(glyph_index, c);
+			var r = RunCharString(glyph_index, c);
 			x0 = r != 0 ? c.MinX : 0;
 			y0 = r != 0 ? c.MinY : 0;
 			x1 = r != 0 ? c.MaxX : 0;
@@ -567,7 +567,7 @@ namespace StbTrueTypeNext
 			return r != 0 ? c.VerticesCount : 0;
 		}
 
-		private Buffer stbtt__cid_get_glyph_subrs(int glyph_index)
+		private Buffer GetCffCidSubrsForGlyph(int glyph_index)
 		{
 			var fdselect = _fdselect;
 			var nranges = 0;
@@ -607,7 +607,7 @@ namespace StbTrueTypeNext
 			return Buffer.ReadCffSubrs(_cff, Buffer.ReadCffIndexBy(_fontdicts, fdselector));
 		}
 
-		private int stbtt__run_charstring(int glyph_index, CharStringContext c)
+		private int RunCharString(int glyph_index, CharStringContext c)
 		{
 			var in_header = 1;
 			var maskbits = 0;
@@ -768,7 +768,7 @@ namespace StbTrueTypeNext
 						if (b0 == 0x0A && has_subrs == 0)
 						{
 							if (_fdselect.Size != 0)
-								subrs = stbtt__cid_get_glyph_subrs(glyph_index);
+								subrs = GetCffCidSubrsForGlyph(glyph_index);
 							has_subrs = 1;
 						}
 
@@ -914,7 +914,7 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		private int stbtt__GetGlyfOffset(int glyph_index)
+		private int GetGlyphOffset(int glyph_index)
 		{
 			var g1 = 0;
 			var g2 = 0;
