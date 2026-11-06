@@ -54,6 +54,115 @@ namespace StbTrueTypeNext
 			}
 		}
 
+		private int stbtt_InitFont_internal(byte[] data, int fontstart)
+		{
+			uint cmap = 0;
+			uint t = 0;
+			var i = 0;
+			var numTables = 0;
+			_data = data;
+			_fontstart = fontstart;
+			_cff = Buffer.Null;
+
+			var dataPtr = new FakePtr<byte>(data);
+			cmap = Utility.stbtt__find_table(dataPtr, (uint)fontstart, "cmap");
+			_loca = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "loca");
+			_head = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "head");
+			_glyf = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "glyf");
+			_hhea = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "hhea");
+			_hmtx = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "hmtx");
+			_kern = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "kern");
+			_gpos = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "GPOS");
+			if (cmap == 0 || _head == 0 || _hhea == 0 || _hmtx == 0)
+				return 0;
+			if (_glyf != 0)
+			{
+				if (_loca == 0)
+					return 0;
+			}
+			else
+			{
+				var b = new Buffer();
+				var topdict = new Buffer();
+				var topdictidx = new Buffer();
+				uint cff = 0;
+				cff = Utility.stbtt__find_table(dataPtr, (uint)fontstart, "CFF ");
+				if (cff == 0)
+					return 0;
+				_fontdicts = Buffer.Null;
+				_fdselect = Buffer.Null;
+				_cff = new Buffer(dataPtr + cff, 512 * 1024 * 1024);
+				b = _cff;
+				b.stbtt__buf_skip(2);
+				b.stbtt__buf_seek(b.stbtt__buf_get8());
+				b.stbtt__cff_get_index();
+				topdictidx = b.stbtt__cff_get_index();
+				topdict = Buffer.stbtt__cff_index_get(topdictidx, 0);
+				b.stbtt__cff_get_index();
+				_gsubrs = b.stbtt__cff_get_index();
+
+				uint cstype = 2;
+				uint charstrings = 0;
+				uint fdarrayoff = 0;
+				uint fdselectoff = 0;
+				topdict.stbtt__dict_get_ints(17, ref charstrings);
+				topdict.stbtt__dict_get_ints(0x100 | 6, ref cstype);
+				topdict.stbtt__dict_get_ints(0x100 | 36, ref fdarrayoff);
+				topdict.stbtt__dict_get_ints(0x100 | 37, ref fdselectoff);
+
+				_subrs = Buffer.stbtt__get_subrs(b, topdict);
+				if (cstype != 2)
+					return 0;
+				if (charstrings == 0)
+					return 0;
+				if (fdarrayoff != 0)
+				{
+					if (fdselectoff == 0)
+						return 0;
+					b.stbtt__buf_seek((int)fdarrayoff);
+					_fontdicts = b.stbtt__cff_get_index();
+					_fdselect = b.stbtt__buf_range((int)fdselectoff, (int)(b.size - fdselectoff));
+				}
+
+				b.stbtt__buf_seek((int)charstrings);
+				_charstrings = b.stbtt__cff_get_index();
+			}
+
+			t = Utility.stbtt__find_table(dataPtr, (uint)fontstart, "maxp");
+			if (t != 0)
+				_numGlyphs = Utility.ttUSHORT(dataPtr + t + 4);
+			else
+				_numGlyphs = 0xffff;
+			_svg = -1;
+			numTables = Utility.ttUSHORT(dataPtr + cmap + 2);
+			_indexMap = 0;
+			for (i = 0; i < numTables; ++i)
+			{
+				var encoding_record = (uint)(cmap + 4 + 8 * i);
+				switch (Utility.ttUSHORT(dataPtr + encoding_record))
+				{
+					case STBTT_PLATFORM_ID_MICROSOFT:
+						switch (Utility.ttUSHORT(dataPtr + encoding_record + 2))
+						{
+							case STBTT_MS_EID_UNICODE_BMP:
+							case STBTT_MS_EID_UNICODE_FULL:
+								_indexMap = (int)(cmap + Utility.ttULONG(dataPtr + encoding_record + 4));
+								break;
+						}
+
+						break;
+					case STBTT_PLATFORM_ID_UNICODE:
+						_indexMap = (int)(cmap + Utility.ttULONG(dataPtr + encoding_record + 4));
+						break;
+				}
+			}
+
+			if (_indexMap == 0)
+				throw new Exception("The font does not have a table mapping from unicode codepoints to font indices.");
+			_indexToLocFormat = Utility.ttUSHORT(dataPtr + _head + 50);
+			return 1;
+		}
+
 		private Buffer stbtt__cid_get_glyph_subrs(int glyph_index)
 		{
 			var fdselect = _fdselect;
@@ -1404,115 +1513,6 @@ namespace StbTrueTypeNext
 			}
 
 			return table;
-		}
-
-		private int stbtt_InitFont_internal(byte[] data, int fontstart)
-		{
-			uint cmap = 0;
-			uint t = 0;
-			var i = 0;
-			var numTables = 0;
-			_data = data;
-			_fontstart = fontstart;
-			_cff = Buffer.Null;
-
-			var dataPtr = new FakePtr<byte>(data);
-			cmap = Utility.stbtt__find_table(dataPtr, (uint)fontstart, "cmap");
-			_loca = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "loca");
-			_head = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "head");
-			_glyf = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "glyf");
-			_hhea = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "hhea");
-			_hmtx = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "hmtx");
-			_kern = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "kern");
-			_gpos = (int)Utility.stbtt__find_table(dataPtr, (uint)fontstart, "GPOS");
-			if (cmap == 0 || _head == 0 || _hhea == 0 || _hmtx == 0)
-				return 0;
-			if (_glyf != 0)
-			{
-				if (_loca == 0)
-					return 0;
-			}
-			else
-			{
-				var b = new Buffer();
-				var topdict = new Buffer();
-				var topdictidx = new Buffer();
-				uint cff = 0;
-				cff = Utility.stbtt__find_table(dataPtr, (uint)fontstart, "CFF ");
-				if (cff == 0)
-					return 0;
-				_fontdicts = Buffer.Null;
-				_fdselect = Buffer.Null;
-				_cff = new Buffer(dataPtr + cff, 512 * 1024 * 1024);
-				b = _cff;
-				b.stbtt__buf_skip(2);
-				b.stbtt__buf_seek(b.stbtt__buf_get8());
-				b.stbtt__cff_get_index();
-				topdictidx = b.stbtt__cff_get_index();
-				topdict = Buffer.stbtt__cff_index_get(topdictidx, 0);
-				b.stbtt__cff_get_index();
-				_gsubrs = b.stbtt__cff_get_index();
-
-				uint cstype = 2;
-				uint charstrings = 0;
-				uint fdarrayoff = 0;
-				uint fdselectoff = 0;
-				topdict.stbtt__dict_get_ints(17, ref charstrings);
-				topdict.stbtt__dict_get_ints(0x100 | 6, ref cstype);
-				topdict.stbtt__dict_get_ints(0x100 | 36, ref fdarrayoff);
-				topdict.stbtt__dict_get_ints(0x100 | 37, ref fdselectoff);
-
-				_subrs = Buffer.stbtt__get_subrs(b, topdict);
-				if (cstype != 2)
-					return 0;
-				if (charstrings == 0)
-					return 0;
-				if (fdarrayoff != 0)
-				{
-					if (fdselectoff == 0)
-						return 0;
-					b.stbtt__buf_seek((int)fdarrayoff);
-					_fontdicts = b.stbtt__cff_get_index();
-					_fdselect = b.stbtt__buf_range((int)fdselectoff, (int)(b.size - fdselectoff));
-				}
-
-				b.stbtt__buf_seek((int)charstrings);
-				_charstrings = b.stbtt__cff_get_index();
-			}
-
-			t = Utility.stbtt__find_table(dataPtr, (uint)fontstart, "maxp");
-			if (t != 0)
-				_numGlyphs = Utility.ttUSHORT(dataPtr + t + 4);
-			else
-				_numGlyphs = 0xffff;
-			_svg = -1;
-			numTables = Utility.ttUSHORT(dataPtr + cmap + 2);
-			_indexMap = 0;
-			for (i = 0; i < numTables; ++i)
-			{
-				var encoding_record = (uint)(cmap + 4 + 8 * i);
-				switch (Utility.ttUSHORT(dataPtr + encoding_record))
-				{
-					case STBTT_PLATFORM_ID_MICROSOFT:
-						switch (Utility.ttUSHORT(dataPtr + encoding_record + 2))
-						{
-							case STBTT_MS_EID_UNICODE_BMP:
-							case STBTT_MS_EID_UNICODE_FULL:
-								_indexMap = (int)(cmap + Utility.ttULONG(dataPtr + encoding_record + 4));
-								break;
-						}
-
-						break;
-					case STBTT_PLATFORM_ID_UNICODE:
-						_indexMap = (int)(cmap + Utility.ttULONG(dataPtr + encoding_record + 4));
-						break;
-				}
-			}
-
-			if (_indexMap == 0)
-				throw new Exception("The font does not have a table mapping from unicode codepoints to font indices.");
-			_indexToLocFormat = Utility.ttUSHORT(dataPtr + _head + 50);
-			return 1;
 		}
 
 		public int stbtt_IsGlyphEmpty(int glyph_index)
