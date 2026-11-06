@@ -2,6 +2,11 @@
 {
 	partial class STTFont
 	{
+		public int stbtt_GetCodepointBox(int codepoint, out int x0, out int y0, out int x1, out int y1)
+		{
+			return stbtt_GetGlyphBox(stbtt_FindGlyphIndex(codepoint), out x0, out y0, out x1, out y1);
+		}
+
 		public int stbtt_GetGlyphBox(int glyph_index, out int x0, out int y0, out int x1, out int y1)
 		{
 			x0 = y0 = x1 = y1 = 0;

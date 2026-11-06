@@ -274,5 +274,54 @@
 
 			return -1;
 		}
+
+		private static int stbtt__GetGlyphClass(FakePtr<byte> classDefTable, int glyph)
+		{
+			var classDefFormat = Utility.ttUSHORT(classDefTable);
+			switch (classDefFormat)
+			{
+				case 1:
+					{
+						var startGlyphID = Utility.ttUSHORT(classDefTable + 2);
+						var glyphCount = Utility.ttUSHORT(classDefTable + 4);
+						var classDef1ValueArray = classDefTable + 6;
+						if (glyph >= startGlyphID && glyph < startGlyphID + glyphCount)
+							return Utility.ttUSHORT(classDef1ValueArray + 2 * (glyph - startGlyphID));
+						break;
+					}
+
+				case 2:
+					{
+						var classRangeCount = Utility.ttUSHORT(classDefTable + 2);
+						var classRangeRecords = classDefTable + 4;
+						var l = 0;
+						var r = classRangeCount - 1;
+						var m = 0;
+						var strawStart = 0;
+						var strawEnd = 0;
+						var needle = glyph;
+						while (l <= r)
+						{
+							m = (l + r) >> 1;
+							var classRangeRecord = classRangeRecords + 6 * m;
+							strawStart = Utility.ttUSHORT(classRangeRecord);
+							strawEnd = Utility.ttUSHORT(classRangeRecord + 2);
+							if (needle < strawStart)
+								r = m - 1;
+							else if (needle > strawEnd)
+								l = m + 1;
+							else
+								return Utility.ttUSHORT(classRangeRecord + 4);
+						}
+
+						break;
+					}
+
+				default:
+					return -1;
+			}
+
+			return 0;
+		}
 	}
 }
