@@ -1,7 +1,7 @@
 ﻿using StbImageWriteSharp;
 using System;
 using System.IO;
-using static StbTrueTypeNext.stbtt_fontinfo;
+using static StbTrueTypeNext.StbTrueTypeFont;
 
 namespace StbTrueTypeNext.Samples;
 
@@ -22,7 +22,7 @@ class Program
 		var bytes = File.ReadAllBytes("Fonts/DroidSans.ttf");
 		var buffer = new byte[bufferSize * bufferSize];
 
-		var info = stbtt_fontinfo.FromMemory(bytes);
+		var info = StbTrueTypeFont.FromMemory(bytes);
 
 		int ascent, descent, lineGap;
 		info.stbtt_GetFontVMetrics(out ascent, out descent, out lineGap);

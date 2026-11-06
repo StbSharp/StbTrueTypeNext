@@ -4,7 +4,7 @@ using System.Text;
 
 namespace StbTrueTypeNext
 {
-	public partial class stbtt_fontinfo
+	public partial class StbTrueTypeFont
 	{
 		private Buffer _cff;
 		private Buffer _charstrings;
@@ -29,9 +29,9 @@ namespace StbTrueTypeNext
 
 		public RasterizerVersion RasterizerVersion { get; set; } = RasterizerVersion.V2;
 
-		public static stbtt_fontinfo FromMemory(byte[] data, int offset = 0)
+		public static StbTrueTypeFont FromMemory(byte[] data, int offset = 0)
 		{
-			var info = new stbtt_fontinfo();
+			var info = new StbTrueTypeFont();
 			if (info.stbtt_InitFont_internal(data, offset) == 0)
 			{
 				throw new Exception("Unable to parse font");
@@ -40,7 +40,7 @@ namespace StbTrueTypeNext
 			return info;
 		}
 
-		public static stbtt_fontinfo FromStream(Stream s)
+		public static StbTrueTypeFont FromStream(Stream s)
 		{
 			using (var ms = new MemoryStream())
 			{

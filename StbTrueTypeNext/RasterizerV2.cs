@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using static StbTrueTypeNext.stbtt_fontinfo;
+using static StbTrueTypeNext.StbTrueTypeFont;
 
 namespace StbTrueTypeNext
 {
