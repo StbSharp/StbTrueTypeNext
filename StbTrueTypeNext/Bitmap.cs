@@ -142,7 +142,7 @@ namespace StbTrueTypeNext
 			var start = 0;
 			var pass = 0;
 			for (i = 0; i < num_verts; ++i)
-				if (vertices[i].Type == STBTT_vmove)
+				if (vertices[i].Type == Constants.STBTT_vmove)
 					++n;
 
 			contour_lengths = null;
@@ -164,7 +164,7 @@ namespace StbTrueTypeNext
 				for (i = 0; i < num_verts; ++i)
 					switch (vertices[i].Type)
 					{
-						case STBTT_vmove:
+						case Constants.STBTT_vmove:
 							if (n >= 0)
 								contour_lengths[n] = num_points - start;
 							++n;
@@ -173,18 +173,18 @@ namespace StbTrueTypeNext
 							y = vertices[i].Y;
 							stbtt__add_point(points, num_points++, x, y);
 							break;
-						case STBTT_vline:
+						case Constants.STBTT_vline:
 							x = vertices[i].X;
 							y = vertices[i].Y;
 							stbtt__add_point(points, num_points++, x, y);
 							break;
-						case STBTT_vcurve:
+						case Constants.STBTT_vcurve:
 							stbtt__tesselate_curve(points, ref num_points, x, y, vertices[i].CX, vertices[i].CY,
 								vertices[i].X, vertices[i].Y, objspace_flatness_squared, 0);
 							x = vertices[i].X;
 							y = vertices[i].Y;
 							break;
-						case STBTT_vcubic:
+						case Constants.STBTT_vcubic:
 							stbtt__tesselate_cubic(points, ref num_points, x, y, vertices[i].CX, vertices[i].CY,
 								vertices[i].CX1, vertices[i].CY1, vertices[i].X, vertices[i].Y,
 								objspace_flatness_squared, 0);

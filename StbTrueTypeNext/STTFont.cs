@@ -591,7 +591,7 @@ namespace StbTrueTypeNext
 							sy = y;
 						}
 
-						vertices[num_vertices++].Set(STBTT_vmove, sx, sy, 0, 0);
+						vertices[num_vertices++].Set(Constants.STBTT_vmove, sx, sy, 0, 0);
 						was_off = 0;
 						next_move = 1 + Utility.ttUSHORT(endPtsOfContours + j * 2);
 						++j;
@@ -601,7 +601,7 @@ namespace StbTrueTypeNext
 						if ((flags & 1) == 0)
 						{
 							if (was_off != 0)
-								vertices[num_vertices++].Set(STBTT_vcurve, (cx + x) >> 1, (cy + y) >> 1,
+								vertices[num_vertices++].Set(Constants.STBTT_vcurve, (cx + x) >> 1, (cy + y) >> 1,
 									cx, cy);
 							cx = x;
 							cy = y;
@@ -610,9 +610,9 @@ namespace StbTrueTypeNext
 						else
 						{
 							if (was_off != 0)
-								vertices[num_vertices++].Set(STBTT_vcurve, x, y, cx, cy);
+								vertices[num_vertices++].Set(Constants.STBTT_vcurve, x, y, cx, cy);
 							else
-								vertices[num_vertices++].Set(STBTT_vline, x, y, 0, 0);
+								vertices[num_vertices++].Set(Constants.STBTT_vline, x, y, 0, 0);
 							was_off = 0;
 						}
 					}
@@ -1457,7 +1457,7 @@ namespace StbTrueTypeNext
 				data = new byte[w * h];
 				var precompute = new float[num_verts];
 				for (i = 0, j = num_verts - 1; i < num_verts; j = i++)
-					if (verts[i].Type == STBTT_vline)
+					if (verts[i].Type == Constants.STBTT_vline)
 					{
 						var x0 = verts[i].X * scale_x;
 						var y0 = verts[i].Y * scale_y;
@@ -1466,7 +1466,7 @@ namespace StbTrueTypeNext
 						var dist = (float)Math.Sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
 						precompute[i] = dist == 0 ? 0.0f : 1.0f / dist;
 					}
-					else if (verts[i].Type == STBTT_vcurve)
+					else if (verts[i].Type == Constants.STBTT_vcurve)
 					{
 						var x2 = verts[j].X * scale_x;
 						var y2 = verts[j].Y * scale_y;
@@ -1503,7 +1503,7 @@ namespace StbTrueTypeNext
 						{
 							var x0 = verts[i].X * scale_x;
 							var y0 = verts[i].Y * scale_y;
-							if (verts[i].Type == STBTT_vline && precompute[i] != 0.0f)
+							if (verts[i].Type == Constants.STBTT_vline && precompute[i] != 0.0f)
 							{
 								var x1 = verts[i - 1].X * scale_x;
 								var y1 = verts[i - 1].Y * scale_y;
@@ -1523,7 +1523,7 @@ namespace StbTrueTypeNext
 										min_dist = dist;
 								}
 							}
-							else if (verts[i].Type == STBTT_vcurve)
+							else if (verts[i].Type == Constants.STBTT_vcurve)
 							{
 								var x2 = verts[i - 1].X * scale_x;
 								var y2 = verts[i - 1].Y * scale_y;

@@ -51,26 +51,22 @@ namespace StbTrueTypeNext
 		public const int STBTT_UNICODE_EID_UNICODE_1_1 = 1;
 		public const int STBTT_UNICODE_EID_UNICODE_2_0_BMP = 3;
 		public const int STBTT_UNICODE_EID_UNICODE_2_0_FULL = 4;
-		public const int STBTT_vcubic = 4;
-		public const int STBTT_vcurve = 3;
-		public const int STBTT_vline = 2;
-		public const int STBTT_vmove = 1;
 
 		private static int stbtt__close_shape(STTVertex[] vertices, int num_vertices, int was_off, int start_off, int sx, int sy, int scx, int scy, int cx, int cy)
 		{
 			if (start_off != 0)
 			{
 				if (was_off != 0)
-					vertices[num_vertices++].Set(STBTT_vcurve, (cx + scx) >> 1, (cy + scy) >> 1, cx, cy);
+					vertices[num_vertices++].Set(Constants.STBTT_vcurve, (cx + scx) >> 1, (cy + scy) >> 1, cx, cy);
 
-				vertices[num_vertices++].Set(STBTT_vcurve, sx, sy, scx, scy);
+				vertices[num_vertices++].Set(Constants.STBTT_vcurve, sx, sy, scx, scy);
 			}
 			else
 			{
 				if (was_off != 0)
-					vertices[num_vertices++].Set(STBTT_vcurve, sx, sy, cx, cy);
+					vertices[num_vertices++].Set(Constants.STBTT_vcurve, sx, sy, cx, cy);
 				else
-					vertices[num_vertices++].Set(STBTT_vline, sx, sy, 0, 0);
+					vertices[num_vertices++].Set(Constants.STBTT_vline, sx, sy, 0, 0);
 			}
 
 			return num_vertices;
@@ -95,7 +91,7 @@ namespace StbTrueTypeNext
 			orig[1] = y;
 			for (i = 0; i < nverts; ++i)
 			{
-				if (verts[i].Type == STBTT_vline)
+				if (verts[i].Type == Constants.STBTT_vline)
 				{
 					int x0 = verts[i - 1].X;
 					int y0 = verts[i - 1].Y;
@@ -109,7 +105,7 @@ namespace StbTrueTypeNext
 					}
 				}
 
-				if (verts[i].Type == STBTT_vcurve)
+				if (verts[i].Type == Constants.STBTT_vcurve)
 				{
 					int x0 = verts[i - 1].X;
 					int y0 = verts[i - 1].Y;
