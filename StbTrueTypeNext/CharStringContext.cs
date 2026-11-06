@@ -1,8 +1,13 @@
 ﻿namespace StbTrueTypeNext
 {
+	internal enum CharStringContextMode
+	{
+		Draw,
+		CalculateBounds
+	}
+
 	internal class CharStringContext
 	{
-		public int bounds;
 		public int started;
 		public float first_x;
 		public float first_y;
@@ -14,6 +19,8 @@
 		public int max_y;
 		public STBVertex[] pvertices;
 		public int num_vertices;
+
+		public CharStringContextMode Mode { get; set; } = CharStringContextMode.Draw;
 
 		public void CloseShape()
 		{
@@ -49,7 +56,7 @@
 
 		public void AddVertex(byte type, int x, int y, int cx, int cy, int cx1, int cy1)
 		{
-			if (bounds != 0)
+			if (Mode == CharStringContextMode.CalculateBounds)
 			{
 				TrackVertex(x, y);
 				if (type == Constants.STBTT_vcubic)

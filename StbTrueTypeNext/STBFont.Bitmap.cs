@@ -522,7 +522,7 @@ namespace StbTrueTypeNext
 		{
 			var count_ctx = new CharStringContext
 			{
-				bounds = 1
+				Mode = CharStringContextMode.CalculateBounds
 			};
 
 			if (stbtt__run_charstring(glyph_index, count_ctx) != 0)
@@ -564,7 +564,7 @@ namespace StbTrueTypeNext
 		{
 			var c = new CharStringContext
 			{
-				bounds = 1
+				Mode = CharStringContextMode.CalculateBounds
 			};
 
 			var r = stbtt__run_charstring(glyph_index, c);
