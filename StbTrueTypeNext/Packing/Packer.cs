@@ -139,10 +139,6 @@
 				ranges[i].VOversample = (byte)_v_oversample;
 				for (j = 0; j < ranges[i].NumChars; ++j)
 				{
-					var x0 = 0;
-					var y0 = 0;
-					var x1 = 0;
-					var y1 = 0;
 					var codepoint = ranges[i].ArrayOfUnicodeCodepoints == null
 						? ranges[i].FirstUnicodeCodepointInRange + j
 						: ranges[i].ArrayOfUnicodeCodepoints[j];
@@ -153,10 +149,9 @@
 					}
 					else
 					{
-						info.GetGlyphBitmapBoxSubpixel(glyph, scale * _h_oversample, scale * _v_oversample,
-							0, 0, out x0, out y0, out x1, out y1);
-						rects[k].W = (int)(x1 - x0 + _padding + _h_oversample - 1);
-						rects[k].H = (int)(y1 - y0 + _padding + _v_oversample - 1);
+						var box = info.GetGlyphBitmapBoxSubpixel(glyph, scale * _h_oversample, scale * _v_oversample) ?? STBGlyphBitmapBox.Zero;
+						rects[k].W = (int)(box.Width + _padding + _h_oversample - 1);
+						rects[k].H = (int)(box.Height + _padding + _v_oversample - 1);
 						if (glyph == 0)
 						{
 							missing_glyph_added = 1;
@@ -205,10 +200,6 @@
 					{
 						var advance = 0;
 						var lsb = 0;
-						var x0 = 0;
-						var y0 = 0;
-						var x1 = 0;
-						var y1 = 0;
 						var codepoint = ranges[i].ArrayOfUnicodeCodepoints == null
 							? ranges[i].FirstUnicodeCodepointInRange + j
 							: ranges[i].ArrayOfUnicodeCodepoints[j];
@@ -219,8 +210,7 @@
 						r.W -= pad;
 						r.H -= pad;
 						info.GetGlyphHMetrics(glyph, out advance, out lsb);
-						info.GetGlyphBitmapBox(glyph, scale * _h_oversample, scale * _v_oversample,
-							out x0, out y0, out x1, out y1);
+						var box = info.GetGlyphBitmapBoxSubpixel(glyph, scale * _h_oversample, scale * _v_oversample) ?? STBGlyphBitmapBox.Zero;
 						info.MakeGlyphBitmapSubpixel(new FakePtr<byte>(_pixels, r.X + r.Y * _stride_in_bytes),
 							(int)(r.W - _h_oversample + 1), (int)(r.H - _v_oversample + 1),
 							_stride_in_bytes, scale * _h_oversample, scale * _v_oversample, 0, 0, glyph);
@@ -237,10 +227,10 @@
 						bc.X1 = (ushort)(short)(r.X + r.W);
 						bc.Y1 = (ushort)(short)(r.Y + r.H);
 						bc.XAdvance = scale * advance;
-						bc.XOff = x0 * recip_h + sub_x;
-						bc.YOff = y0 * recip_v + sub_y;
-						bc.XOff2 = (x0 + r.W) * recip_h + sub_x;
-						bc.YOff2 = (y0 + r.H) * recip_v + sub_y;
+						bc.XOff = box.X0 * recip_h + sub_x;
+						bc.YOff = box.Y0 * recip_v + sub_y;
+						bc.XOff2 = (box.X0 + r.W) * recip_h + sub_x;
+						bc.YOff2 = (box.Y0 + r.H) * recip_v + sub_y;
 						ranges[i].ChardataForRange[j] = bc;
 						if (glyph == 0)
 							missing_glyph = j;

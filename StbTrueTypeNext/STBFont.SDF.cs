@@ -44,28 +44,24 @@ namespace StbTrueTypeNext
 
 			var scale_x = scale;
 			var scale_y = scale;
-			var ix0 = 0;
-			var iy0 = 0;
-			var ix1 = 0;
-			var iy1 = 0;
 			var w = 0;
 			var h = 0;
 			if (scale == 0)
 				return null;
-			GetGlyphBitmapBoxSubpixel(glyph, scale, scale, 0.0f, 0.0f, out ix0, out iy0, out ix1, out iy1);
-			if (ix0 == ix1 || iy0 == iy1)
+			var box = GetGlyphBitmapBoxSubpixel(glyph, scale, scale, 0.0f, 0.0f) ?? STBGlyphBitmapBox.Zero;
+			if (box.X0 == box.X1 || box.Y0 == box.Y1)
 				return null;
-			ix0 -= padding;
-			iy0 -= padding;
-			ix1 += padding;
-			iy1 += padding;
-			w = ix1 - ix0;
-			h = iy1 - iy0;
+			box.X0 -= padding;
+			box.Y0 -= padding;
+			box.X1 += padding;
+			box.Y1 += padding;
+			w = box.Width;
+			h = box.Height;
 
 			width = w;
 			height = h;
-			xoff = ix0;
-			yoff = iy0;
+			xoff = box.X0;
+			yoff = box.Y0;
 			scale_y = -scale_y;
 			{
 				var x = 0;
@@ -108,9 +104,9 @@ namespace StbTrueTypeNext
 					}
 
 				var res = new float[3];
-				for (y = iy0; y < iy1; ++y)
+				for (y = box.Y0; y < box.Y1; ++y)
 				{
-					for (x = ix0; x < ix1; ++x)
+					for (x = box.X0; x < box.X1; ++x)
 					{
 						float val = 0;
 						var min_dist = 999999.0f;
@@ -251,7 +247,7 @@ namespace StbTrueTypeNext
 							val = 0;
 						else if (val > 255)
 							val = 255;
-						data[(y - iy0) * w + (x - ix0)] = (byte)val;
+						data[(y - box.Y0) * w + (x - box.X0)] = (byte)val;
 					}
 				}
 			}

@@ -387,17 +387,13 @@ namespace StbTrueTypeNext
 			{
 				var advance = 0;
 				var lsb = 0;
-				var x0 = 0;
-				var y0 = 0;
-				var x1 = 0;
-				var y1 = 0;
 				var gw = 0;
 				var gh = 0;
 				var g = FindGlyphIndex(first_char + i);
 				GetGlyphHMetrics(g, out advance, out lsb);
-				GetGlyphBitmapBox(g, scale, scale, out x0, out y0, out x1, out y1);
-				gw = x1 - x0;
-				gh = y1 - y0;
+				var box = GetGlyphBitmapBoxSubpixel(g, scale, scale) ?? STBGlyphBitmapBox.Zero;
+				gw = box.Width;
+				gh = box.Height;
 				if (x + gw + 1 >= pw)
 				{
 					y = bottom_y;
@@ -412,8 +408,8 @@ namespace StbTrueTypeNext
 				chardata[i].X1 = (ushort)(short)(x + gw);
 				chardata[i].Y1 = (ushort)(short)(y + gh);
 				chardata[i].XAdvance = scale * advance;
-				chardata[i].XOff = x0;
-				chardata[i].YOff = y0;
+				chardata[i].XOff = box.X0;
+				chardata[i].YOff = box.Y0;
 				x = x + gw + 1;
 				if (y + gh + 1 > bottom_y)
 					bottom_y = y + gh + 1;
