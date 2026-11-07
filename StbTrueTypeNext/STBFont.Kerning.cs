@@ -2,28 +2,28 @@
 {
 	partial class STBFont
 	{
-		public int stbtt_GetCodepointKernAdvance(int ch1, int ch2)
+		public int GetCodepointKernAdvance(int ch1, int ch2)
 		{
 			if (_kern == 0 && _gpos == 0)
 				return 0;
-			return stbtt_GetGlyphKernAdvance(FindGlyphIndex(ch1), FindGlyphIndex(ch2));
+			return GetGlyphKernAdvance(FindGlyphIndex(ch1), FindGlyphIndex(ch2));
 		}
 
-		public int stbtt_GetGlyphKernAdvance(int g1, int g2)
+		public int GetGlyphKernAdvance(int g1, int g2)
 		{
 			var xAdvance = 0;
 			if (_gpos != 0)
 			{
-				xAdvance += stbtt__GetGlyphGPOSInfoAdvance(g1, g2);
+				xAdvance += GetGlyphGPOSInfoAdvance(g1, g2);
 			}
 			else if (_kern != 0)
 			{
-				xAdvance += stbtt__GetGlyphKernInfoAdvance(g1, g2);
+				xAdvance += GetGlyphKernInfoAdvance(g1, g2);
 			}
 			return xAdvance;
 		}
 
-		public STBKerningEntry[] stbtt_GetKerningTable()
+		public STBKerningEntry[] GetKerningTable()
 		{
 			var data = new FakePtr<byte>(_data, _kern);
 			var k = 0;
@@ -47,7 +47,7 @@
 			return table;
 		}
 
-		private int stbtt__GetGlyphGPOSInfoAdvance(int glyph1, int glyph2)
+		private int GetGlyphGPOSInfoAdvance(int glyph1, int glyph2)
 		{
 			ushort lookupListOffset = 0;
 			ushort lookupCount = 0;
@@ -79,7 +79,7 @@
 					var table = lookupTable + subtableOffset;
 					var posFormat = Utility.ttUSHORT(table);
 					var coverageOffset = Utility.ttUSHORT(table + 2);
-					var coverageIndex = stbtt__GetCoverageIndex(table + coverageOffset, glyph1);
+					var coverageIndex = GetCoverageIndex(table + coverageOffset, glyph1);
 					if (coverageIndex == -1)
 						continue;
 					switch (posFormat)
@@ -144,8 +144,8 @@
 								{
 									var classDef1Offset = Utility.ttUSHORT(table + 8);
 									var classDef2Offset = Utility.ttUSHORT(table + 10);
-									var glyph1class = stbtt__GetGlyphClass(table + classDef1Offset, glyph1);
-									var glyph2class = stbtt__GetGlyphClass(table + classDef2Offset, glyph2);
+									var glyph1class = GetGlyphClass(table + classDef1Offset, glyph1);
+									var glyph2class = GetGlyphClass(table + classDef2Offset, glyph2);
 									var class1Count = Utility.ttUSHORT(table + 12);
 									var class2Count = Utility.ttUSHORT(table + 14);
 									short xAdvance = 0;
@@ -171,7 +171,7 @@
 			return 0;
 		}
 
-		private int stbtt__GetGlyphKernInfoAdvance(int glyph1, int glyph2)
+		private int GetGlyphKernInfoAdvance(int glyph1, int glyph2)
 		{
 			var data = new FakePtr<byte>(_data, _kern);
 			uint needle = 0;
@@ -203,7 +203,7 @@
 			return 0;
 		}
 
-		private static int stbtt__GetCoverageIndex(FakePtr<byte> coverageTable, int glyph)
+		private static int GetCoverageIndex(FakePtr<byte> coverageTable, int glyph)
 		{
 			var coverageFormat = Utility.ttUSHORT(coverageTable);
 			switch (coverageFormat)
@@ -275,7 +275,7 @@
 			return -1;
 		}
 
-		private static int stbtt__GetGlyphClass(FakePtr<byte> classDefTable, int glyph)
+		private static int GetGlyphClass(FakePtr<byte> classDefTable, int glyph)
 		{
 			var classDefFormat = Utility.ttUSHORT(classDefTable);
 			switch (classDefFormat)
