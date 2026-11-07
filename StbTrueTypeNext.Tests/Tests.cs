@@ -98,7 +98,7 @@ namespace StbTrueTypeNext.Tests
 				int advanceWidth, leftSideBearing;
 				fontInfo.GetGlyphHMetrics(glyphId, out advanceWidth, out leftSideBearing);
 
-				var box = fontInfo.GetGlyphBitmapBoxSubpixel(glyphId, scale, scale) ?? STBGlyphBitmapBox.Zero;
+				var box = fontInfo.GetGlyphBoxInPixels(glyphId, scale, scale) ?? STBGlyphBitmapBox.Zero;
 
 				Assert.NotEqual(0, box.Width);
 				Assert.NotEqual(0, box.Height);

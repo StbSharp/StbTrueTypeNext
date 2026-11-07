@@ -48,7 +48,7 @@ class Program
 			info.GetGlyphHMetrics(glyphId, out advanceTemp, out lsbTemp);
 			var advance = (int)(advanceTemp * scale + 0.5f);
 
-			var box = info.GetGlyphBitmapBoxSubpixel(glyphId, scale, scale) ?? STBGlyphBitmapBox.Zero;
+			var box = info.GetGlyphBoxInPixels(glyphId, scale, scale) ?? STBGlyphBitmapBox.Zero;
 
 			posX += box.X0;
 			posY = ascent + box.Y0;

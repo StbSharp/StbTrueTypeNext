@@ -391,7 +391,7 @@ namespace StbTrueTypeNext
 				var gh = 0;
 				var g = FindGlyphIndex(first_char + i);
 				GetGlyphHMetrics(g, out advance, out lsb);
-				var box = GetGlyphBitmapBoxSubpixel(g, scale, scale) ?? STBGlyphBitmapBox.Zero;
+				var box = GetGlyphBoxInPixels(g, scale, scale) ?? STBGlyphBitmapBox.Zero;
 				gw = box.Width;
 				gh = box.Height;
 				if (x + gw + 1 >= pw)

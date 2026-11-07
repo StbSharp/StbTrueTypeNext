@@ -149,7 +149,7 @@
 					}
 					else
 					{
-						var box = info.GetGlyphBitmapBoxSubpixel(glyph, scale * _h_oversample, scale * _v_oversample) ?? STBGlyphBitmapBox.Zero;
+						var box = info.GetGlyphBoxInPixels(glyph, scale * _h_oversample, scale * _v_oversample) ?? STBGlyphBitmapBox.Zero;
 						rects[k].W = (int)(box.Width + _padding + _h_oversample - 1);
 						rects[k].H = (int)(box.Height + _padding + _v_oversample - 1);
 						if (glyph == 0)
@@ -210,7 +210,7 @@
 						r.W -= pad;
 						r.H -= pad;
 						info.GetGlyphHMetrics(glyph, out advance, out lsb);
-						var box = info.GetGlyphBitmapBoxSubpixel(glyph, scale * _h_oversample, scale * _v_oversample) ?? STBGlyphBitmapBox.Zero;
+						var box = info.GetGlyphBoxInPixels(glyph, scale * _h_oversample, scale * _v_oversample) ?? STBGlyphBitmapBox.Zero;
 						info.MakeGlyphBitmapSubpixel(new FakePtr<byte>(_pixels, r.X + r.Y * _stride_in_bytes),
 							(int)(r.W - _h_oversample + 1), (int)(r.H - _v_oversample + 1),
 							_stride_in_bytes, scale * _h_oversample, scale * _v_oversample, 0, 0, glyph);

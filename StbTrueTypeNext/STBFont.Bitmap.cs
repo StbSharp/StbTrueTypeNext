@@ -4,9 +4,9 @@ namespace StbTrueTypeNext
 {
 	partial class STBFont
 	{
-		public STBGlyphBitmapBox? GetGlyphBitmapBoxSubpixel(int glyph, float scale_x, float scale_y, float shift_x = 0, float shift_y = 0)
+		public STBGlyphBitmapBox? GetGlyphBoxInPixels(int glyph, float scale_x, float scale_y, float shift_x = 0, float shift_y = 0)
 		{
-			var box = GetGlyphBox(glyph);
+			var box = GetGlyphBoxInFontUnits(glyph);
 			if (box == null)
 			{
 				return null;
@@ -23,7 +23,7 @@ namespace StbTrueTypeNext
 			};
 		}
 
-		public STBGlyphBitmapBox? GetGlyphBox(int glyph_index)
+		public STBGlyphBitmapBox? GetGlyphBoxInFontUnits(int glyph_index)
 		{
 			int x0, y0, x1, y1;
 			if (_cff.Size != 0)
@@ -128,7 +128,7 @@ namespace StbTrueTypeNext
 				scale_y = scale_x;
 			}
 
-			var box = GetGlyphBitmapBoxSubpixel(glyph, scale_x, scale_y, shift_x, shift_y);
+			var box = GetGlyphBoxInPixels(glyph, scale_x, scale_y, shift_x, shift_y);
 			if (box == null)
 			{
 				return null;
@@ -250,7 +250,7 @@ namespace StbTrueTypeNext
 		internal void MakeGlyphBitmapSubpixel(FakePtr<byte> output, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int glyph)
 		{
-			var box = GetGlyphBitmapBoxSubpixel(glyph, scale_x, scale_y, shift_x, shift_y);
+			var box = GetGlyphBoxInPixels(glyph, scale_x, scale_y, shift_x, shift_y);
 			if (box == null)
 			{
 				return;

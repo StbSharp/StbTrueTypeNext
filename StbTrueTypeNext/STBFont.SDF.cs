@@ -48,7 +48,7 @@ namespace StbTrueTypeNext
 			var h = 0;
 			if (scale == 0)
 				return null;
-			var box = GetGlyphBitmapBoxSubpixel(glyph, scale, scale, 0.0f, 0.0f) ?? STBGlyphBitmapBox.Zero;
+			var box = GetGlyphBoxInPixels(glyph, scale, scale, 0.0f, 0.0f) ?? STBGlyphBitmapBox.Zero;
 			if (box.X0 == box.X1 || box.Y0 == box.Y1)
 				return null;
 			box.X0 -= padding;
