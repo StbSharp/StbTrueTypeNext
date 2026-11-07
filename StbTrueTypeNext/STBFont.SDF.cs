@@ -4,14 +4,14 @@ namespace StbTrueTypeNext
 {
 	partial class STBFont
 	{
-		public byte[] stbtt_GetCodepointSDF(float scale, int codepoint, int padding,
+		public byte[] GetCodepointSDF(float scale, int codepoint, int padding,
 			byte onedge_value, float pixel_dist_scale, out int width, out int height, out int xoff, out int yoff)
 		{
-			return stbtt_GetGlyphSDF(scale, FindGlyphIndex(codepoint), padding, onedge_value,
+			return GetGlyphSDF(scale, FindGlyphIndex(codepoint), padding, onedge_value,
 				pixel_dist_scale, out width, out height, out xoff, out yoff);
 		}
 
-		public byte[] stbtt_GetGlyphSDF(float scale, int glyph, int padding, byte onedge_value, float pixel_dist_scale,
+		public byte[] GetGlyphSDF(float scale, int glyph, int padding, byte onedge_value, float pixel_dist_scale,
 			out int width, out int height, out int xoff, out int yoff)
 		{
 			width = height = xoff = yoff = 0;
@@ -93,7 +93,7 @@ namespace StbTrueTypeNext
 						var sy = y + 0.5f;
 						var x_gspace = sx / scale_x;
 						var y_gspace = sy / scale_y;
-						var winding = stbtt__compute_crossings_x(x_gspace, y_gspace, num_verts, verts);
+						var winding = ComputeCrossingsX(x_gspace, y_gspace, num_verts, verts);
 						for (i = 0; i < num_verts; ++i)
 						{
 							var x0 = verts[i].X * scale_x;
@@ -177,7 +177,7 @@ namespace StbTrueTypeNext
 										var b = 3 * (ax * bx + ay * by) * a_inv;
 										var c = (2 * (ax * ax + ay * ay) + (mx * bx + my * by)) * a_inv;
 										var d = (mx * ax + my * ay) * a_inv;
-										num = stbtt__solve_cubic(b, c, d, res);
+										num = SolveCubic(b, c, d, res);
 									}
 
 									dist2 = (x0 - sx) * (x0 - sx) + (y0 - sy) * (y0 - sy);
@@ -234,7 +234,7 @@ namespace StbTrueTypeNext
 			return data;
 		}
 
-		private static int stbtt__compute_crossings_x(float x, float y, int nverts, STBVertex[] verts)
+		private static int ComputeCrossingsX(float x, float y, int nverts, STBVertex[] verts)
 		{
 			var i = 0;
 			var orig = new float[2];
@@ -298,7 +298,7 @@ namespace StbTrueTypeNext
 						}
 						else
 						{
-							var num_hits = stbtt__ray_intersect_bezier(orig, ray, q0, q1, q2, hits);
+							var num_hits = RayIntersectBezier(orig, ray, q0, q1, q2, hits);
 							if (num_hits >= 1)
 								if (hits[0] < 0)
 									winding += hits[1] < 0 ? -1 : 1;
@@ -313,7 +313,7 @@ namespace StbTrueTypeNext
 			return winding;
 		}
 
-		private static int stbtt__ray_intersect_bezier(float[] orig, float[] ray, Vector2 q0, Vector2 q1, Vector2 q2, float[] hits)
+		private static int RayIntersectBezier(float[] orig, float[] ray, Vector2 q0, Vector2 q1, Vector2 q2, float[] hits)
 		{
 			var q0perp = q0.y * ray[0] - q0.x * ray[1];
 			var q1perp = q1.y * ray[0] - q1.x * ray[1];
@@ -375,14 +375,14 @@ namespace StbTrueTypeNext
 			return 1;
 		}
 
-		private static float stbtt__cuberoot(float x)
+		private static float CalculateCubeRoot(float x)
 		{
 			if (x < 0)
 				return -(float)Math.Pow(-x, 1.0f / 3.0f);
 			return (float)Math.Pow(x, 1.0f / 3.0f);
 		}
 
-		private static int stbtt__solve_cubic(float a, float b, float c, float[] r)
+		private static int SolveCubic(float a, float b, float c, float[] r)
 		{
 			var s = -a / 3;
 			var p = b - a * a / 3;
@@ -394,8 +394,8 @@ namespace StbTrueTypeNext
 				var z = (float)Math.Sqrt(d);
 				var u = (-q + z) / 2;
 				var v = (-q - z) / 2;
-				u = stbtt__cuberoot(u);
-				v = stbtt__cuberoot(v);
+				u = CalculateCubeRoot(u);
+				v = CalculateCubeRoot(v);
 				r[0] = s + u + v;
 				return 1;
 			}
