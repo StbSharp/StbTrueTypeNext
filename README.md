@@ -10,20 +10,16 @@ In other words, StbTrueTypeNext is a pure managed C# font rasterizer for TrueTyp
 
 ## What the library does
 
-- **Loads fonts from bytes.** `STBFont` takes a `byte[]` holding a `.ttf`, `.otf` or `.ttc` file and
-  locates the tables it needs. The data is read in place, not copied.
+- **Loads fonts from bytes.** `STBFont` takes a `byte[]` holding a `.ttf`, `.otf` or `.ttc` file.
 - **Rasterizes glyphs** into 8-bit alpha bitmaps at any scale, either one glyph at a time
   (`GetGlyphBitmap`, `GetCodepointBitmap`) or into your own buffer at a chosen offset
   (`MakeGlyphBitmap`, `MakeGlyphBitmapSubpixel`).
 - **Reports metrics**: vertical metrics (ascent, descent, line gap), font bounding box, per-glyph
   advance and left side bearing, and the pixel bounding box of any rasterized glyph.
-- **Applies kerning** from the modern `GPOS` table or the legacy `kern` table - see
-  [Kernings](kernings.md).
+- **Applies kerning** from the modern `GPOS` table or the legacy `kern` table.
 - **Packs glyph atlases**: `Packer` rasterizes many characters, at one or more sizes, into a single
-  single-channel bitmap and describes each glyph's rectangle, offsets and advance - see
-  [Packer](packer.md).
-- **Generates signed distance fields** for scalable, shader-friendly glyph rendering - see
-  [SDF](sdf.md).
+  single-channel bitmap and describes each glyph's rectangle, offsets and advance.
+- **Generates signed distance fields** for scalable, shader-friendly glyph rendering.
 - **Reads embedded SVG documents** from the OpenType `SVG ` table (`GetCodepointSVG`,
   `GetGlyphSVG`).
 - **Opens font collections**: `STBFontCollection` reports the number of fonts in a `.ttc` file,
