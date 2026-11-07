@@ -58,7 +58,6 @@ namespace StbTrueTypeNext.Tests
 				throw new SkipException("You don't have a ttc font installed on your computer, but this test requires it.");
 
 			byte[] ttcContent = File.ReadAllBytes(someTtcPath);
-			// Assert.NotNull(someTtc);
 			FontsList fonts;
 			int numberOfFonts;
 
