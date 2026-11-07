@@ -6,19 +6,21 @@ namespace StbTrueTypeNext
 	{
 		public STBGlyphBitmapBox? GetGlyphBitmapBoxSubpixel(int glyph, float scale_x, float scale_y, float shift_x = 0, float shift_y = 0)
 		{
-			var result = GetGlyphBox(glyph);
-			if (result == null)
+			var box = GetGlyphBox(glyph);
+			if (box == null)
 			{
 				return null;
 			}
 
-			var v = result.Value;
-			v.X0 = (int)Math.Floor(v.X0 * scale_x + shift_x);
-			v.Y0 = (int)Math.Floor(-v.Y1 * scale_y + shift_y);
-			v.X1 = (int)Math.Ceiling(v.X1 * scale_x + shift_x);
-			v.Y1 = (int)Math.Ceiling(-v.Y0 * scale_y + shift_y);
+			var v = box.Value;
 
-			return v;
+			return new STBGlyphBitmapBox
+			{
+				X0 = (int)Math.Floor(v.X0 * scale_x + shift_x),
+				Y0 = (int)Math.Floor(-v.Y1 * scale_y + shift_y),
+				X1 = (int)Math.Ceiling(v.X1 * scale_x + shift_x),
+				Y1 = (int)Math.Ceiling(-v.Y0 * scale_y + shift_y)
+			};
 		}
 
 		public STBGlyphBitmapBox? GetGlyphBox(int glyph_index)
