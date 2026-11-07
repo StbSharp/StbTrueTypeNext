@@ -2,8 +2,21 @@
 
 namespace StbTrueTypeNext
 {
+	/// <summary>
+	/// Bitmap members of the font: rasterizing glyphs and codepoints into 8-bit alpha bitmaps,
+	/// computing their pixel bounding boxes, and extracting glyph outlines and font-unit boxes.
+	/// </summary>
 	partial class STBFont
 	{
+		/// <summary>Rasterizes the glyph for a Unicode codepoint into a new 8-bit alpha bitmap.</summary>
+		/// <param name="scale_x">Horizontal scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_y" />.</param>
+		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_x" />.</param>
+		/// <param name="codepoint">Unicode codepoint of the glyph to rasterize.</param>
+		/// <param name="width">Receives the bitmap width, in pixels.</param>
+		/// <param name="height">Receives the bitmap height, in pixels.</param>
+		/// <param name="xoff">Receives the horizontal offset of the bitmap from the glyph origin, in pixels.</param>
+		/// <param name="yoff">Receives the vertical offset of the bitmap from the glyph origin, in pixels, with y increasing downward.</param>
+		/// <returns>The rasterized bitmap with one byte per pixel, or null if the glyph produces no pixels.</returns>
 		public byte[] GetCodepointBitmap(float scale_x, float scale_y, int codepoint,
 			out int width, out int height, out int xoff, out int yoff)
 		{
@@ -11,12 +24,30 @@ namespace StbTrueTypeNext
 				out width, out height, out xoff, out yoff);
 		}
 
+		/// <summary>Computes the pixel bounding box of the glyph bitmap for a Unicode codepoint.</summary>
+		/// <param name="codepoint">Unicode codepoint of the glyph.</param>
+		/// <param name="scale_x">Horizontal scale, as returned by <see cref="ScaleForPixelHeight" />.</param>
+		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />.</param>
+		/// <param name="ix0">Receives the left edge of the box relative to the glyph origin.</param>
+		/// <param name="iy0">Receives the top edge of the box relative to the glyph origin.</param>
+		/// <param name="ix1">Receives the right edge of the box relative to the glyph origin.</param>
+		/// <param name="iy1">Receives the bottom edge of the box relative to the glyph origin.</param>
 		public void GetCodepointBitmapBox(int codepoint, float scale_x, float scale_y,
 			out int ix0, out int iy0, out int ix1, out int iy1)
 		{
 			GetCodepointBitmapBoxSubpixel(codepoint, scale_x, scale_y, 0.0f, 0.0f, out ix0, out iy0, out ix1, out iy1);
 		}
 
+		/// <summary>Computes the pixel bounding box of the glyph bitmap for a Unicode codepoint, with subpixel shifts.</summary>
+		/// <param name="codepoint">Unicode codepoint of the glyph.</param>
+		/// <param name="scale_x">Horizontal scale, as returned by <see cref="ScaleForPixelHeight" />.</param>
+		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />.</param>
+		/// <param name="shift_x">Horizontal subpixel shift, in pixels, applied before rounding.</param>
+		/// <param name="shift_y">Vertical subpixel shift, in pixels, applied before rounding.</param>
+		/// <param name="ix0">Receives the left edge of the box relative to the glyph origin.</param>
+		/// <param name="iy0">Receives the top edge of the box relative to the glyph origin.</param>
+		/// <param name="ix1">Receives the right edge of the box relative to the glyph origin.</param>
+		/// <param name="iy1">Receives the bottom edge of the box relative to the glyph origin.</param>
 		public void GetCodepointBitmapBoxSubpixel(int codepoint, float scale_x,
 			float scale_y, float shift_x, float shift_y, out int ix0, out int iy0, out int ix1, out int iy1)
 		{
@@ -24,6 +55,17 @@ namespace StbTrueTypeNext
 				shift_y, out ix0, out iy0, out ix1, out iy1);
 		}
 
+		/// <summary>Rasterizes the glyph for a Unicode codepoint into a new bitmap, with subpixel shifts.</summary>
+		/// <param name="scale_x">Horizontal scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_y" />.</param>
+		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_x" />.</param>
+		/// <param name="shift_x">Horizontal subpixel shift, in pixels, applied before rasterizing.</param>
+		/// <param name="shift_y">Vertical subpixel shift, in pixels, applied before rasterizing.</param>
+		/// <param name="codepoint">Unicode codepoint of the glyph to rasterize.</param>
+		/// <param name="width">Receives the bitmap width, in pixels.</param>
+		/// <param name="height">Receives the bitmap height, in pixels.</param>
+		/// <param name="xoff">Receives the horizontal offset of the bitmap from the glyph origin, in pixels.</param>
+		/// <param name="yoff">Receives the vertical offset of the bitmap from the glyph origin, in pixels, with y increasing downward.</param>
+		/// <returns>The rasterized bitmap with one byte per pixel, or null if the glyph produces no pixels.</returns>
 		public byte[] GetCodepointBitmapSubpixel(float scale_x, float scale_y,
 			float shift_x, float shift_y, int codepoint, out int width, out int height, out int xoff, out int yoff)
 		{
@@ -31,18 +73,48 @@ namespace StbTrueTypeNext
 				FindGlyphIndex(codepoint), out width, out height, out xoff, out yoff);
 		}
 
+		/// <summary>Rasterizes a glyph into a new 8-bit alpha bitmap.</summary>
+		/// <param name="scale_x">Horizontal scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_y" />.</param>
+		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_x" />.</param>
+		/// <param name="glyph">Index of the glyph to rasterize.</param>
+		/// <param name="width">Receives the bitmap width, in pixels.</param>
+		/// <param name="height">Receives the bitmap height, in pixels.</param>
+		/// <param name="xoff">Receives the horizontal offset of the bitmap from the glyph origin, in pixels.</param>
+		/// <param name="yoff">Receives the vertical offset of the bitmap from the glyph origin, in pixels, with y increasing downward.</param>
+		/// <returns>The rasterized bitmap with one byte per pixel, or null if the glyph produces no pixels.</returns>
 		public byte[] GetGlyphBitmap(float scale_x, float scale_y, int glyph,
 			out int width, out int height, out int xoff, out int yoff)
 		{
 			return GetGlyphBitmapSubpixel(scale_x, scale_y, 0.0f, 0.0f, glyph, out width, out height, out xoff, out yoff);
 		}
 
+		/// <summary>Computes the pixel bounding box of a glyph's bitmap.</summary>
+		/// <param name="glyph">Index of the glyph.</param>
+		/// <param name="scale_x">Horizontal scale, as returned by <see cref="ScaleForPixelHeight" />.</param>
+		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />.</param>
+		/// <param name="ix0">Receives the left edge of the box relative to the glyph origin.</param>
+		/// <param name="iy0">Receives the top edge of the box relative to the glyph origin.</param>
+		/// <param name="ix1">Receives the right edge of the box relative to the glyph origin.</param>
+		/// <param name="iy1">Receives the bottom edge of the box relative to the glyph origin.</param>
 		public void GetGlyphBitmapBox(int glyph, float scale_x, float scale_y,
 			out int ix0, out int iy0, out int ix1, out int iy1)
 		{
 			GetGlyphBitmapBoxSubpixel(glyph, scale_x, scale_y, 0.0f, 0.0f, out ix0, out iy0, out ix1, out iy1);
 		}
 
+		/// <summary>
+		/// Computes the pixel bounding box of a glyph's bitmap, with subpixel shifts. Returns a zero box
+		/// when the glyph has no bounding box.
+		/// </summary>
+		/// <param name="glyph">Index of the glyph.</param>
+		/// <param name="scale_x">Horizontal scale, as returned by <see cref="ScaleForPixelHeight" />.</param>
+		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />.</param>
+		/// <param name="shift_x">Horizontal subpixel shift, in pixels, applied before rounding.</param>
+		/// <param name="shift_y">Vertical subpixel shift, in pixels, applied before rounding.</param>
+		/// <param name="ix0">Receives the left edge of the box relative to the glyph origin.</param>
+		/// <param name="iy0">Receives the top edge of the box relative to the glyph origin.</param>
+		/// <param name="ix1">Receives the right edge of the box relative to the glyph origin.</param>
+		/// <param name="iy1">Receives the bottom edge of the box relative to the glyph origin.</param>
 		public void GetGlyphBitmapBoxSubpixel(int glyph, float scale_x, float scale_y,
 			float shift_x, float shift_y, out int ix0, out int iy0, out int ix1, out int iy1)
 		{
@@ -50,7 +122,7 @@ namespace StbTrueTypeNext
 			var y0 = 0;
 			var x1 = 0;
 			var y1 = 0;
-			if (GetGlyphBox(glyph, out x0, out y0, out x1, out y1) == 0)
+			if (!GetGlyphBox(glyph, out x0, out y0, out x1, out y1))
 			{
 				ix0 = 0;
 				iy0 = 0;
@@ -66,6 +138,17 @@ namespace StbTrueTypeNext
 			}
 		}
 
+		/// <summary>Rasterizes a glyph into a new bitmap, with subpixel shifts.</summary>
+		/// <param name="scale_x">Horizontal scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_y" />.</param>
+		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_x" />.</param>
+		/// <param name="shift_x">Horizontal subpixel shift, in pixels, applied before rasterizing.</param>
+		/// <param name="shift_y">Vertical subpixel shift, in pixels, applied before rasterizing.</param>
+		/// <param name="glyph">Index of the glyph to rasterize.</param>
+		/// <param name="width">Receives the bitmap width, in pixels.</param>
+		/// <param name="height">Receives the bitmap height, in pixels.</param>
+		/// <param name="xoff">Receives the horizontal offset of the bitmap from the glyph origin, in pixels.</param>
+		/// <param name="yoff">Receives the vertical offset of the bitmap from the glyph origin, in pixels, with y increasing downward.</param>
+		/// <returns>The rasterized bitmap with one byte per pixel, or null if the glyph produces no pixels.</returns>
 		public byte[] GetGlyphBitmapSubpixel(float scale_x, float scale_y, float shift_x, float shift_y, int glyph,
 			out int width, out int height, out int xoff, out int yoff)
 		{
@@ -107,11 +190,29 @@ namespace StbTrueTypeNext
 			return gbm.Pixels.Data;
 		}
 
+		/// <summary>Rasterizes the glyph for a Unicode codepoint into a caller-supplied bitmap.</summary>
+		/// <param name="output">Destination bitmap; must hold at least <paramref name="out_h" /> rows of <paramref name="out_stride" /> bytes.</param>
+		/// <param name="out_w">Width of the destination bitmap, in pixels.</param>
+		/// <param name="out_h">Height of the destination bitmap, in pixels.</param>
+		/// <param name="out_stride">Distance between rows of the destination bitmap, in bytes.</param>
+		/// <param name="scale_x">Horizontal scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_y" />.</param>
+		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_x" />.</param>
+		/// <param name="codepoint">Unicode codepoint of the glyph to rasterize.</param>
 		public void MakeCodepointBitmap(byte[] output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, int codepoint)
 		{
 			MakeCodepointBitmapSubpixel(output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, codepoint);
 		}
 
+		/// <summary>Rasterizes the glyph for a Unicode codepoint into a caller-supplied bitmap, with subpixel shifts.</summary>
+		/// <param name="output">Destination bitmap; must hold at least <paramref name="out_h" /> rows of <paramref name="out_stride" /> bytes.</param>
+		/// <param name="out_w">Width of the destination bitmap, in pixels.</param>
+		/// <param name="out_h">Height of the destination bitmap, in pixels.</param>
+		/// <param name="out_stride">Distance between rows of the destination bitmap, in bytes.</param>
+		/// <param name="scale_x">Horizontal scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_y" />.</param>
+		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_x" />.</param>
+		/// <param name="shift_x">Horizontal subpixel shift, in pixels, applied before rasterizing.</param>
+		/// <param name="shift_y">Vertical subpixel shift, in pixels, applied before rasterizing.</param>
+		/// <param name="codepoint">Unicode codepoint of the glyph to rasterize.</param>
 		public void MakeCodepointBitmapSubpixel(byte[] output, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int codepoint)
 		{
@@ -119,6 +220,23 @@ namespace StbTrueTypeNext
 				scale_x, scale_y, shift_x, shift_y, FindGlyphIndex(codepoint));
 		}
 
+		/// <summary>
+		/// Rasterizes the glyph for a Unicode codepoint with horizontal and vertical oversampling, then
+		/// downscales it into the caller-supplied bitmap.
+		/// </summary>
+		/// <param name="output">Destination bitmap; must hold at least <paramref name="out_h" /> rows of <paramref name="out_stride" /> bytes.</param>
+		/// <param name="out_w">Width of the destination bitmap, in pixels.</param>
+		/// <param name="out_h">Height of the destination bitmap, in pixels.</param>
+		/// <param name="out_stride">Distance between rows of the destination bitmap, in bytes.</param>
+		/// <param name="scale_x">Horizontal scale, as returned by <see cref="ScaleForPixelHeight" />.</param>
+		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />.</param>
+		/// <param name="shift_x">Horizontal subpixel shift, in pixels, applied before rasterizing.</param>
+		/// <param name="shift_y">Vertical subpixel shift, in pixels, applied before rasterizing.</param>
+		/// <param name="oversample_x">Horizontal oversampling factor used before downscaling.</param>
+		/// <param name="oversample_y">Vertical oversampling factor used before downscaling.</param>
+		/// <param name="sub_x">Receives the horizontal subpixel offset introduced by the prefilter.</param>
+		/// <param name="sub_y">Receives the vertical subpixel offset introduced by the prefilter.</param>
+		/// <param name="codepoint">Unicode codepoint of the glyph to rasterize.</param>
 		public void MakeCodepointBitmapSubpixelPrefilter(byte[] output, int out_w,
 			int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int oversample_x,
 			int oversample_y, out float sub_x, out float sub_y, int codepoint)
@@ -127,12 +245,29 @@ namespace StbTrueTypeNext
 				shift_y, oversample_x, oversample_y, out sub_x, out sub_y, FindGlyphIndex(codepoint));
 		}
 
+		/// <summary>Rasterizes a glyph into the start of a caller-supplied bitmap.</summary>
+		/// <param name="output">Destination bitmap; must hold at least <paramref name="out_h" /> rows of <paramref name="out_stride" /> bytes.</param>
+		/// <param name="out_w">Width of the destination bitmap, in pixels.</param>
+		/// <param name="out_h">Height of the destination bitmap, in pixels.</param>
+		/// <param name="out_stride">Distance between rows of the destination bitmap, in bytes.</param>
+		/// <param name="scale_x">Horizontal scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_y" />.</param>
+		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_x" />.</param>
+		/// <param name="glyph">Index of the glyph to rasterize.</param>
 		public void MakeGlyphBitmap(byte[] output, int out_w, int out_h, int out_stride,
 			float scale_x, float scale_y, int glyph)
 		{
 			MakeGlyphBitmap(output, 0, out_w, out_h, out_stride, scale_x, scale_y, glyph);
 		}
 
+		/// <summary>Rasterizes a glyph into a caller-supplied bitmap, starting at the given byte offset.</summary>
+		/// <param name="output">Destination bitmap; must hold at least <paramref name="out_h" /> rows of <paramref name="out_stride" /> bytes from <paramref name="offset" />.</param>
+		/// <param name="offset">Byte offset in <paramref name="output" /> at which the bitmap starts.</param>
+		/// <param name="out_w">Width of the destination bitmap, in pixels.</param>
+		/// <param name="out_h">Height of the destination bitmap, in pixels.</param>
+		/// <param name="out_stride">Distance between rows of the destination bitmap, in bytes.</param>
+		/// <param name="scale_x">Horizontal scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_y" />.</param>
+		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_x" />.</param>
+		/// <param name="glyph">Index of the glyph to rasterize.</param>
 		public void MakeGlyphBitmap(byte[] output, int offset, int out_w, int out_h, int out_stride,
 			float scale_x, float scale_y, int glyph)
 		{
@@ -145,6 +280,16 @@ namespace StbTrueTypeNext
 			MakeGlyphBitmapSubpixel(output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, glyph);
 		}
 
+		/// <summary>Rasterizes a glyph into a caller-supplied bitmap, with subpixel shifts.</summary>
+		/// <param name="output">Destination bitmap; must hold at least <paramref name="out_h" /> rows of <paramref name="out_stride" /> bytes.</param>
+		/// <param name="out_w">Width of the destination bitmap, in pixels.</param>
+		/// <param name="out_h">Height of the destination bitmap, in pixels.</param>
+		/// <param name="out_stride">Distance between rows of the destination bitmap, in bytes.</param>
+		/// <param name="scale_x">Horizontal scale, as returned by <see cref="ScaleForPixelHeight" />.</param>
+		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />.</param>
+		/// <param name="shift_x">Horizontal subpixel shift, in pixels, applied before rasterizing.</param>
+		/// <param name="shift_y">Vertical subpixel shift, in pixels, applied before rasterizing.</param>
+		/// <param name="glyph">Index of the glyph to rasterize.</param>
 		public void MakeGlyphBitmapSubpixel(byte[] output, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int glyph)
 		{
@@ -169,6 +314,23 @@ namespace StbTrueTypeNext
 			}
 		}
 
+		/// <summary>
+		/// Rasterizes a glyph with horizontal and vertical oversampling, then downscales it into the
+		/// caller-supplied bitmap.
+		/// </summary>
+		/// <param name="output">Destination bitmap; must hold at least <paramref name="out_h" /> rows of <paramref name="out_stride" /> bytes.</param>
+		/// <param name="out_w">Width of the destination bitmap, in pixels.</param>
+		/// <param name="out_h">Height of the destination bitmap, in pixels.</param>
+		/// <param name="out_stride">Distance between rows of the destination bitmap, in bytes.</param>
+		/// <param name="scale_x">Horizontal scale, as returned by <see cref="ScaleForPixelHeight" />.</param>
+		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />.</param>
+		/// <param name="shift_x">Horizontal subpixel shift, in pixels, applied before rasterizing.</param>
+		/// <param name="shift_y">Vertical subpixel shift, in pixels, applied before rasterizing.</param>
+		/// <param name="prefilter_x">Horizontal oversampling factor used before downscaling.</param>
+		/// <param name="prefilter_y">Vertical oversampling factor used before downscaling.</param>
+		/// <param name="sub_x">Receives the horizontal subpixel offset introduced by the prefilter.</param>
+		/// <param name="sub_y">Receives the vertical subpixel offset introduced by the prefilter.</param>
+		/// <param name="glyph">Index of the glyph to rasterize.</param>
 		public void MakeGlyphBitmapSubpixelPrefilter(byte[] output, int out_w, int out_h, int out_stride,
 			float scale_x, float scale_y, float shift_x, float shift_y, int prefilter_x, int prefilter_y,
 			out float sub_x, out float sub_y, int glyph)
@@ -183,11 +345,19 @@ namespace StbTrueTypeNext
 			sub_y = Utility.OversampleShift(prefilter_y);
 		}
 
+		/// <summary>Gets the outline of the glyph for a Unicode codepoint as an array of vertices.</summary>
+		/// <param name="unicode_codepoint">Unicode codepoint of the glyph.</param>
+		/// <param name="vertices">Receives the outline vertices.</param>
+		/// <returns>The number of vertices, or 0 if the glyph has no outline.</returns>
 		public int GetCodepointShape(int unicode_codepoint, out STBVertex[] vertices)
 		{
 			return GetGlyphShape(FindGlyphIndex(unicode_codepoint), out vertices);
 		}
 
+		/// <summary>Gets a glyph's outline as an array of vertices, using either the TrueType or CFF loader.</summary>
+		/// <param name="glyph_index">Index of the glyph.</param>
+		/// <param name="pvertices">Receives the outline vertices.</param>
+		/// <returns>The number of vertices, or 0 if the glyph has no outline.</returns>
 		public int GetGlyphShape(int glyph_index, out STBVertex[] pvertices)
 		{
 			if (_cff.Size == 0)
@@ -198,12 +368,26 @@ namespace StbTrueTypeNext
 			return GetGlyphShapeT2(glyph_index, out pvertices);
 		}
 
-		public int GetCodepointBox(int codepoint, out int x0, out int y0, out int x1, out int y1)
+		/// <summary>Gets the bounding box of the glyph for a Unicode codepoint, in font units.</summary>
+		/// <param name="codepoint">Unicode codepoint of the glyph.</param>
+		/// <param name="x0">Receives the left edge of the box.</param>
+		/// <param name="y0">Receives the top edge of the box.</param>
+		/// <param name="x1">Receives the right edge of the box.</param>
+		/// <param name="y1">Receives the bottom edge of the box.</param>
+		/// <returns>True on success; false if the glyph is missing or has no bounding box.</returns>
+		public bool GetCodepointBox(int codepoint, out int x0, out int y0, out int x1, out int y1)
 		{
 			return GetGlyphBox(FindGlyphIndex(codepoint), out x0, out y0, out x1, out y1);
 		}
 
-		public int GetGlyphBox(int glyph_index, out int x0, out int y0, out int x1, out int y1)
+		/// <summary>Gets a glyph's bounding box, in font units.</summary>
+		/// <param name="glyph_index">Index of the glyph.</param>
+		/// <param name="x0">Receives the left edge of the box.</param>
+		/// <param name="y0">Receives the top edge of the box.</param>
+		/// <param name="x1">Receives the right edge of the box.</param>
+		/// <param name="y1">Receives the bottom edge of the box.</param>
+		/// <returns>True on success; false if the glyph is missing or has no bounding box.</returns>
+		public bool GetGlyphBox(int glyph_index, out int x0, out int y0, out int x1, out int y1)
 		{
 			x0 = y0 = x1 = y1 = 0;
 			if (_cff.Size != 0)
@@ -214,7 +398,7 @@ namespace StbTrueTypeNext
 			{
 				var g = GetGlyphOffset(glyph_index);
 				if (g < 0)
-					return 0;
+					return false;
 
 				var dataPtr = new FakePtr<byte>(_data);
 				x0 = Utility.ttSHORT(dataPtr + g + 2);
@@ -223,23 +407,26 @@ namespace StbTrueTypeNext
 				y1 = Utility.ttSHORT(dataPtr + g + 8);
 			}
 
-			return 1;
+			return true;
 		}
 
-		public int IsGlyphEmpty(int glyph_index)
+		/// <summary>Checks whether a glyph has no outline.</summary>
+		/// <param name="glyph_index">Index of the glyph.</param>
+		/// <returns>True if the glyph is empty or the index is invalid; otherwise false.</returns>
+		public bool IsGlyphEmpty(int glyph_index)
 		{
 			short numberOfContours = 0;
 			var g = 0;
 			if (_cff.Size != 0)
 			{
 				int x0, y0, x1, y1;
-				return GetGlyphInfoT2(glyph_index, out x0, out y0, out x1, out y1) == 0 ? 1 : 0;
+				return GetGlyphInfoT2(glyph_index, out x0, out y0, out x1, out y1) == 0;
 			}
 			g = GetGlyphOffset(glyph_index);
 			if (g < 0)
-				return 1;
+				return true;
 			numberOfContours = Utility.ttSHORT(new FakePtr<byte>(_data, g));
-			return numberOfContours == 0 ? 1 : 0;
+			return numberOfContours == 0;
 		}
 
 		private int GetGlyphShapeTT(int glyph_index, out STBVertex[] pvertices)
