@@ -186,21 +186,23 @@ namespace StbTrueTypeNext
 			return gbm.Pixels.Data;
 		}
 
-		/// <summary>Rasterizes the glyph for a Unicode codepoint into a caller-supplied bitmap.</summary>
-		/// <param name="output">Destination bitmap; must hold at least <paramref name="out_h" /> rows of <paramref name="out_stride" /> bytes.</param>
+		/// <summary>Rasterizes the glyph for a Unicode codepoint into a caller-supplied bitmap, starting at the given byte offset.</summary>
+		/// <param name="output">Destination bitmap; must hold at least <paramref name="out_h" /> rows of <paramref name="out_stride" /> bytes from <paramref name="offset" />.</param>
+		/// <param name="offset">Byte offset in <paramref name="output" /> at which the bitmap starts.</param>
 		/// <param name="out_w">Width of the destination bitmap, in pixels.</param>
 		/// <param name="out_h">Height of the destination bitmap, in pixels.</param>
 		/// <param name="out_stride">Distance between rows of the destination bitmap, in bytes.</param>
 		/// <param name="scale_x">Horizontal scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_y" />.</param>
 		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_x" />.</param>
 		/// <param name="codepoint">Unicode codepoint of the glyph to rasterize.</param>
-		public void MakeCodepointBitmap(byte[] output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, int codepoint)
+		public void MakeCodepointBitmap(byte[] output, int offset, int out_w, int out_h, int out_stride, float scale_x, float scale_y, int codepoint)
 		{
-			MakeCodepointBitmapSubpixel(output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, codepoint);
+			MakeCodepointBitmapSubpixel(output, offset, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, codepoint);
 		}
 
-		/// <summary>Rasterizes the glyph for a Unicode codepoint into a caller-supplied bitmap, with subpixel shifts.</summary>
-		/// <param name="output">Destination bitmap; must hold at least <paramref name="out_h" /> rows of <paramref name="out_stride" /> bytes.</param>
+		/// <summary>Rasterizes the glyph for a Unicode codepoint into a caller-supplied bitmap at the given byte offset, with subpixel shifts.</summary>
+		/// <param name="output">Destination bitmap; must hold at least <paramref name="out_h" /> rows of <paramref name="out_stride" /> bytes from <paramref name="offset" />.</param>
+		/// <param name="offset">Byte offset in <paramref name="output" /> at which the bitmap starts.</param>
 		/// <param name="out_w">Width of the destination bitmap, in pixels.</param>
 		/// <param name="out_h">Height of the destination bitmap, in pixels.</param>
 		/// <param name="out_stride">Distance between rows of the destination bitmap, in bytes.</param>
@@ -209,18 +211,19 @@ namespace StbTrueTypeNext
 		/// <param name="shift_x">Horizontal subpixel shift, in pixels, applied before rasterizing.</param>
 		/// <param name="shift_y">Vertical subpixel shift, in pixels, applied before rasterizing.</param>
 		/// <param name="codepoint">Unicode codepoint of the glyph to rasterize.</param>
-		public void MakeCodepointBitmapSubpixel(byte[] output, int out_w, int out_h,
+		public void MakeCodepointBitmapSubpixel(byte[] output, int offset, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int codepoint)
 		{
-			MakeGlyphBitmapSubpixel(new FakePtr<byte>(output), out_w, out_h, out_stride,
+			MakeGlyphBitmapSubpixel(new FakePtr<byte>(output, offset), out_w, out_h, out_stride,
 				scale_x, scale_y, shift_x, shift_y, FindGlyphIndex(codepoint));
 		}
 
 		/// <summary>
 		/// Rasterizes the glyph for a Unicode codepoint with horizontal and vertical oversampling, then
-		/// downscales it into the caller-supplied bitmap.
+		/// downscales it into the caller-supplied bitmap at the given byte offset.
 		/// </summary>
-		/// <param name="output">Destination bitmap; must hold at least <paramref name="out_h" /> rows of <paramref name="out_stride" /> bytes.</param>
+		/// <param name="output">Destination bitmap; must hold at least <paramref name="out_h" /> rows of <paramref name="out_stride" /> bytes from <paramref name="offset" />.</param>
+		/// <param name="offset">Byte offset in <paramref name="output" /> at which the bitmap starts.</param>
 		/// <param name="out_w">Width of the destination bitmap, in pixels.</param>
 		/// <param name="out_h">Height of the destination bitmap, in pixels.</param>
 		/// <param name="out_stride">Distance between rows of the destination bitmap, in bytes.</param>
@@ -233,26 +236,12 @@ namespace StbTrueTypeNext
 		/// <param name="sub_x">Receives the horizontal subpixel offset introduced by the prefilter.</param>
 		/// <param name="sub_y">Receives the vertical subpixel offset introduced by the prefilter.</param>
 		/// <param name="codepoint">Unicode codepoint of the glyph to rasterize.</param>
-		public void MakeCodepointBitmapSubpixelPrefilter(byte[] output, int out_w,
+		public void MakeCodepointBitmapSubpixelPrefilter(byte[] output, int offset, int out_w,
 			int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int oversample_x,
 			int oversample_y, out float sub_x, out float sub_y, int codepoint)
 		{
-			MakeGlyphBitmapSubpixelPrefilter(output, out_w, out_h, out_stride, scale_x, scale_y, shift_x,
+			MakeGlyphBitmapSubpixelPrefilter(output, offset, out_w, out_h, out_stride, scale_x, scale_y, shift_x,
 				shift_y, oversample_x, oversample_y, out sub_x, out sub_y, FindGlyphIndex(codepoint));
-		}
-
-		/// <summary>Rasterizes a glyph into the start of a caller-supplied bitmap.</summary>
-		/// <param name="output">Destination bitmap; must hold at least <paramref name="out_h" /> rows of <paramref name="out_stride" /> bytes.</param>
-		/// <param name="out_w">Width of the destination bitmap, in pixels.</param>
-		/// <param name="out_h">Height of the destination bitmap, in pixels.</param>
-		/// <param name="out_stride">Distance between rows of the destination bitmap, in bytes.</param>
-		/// <param name="scale_x">Horizontal scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_y" />.</param>
-		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />; 0 uses <paramref name="scale_x" />.</param>
-		/// <param name="glyph">Index of the glyph to rasterize.</param>
-		public void MakeGlyphBitmap(byte[] output, int out_w, int out_h, int out_stride,
-			float scale_x, float scale_y, int glyph)
-		{
-			MakeGlyphBitmap(output, 0, out_w, out_h, out_stride, scale_x, scale_y, glyph);
 		}
 
 		/// <summary>Rasterizes a glyph into a caller-supplied bitmap, starting at the given byte offset.</summary>
@@ -276,8 +265,9 @@ namespace StbTrueTypeNext
 			MakeGlyphBitmapSubpixel(output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f, 0.0f, glyph);
 		}
 
-		/// <summary>Rasterizes a glyph into a caller-supplied bitmap, with subpixel shifts.</summary>
-		/// <param name="output">Destination bitmap; must hold at least <paramref name="out_h" /> rows of <paramref name="out_stride" /> bytes.</param>
+		/// <summary>Rasterizes a glyph into a caller-supplied bitmap at the given byte offset, with subpixel shifts.</summary>
+		/// <param name="output">Destination bitmap; must hold at least <paramref name="out_h" /> rows of <paramref name="out_stride" /> bytes from <paramref name="offset" />.</param>
+		/// <param name="offset">Byte offset in <paramref name="output" /> at which the bitmap starts.</param>
 		/// <param name="out_w">Width of the destination bitmap, in pixels.</param>
 		/// <param name="out_h">Height of the destination bitmap, in pixels.</param>
 		/// <param name="out_stride">Distance between rows of the destination bitmap, in bytes.</param>
@@ -286,10 +276,10 @@ namespace StbTrueTypeNext
 		/// <param name="shift_x">Horizontal subpixel shift, in pixels, applied before rasterizing.</param>
 		/// <param name="shift_y">Vertical subpixel shift, in pixels, applied before rasterizing.</param>
 		/// <param name="glyph">Index of the glyph to rasterize.</param>
-		public void MakeGlyphBitmapSubpixel(byte[] output, int out_w, int out_h,
+		public void MakeGlyphBitmapSubpixel(byte[] output, int offset, int out_w, int out_h,
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int glyph)
 		{
-			MakeGlyphBitmapSubpixel(new FakePtr<byte>(output), out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, glyph);
+			MakeGlyphBitmapSubpixel(new FakePtr<byte>(output, offset), out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, glyph);
 		}
 
 		internal void MakeGlyphBitmapSubpixel(FakePtr<byte> output, int out_w, int out_h,
@@ -328,6 +318,40 @@ namespace StbTrueTypeNext
 		/// <param name="sub_y">Receives the vertical subpixel offset introduced by the prefilter.</param>
 		/// <param name="glyph">Index of the glyph to rasterize.</param>
 		public void MakeGlyphBitmapSubpixelPrefilter(byte[] output, int out_w, int out_h, int out_stride,
+			float scale_x, float scale_y, float shift_x, float shift_y, int prefilter_x, int prefilter_y,
+			out float sub_x, out float sub_y, int glyph)
+		{
+			MakeGlyphBitmapSubpixelPrefilter(output, 0, out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y,
+				prefilter_x, prefilter_y, out sub_x, out sub_y, glyph);
+		}
+
+		/// <summary>
+		/// Rasterizes a glyph with horizontal and vertical oversampling, then downscales it into the
+		/// caller-supplied bitmap at the given byte offset.
+		/// </summary>
+		/// <param name="output">Destination bitmap; must hold at least <paramref name="out_h" /> rows of <paramref name="out_stride" /> bytes from <paramref name="offset" />.</param>
+		/// <param name="offset">Byte offset in <paramref name="output" /> at which the bitmap starts.</param>
+		/// <param name="out_w">Width of the destination bitmap, in pixels.</param>
+		/// <param name="out_h">Height of the destination bitmap, in pixels.</param>
+		/// <param name="out_stride">Distance between rows of the destination bitmap, in bytes.</param>
+		/// <param name="scale_x">Horizontal scale, as returned by <see cref="ScaleForPixelHeight" />.</param>
+		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />.</param>
+		/// <param name="shift_x">Horizontal subpixel shift, in pixels, applied before rasterizing.</param>
+		/// <param name="shift_y">Vertical subpixel shift, in pixels, applied before rasterizing.</param>
+		/// <param name="prefilter_x">Horizontal oversampling factor used before downscaling.</param>
+		/// <param name="prefilter_y">Vertical oversampling factor used before downscaling.</param>
+		/// <param name="sub_x">Receives the horizontal subpixel offset introduced by the prefilter.</param>
+		/// <param name="sub_y">Receives the vertical subpixel offset introduced by the prefilter.</param>
+		/// <param name="glyph">Index of the glyph to rasterize.</param>
+		public void MakeGlyphBitmapSubpixelPrefilter(byte[] output, int offset, int out_w, int out_h, int out_stride,
+			float scale_x, float scale_y, float shift_x, float shift_y, int prefilter_x, int prefilter_y,
+			out float sub_x, out float sub_y, int glyph)
+		{
+			MakeGlyphBitmapSubpixelPrefilter(new FakePtr<byte>(output, offset), out_w, out_h, out_stride, scale_x,
+				scale_y, shift_x, shift_y, prefilter_x, prefilter_y, out sub_x, out sub_y, glyph);
+		}
+
+		internal void MakeGlyphBitmapSubpixelPrefilter(FakePtr<byte> output, int out_w, int out_h, int out_stride,
 			float scale_x, float scale_y, float shift_x, float shift_y, int prefilter_x, int prefilter_y,
 			out float sub_x, out float sub_y, int glyph)
 		{

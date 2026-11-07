@@ -108,7 +108,7 @@ namespace StbTrueTypeNext.Tests
 				Assert.NotEqual(0, height);
 				var data = new byte[width * height];
 
-				fontInfo.MakeGlyphBitmap(data, width, height, width, scale, scale, glyphId);
+				fontInfo.MakeGlyphBitmap(data, 0, width, height, width, scale, scale, glyphId);
 			}
 		}
 
