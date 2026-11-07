@@ -66,9 +66,9 @@
 			return 0;
 		}
 
-		private static int CompareUTF8toUTF16BigEndianInternal(FakePtr<byte> s1, int len1, FakePtr<byte> s2, int len2)
+		private static bool CompareUTF8toUTF16BigEndianInternal(FakePtr<byte> s1, int len1, FakePtr<byte> s2, int len2)
 		{
-			return len1 == CompareUTF8toUTF16BigEndianPrefix(s1, len1, s2, len2) ? 1 : 0;
+			return len1 == CompareUTF8toUTF16BigEndianPrefix(s1, len1, s2, len2);
 		}
 
 		private static int CompareUTF8toUTF16BigEndianPrefix(FakePtr<byte> s1, int len1, FakePtr<byte> s2, int len2)
@@ -225,7 +225,7 @@
 								{
 									++matchlen;
 									if (CompareUTF8toUTF16BigEndianInternal(new FakePtr<byte>(name, matchlen),
-										nlen - matchlen, fc + stringOffset + off, slen) != 0)
+										nlen - matchlen, fc + stringOffset + off, slen))
 										return 1;
 								}
 							}
