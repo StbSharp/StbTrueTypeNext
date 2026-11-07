@@ -2,23 +2,23 @@
 {
 	public static class STBFontCollection
 	{
-		public static int stbtt_FindMatchingFont(byte[] font_collection, byte[] name_utf8, int flags)
+		public static int FindMatchingFont(byte[] font_collection, byte[] name_utf8, int flags)
 		{
 			var i = 0;
 			for (i = 0; ; ++i)
 			{
-				var off = stbtt_GetFontOffsetForIndex(font_collection, i);
+				var off = GetFontOffsetForIndex(font_collection, i);
 				if (off < 0)
 					return off;
-				if (stbtt__matches(new FakePtr<byte>(font_collection), (uint)off, name_utf8, flags) != 0)
+				if (Matches(new FakePtr<byte>(font_collection), (uint)off, name_utf8, flags) != 0)
 					return off;
 			}
 		}
 
-		public static int stbtt_GetFontOffsetForIndex(byte[] data, int index)
+		public static int GetFontOffsetForIndex(byte[] data, int index)
 		{
 			var dataPtr = new FakePtr<byte>(data);
-			if (stbtt__isfont(dataPtr) != 0)
+			if (IsFont(dataPtr) != 0)
 				return index == 0 ? 0 : -1;
 			if (dataPtr[0] == "ttcf"[0] && dataPtr[1] == "ttcf"[1] && dataPtr[2] == "ttcf"[2] &&
 				dataPtr[3] == "ttcf"[3])
@@ -33,10 +33,10 @@
 			return -1;
 		}
 
-		public static int stbtt_GetNumberOfFonts(byte[] data)
+		public static int GetNumberOfFonts(byte[] data)
 		{
 			var dataPtr = new FakePtr<byte>(data);
-			if (stbtt__isfont(dataPtr) != 0)
+			if (IsFont(dataPtr) != 0)
 				return 1;
 			if (dataPtr[0] == "ttcf"[0] && dataPtr[1] == "ttcf"[1] && dataPtr[2] == "ttcf"[2] &&
 				dataPtr[3] == "ttcf"[3])
@@ -46,12 +46,12 @@
 			return 0;
 		}
 
-		private static int stbtt_CompareUTF8toUTF16_bigendian_internal(FakePtr<byte> s1, int len1, FakePtr<byte> s2, int len2)
+		private static int CompareUTF8toUTF16BigEndianInternal(FakePtr<byte> s1, int len1, FakePtr<byte> s2, int len2)
 		{
-			return len1 == stbtt__CompareUTF8toUTF16_bigendian_prefix(s1, len1, s2, len2) ? 1 : 0;
+			return len1 == CompareUTF8toUTF16BigEndianPrefix(s1, len1, s2, len2) ? 1 : 0;
 		}
 
-		private static int stbtt__CompareUTF8toUTF16_bigendian_prefix(FakePtr<byte> s1, int len1, FakePtr<byte> s2, int len2)
+		private static int CompareUTF8toUTF16BigEndianPrefix(FakePtr<byte> s1, int len1, FakePtr<byte> s2, int len2)
 		{
 			var i = 0;
 			while (len2 != 0)
@@ -114,7 +114,7 @@
 			return i;
 		}
 
-		private static int stbtt__isfont(FakePtr<byte> font)
+		private static int IsFont(FakePtr<byte> font)
 		{
 			if (font[0] == 49 && font[1] == 0 && font[2] == 0 && font[3] == 0)
 				return 1;
@@ -129,12 +129,12 @@
 			return 0;
 		}
 
-		private static int stbtt__matches(FakePtr<byte> fc, uint offset, byte[] name, int flags)
+		private static int Matches(FakePtr<byte> fc, uint offset, byte[] name, int flags)
 		{
 			var nlen = name.Length;
 			uint nm = 0;
 			uint hd = 0;
-			if (stbtt__isfont(fc + offset) == 0)
+			if (IsFont(fc + offset) == 0)
 				return 0;
 			if (flags != 0)
 			{
@@ -148,27 +148,27 @@
 				return 0;
 			if (flags != 0)
 			{
-				if (stbtt__matchpair(fc, nm, name, nlen, 16, -1) != 0)
+				if (MatchPair(fc, nm, name, nlen, 16, -1) != 0)
 					return 1;
-				if (stbtt__matchpair(fc, nm, name, nlen, 1, -1) != 0)
+				if (MatchPair(fc, nm, name, nlen, 1, -1) != 0)
 					return 1;
-				if (stbtt__matchpair(fc, nm, name, nlen, 3, -1) != 0)
+				if (MatchPair(fc, nm, name, nlen, 3, -1) != 0)
 					return 1;
 			}
 			else
 			{
-				if (stbtt__matchpair(fc, nm, name, nlen, 16, 17) != 0)
+				if (MatchPair(fc, nm, name, nlen, 16, 17) != 0)
 					return 1;
-				if (stbtt__matchpair(fc, nm, name, nlen, 1, 2) != 0)
+				if (MatchPair(fc, nm, name, nlen, 1, 2) != 0)
 					return 1;
-				if (stbtt__matchpair(fc, nm, name, nlen, 3, -1) != 0)
+				if (MatchPair(fc, nm, name, nlen, 3, -1) != 0)
 					return 1;
 			}
 
 			return 0;
 		}
 
-		private static int stbtt__matchpair(FakePtr<byte> fc, uint nm, byte[] name, int nlen, int target_id, int next_id)
+		private static int MatchPair(FakePtr<byte> fc, uint nm, byte[] name, int nlen, int target_id, int next_id)
 		{
 			var i = 0;
 			int count = Utility.ttUSHORT(fc + nm + 2);
@@ -187,7 +187,7 @@
 						int slen = Utility.ttUSHORT(fc + loc + 8);
 						int off = Utility.ttUSHORT(fc + loc + 10);
 						var matchlen =
-							stbtt__CompareUTF8toUTF16_bigendian_prefix(new FakePtr<byte>(name), nlen, fc + stringOffset + off, slen);
+							CompareUTF8toUTF16BigEndianPrefix(new FakePtr<byte>(name), nlen, fc + stringOffset + off, slen);
 						if (matchlen >= 0)
 						{
 							if (i + 1 < count && Utility.ttUSHORT(fc + loc + 12 + 6) == next_id &&
@@ -204,7 +204,7 @@
 								else if (matchlen < nlen && name[matchlen] == 32)
 								{
 									++matchlen;
-									if (stbtt_CompareUTF8toUTF16_bigendian_internal(new FakePtr<byte>(name, matchlen),
+									if (CompareUTF8toUTF16BigEndianInternal(new FakePtr<byte>(name, matchlen),
 										nlen - matchlen, fc + stringOffset + off, slen) != 0)
 										return 1;
 								}

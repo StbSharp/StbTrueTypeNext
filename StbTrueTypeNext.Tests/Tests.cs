@@ -62,11 +62,11 @@ namespace StbTrueTypeNext.Tests
 			FontsList fonts;
 			int numberOfFonts;
 
-			numberOfFonts = STBFontCollection.stbtt_GetNumberOfFonts(ttcContent);
+			numberOfFonts = STBFontCollection.GetNumberOfFonts(ttcContent);
 			fonts = new FontsList(numberOfFonts);
 			for (int i = 0; i < numberOfFonts; i++)
 			{
-				int offset = STBFontCollection.stbtt_GetFontOffsetForIndex(ttcContent, i);
+				int offset = STBFontCollection.GetFontOffsetForIndex(ttcContent, i);
 				fonts.Add(new STBFont(ttcContent, offset));
 			}
 
