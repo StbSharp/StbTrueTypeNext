@@ -5,6 +5,7 @@
 
 StbTrueTypeNext is a safe fork of [StbTrueTypeSharp](https://github.com/StbSharp/StbTrueTypeSharp), the C# port of
 Sean Barrett's [stb_truetype.h](https://github.com/nothings/stb).
+
 In other words, StbTrueTypeNext is a pure managed C# font rasterizer for TrueType and CFF/OpenType fonts.
 
 ## What the library does
