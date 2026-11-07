@@ -2,12 +2,12 @@
 {
 	partial class STBFont
 	{
-		public void stbtt_GetCodepointHMetrics(int codepoint, out int advanceWidth, out int leftSideBearing)
+		public void GetCodepointHMetrics(int codepoint, out int advanceWidth, out int leftSideBearing)
 		{
-			stbtt_GetGlyphHMetrics(FindGlyphIndex(codepoint), out advanceWidth, out leftSideBearing);
+			GetGlyphHMetrics(FindGlyphIndex(codepoint), out advanceWidth, out leftSideBearing);
 		}
 
-		public void stbtt_GetFontBoundingBox(out int x0, out int y0, out int x1, out int y1)
+		public void GetFontBoundingBox(out int x0, out int y0, out int x1, out int y1)
 		{
 			var dataPtr = new FakePtr<byte>(_data);
 			x0 = Utility.ttSHORT(dataPtr + _head + 36);
@@ -16,7 +16,7 @@
 			y1 = Utility.ttSHORT(dataPtr + _head + 42);
 		}
 
-		public void stbtt_GetFontVMetrics(out int ascent, out int descent, out int lineGap)
+		public void GetFontVMetrics(out int ascent, out int descent, out int lineGap)
 		{
 			var dataPtr = new FakePtr<byte>(_data);
 
@@ -25,7 +25,7 @@
 			lineGap = Utility.ttSHORT(dataPtr + _hhea + 8);
 		}
 
-		public int stbtt_GetFontVMetricsOS2(out int typoAscent, out int typoDescent, out int typoLineGap)
+		public int GetFontVMetricsOS2(out int typoAscent, out int typoDescent, out int typoLineGap)
 		{
 			typoAscent = typoDescent = typoLineGap = 0;
 			var dataPtr = new FakePtr<byte>(_data);
@@ -40,7 +40,7 @@
 			return 1;
 		}
 
-		public void stbtt_GetGlyphHMetrics(int glyph_index, out int advanceWidth, out int leftSideBearing)
+		public void GetGlyphHMetrics(int glyph_index, out int advanceWidth, out int leftSideBearing)
 		{
 			var dataPtr = new FakePtr<byte>(_data);
 			var numOfLongHorMetrics = Utility.ttUSHORT(dataPtr + _hhea + 34);
@@ -56,14 +56,14 @@
 			}
 		}
 
-		public void stbtt_GetScaledFontVMetrics(float size, out float ascent, out float descent, out float lineGap)
+		public void GetScaledFontVMetrics(float size, out float ascent, out float descent, out float lineGap)
 		{
 			var i_ascent = 0;
 			var i_descent = 0;
 			var i_lineGap = 0;
 			float scale = 0;
 			scale = size > 0 ? ScaleForPixelHeight(size) : ScaleForMappingEmToPixels(-size);
-			stbtt_GetFontVMetrics(out i_ascent, out i_descent, out i_lineGap);
+			GetFontVMetrics(out i_ascent, out i_descent, out i_lineGap);
 
 			ascent = i_ascent * scale;
 			descent = i_descent * scale;

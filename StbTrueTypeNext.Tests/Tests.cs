@@ -76,7 +76,7 @@ namespace StbTrueTypeNext.Tests
 		private void TestRasterize(STBFont fontInfo, string text, float size)
 		{
 			int iascent, idescent, ilineGap;
-			fontInfo.stbtt_GetFontVMetrics(out iascent, out idescent, out ilineGap);
+			fontInfo.GetFontVMetrics(out iascent, out idescent, out ilineGap);
 
 			var scale = fontInfo.ScaleForPixelHeight(32.0f);
 			var ascent = iascent * scale;
@@ -100,7 +100,7 @@ namespace StbTrueTypeNext.Tests
 				Assert.NotEqual(0, glyphId);
 
 				int advanceWidth, leftSideBearing;
-				fontInfo.stbtt_GetGlyphHMetrics(glyphId, out advanceWidth, out leftSideBearing);
+				fontInfo.GetGlyphHMetrics(glyphId, out advanceWidth, out leftSideBearing);
 
 				int x0, y0, x1, y1;
 				fontInfo.GetGlyphBitmapBox(glyphId, scale, scale, out x0, out y0, out x1, out y1);

@@ -180,7 +180,7 @@
 						r.Y += pad;
 						r.W -= pad;
 						r.H -= pad;
-						info.stbtt_GetGlyphHMetrics(glyph, out advance, out lsb);
+						info.GetGlyphHMetrics(glyph, out advance, out lsb);
 						info.GetGlyphBitmapBox(glyph, scale * _h_oversample, scale * _v_oversample,
 							out x0, out y0, out x1, out y1);
 						info.MakeGlyphBitmapSubpixel(new FakePtr<byte>(_pixels, r.X + r.Y * _stride_in_bytes),

@@ -43,7 +43,7 @@ public class FontBaker
 		var scaleFactor = font.ScaleForPixelHeight(fontPixelHeight);
 
 		int ascent, descent, lineGap;
-		font.stbtt_GetFontVMetrics(out ascent, out descent, out lineGap);
+		font.GetFontVMetrics(out ascent, out descent, out lineGap);
 
 		foreach (var range in characterRanges)
 		{

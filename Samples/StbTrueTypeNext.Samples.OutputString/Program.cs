@@ -24,7 +24,7 @@ class Program
 		var info = new STBFont(bytes);
 
 		int ascent, descent, lineGap;
-		info.stbtt_GetFontVMetrics(out ascent, out descent, out lineGap);
+		info.GetFontVMetrics(out ascent, out descent, out lineGap);
 		var lineHeight = ascent - descent + lineGap;
 
 		var scale = info.ScaleForPixelHeight(fontSize);
@@ -45,7 +45,7 @@ class Program
 			}
 
 			int advanceTemp, lsbTemp;
-			info.stbtt_GetGlyphHMetrics(glyphId, out advanceTemp, out lsbTemp);
+			info.GetGlyphHMetrics(glyphId, out advanceTemp, out lsbTemp);
 			var advance = (int)(advanceTemp * scale + 0.5f);
 
 			int x0, y0, x1, y1;
