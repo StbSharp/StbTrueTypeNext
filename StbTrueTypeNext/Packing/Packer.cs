@@ -96,7 +96,7 @@
 			for (i = 0; i < num_ranges; ++i)
 			{
 				var fh = ranges[i].FontSize;
-				var scale = fh > 0 ? info.stbtt_ScaleForPixelHeight(fh) : info.stbtt_ScaleForMappingEmToPixels(-fh);
+				var scale = fh > 0 ? info.ScaleForPixelHeight(fh) : info.ScaleForMappingEmToPixels(-fh);
 				ranges[i].HOversample = (byte)_h_oversample;
 				ranges[i].VOversample = (byte)_v_oversample;
 				for (j = 0; j < ranges[i].NumChars; ++j)
@@ -108,7 +108,7 @@
 					var codepoint = ranges[i].ArrayOfUnicodeCodepoints == null
 						? ranges[i].FirstUnicodeCodepointInRange + j
 						: ranges[i].ArrayOfUnicodeCodepoints[j];
-					var glyph = info.stbtt_FindGlyphIndex(codepoint);
+					var glyph = info.FindGlyphIndex(codepoint);
 					if (glyph == 0 && (SkipMissing || missing_glyph_added != 0))
 					{
 						rects[k].W = rects[k].H = 0;
@@ -149,7 +149,7 @@
 			for (i = 0; i < num_ranges; ++i)
 			{
 				var fh = ranges[i].FontSize;
-				var scale = fh > 0 ? info.stbtt_ScaleForPixelHeight(fh) : info.stbtt_ScaleForMappingEmToPixels(-fh);
+				var scale = fh > 0 ? info.ScaleForPixelHeight(fh) : info.ScaleForMappingEmToPixels(-fh);
 				float recip_h = 0;
 				float recip_v = 0;
 				float sub_x = 0;
@@ -174,7 +174,7 @@
 						var codepoint = ranges[i].ArrayOfUnicodeCodepoints == null
 							? ranges[i].FirstUnicodeCodepointInRange + j
 							: ranges[i].ArrayOfUnicodeCodepoints[j];
-						var glyph = info.stbtt_FindGlyphIndex(codepoint);
+						var glyph = info.FindGlyphIndex(codepoint);
 						var pad = _padding;
 						r.X += pad;
 						r.Y += pad;

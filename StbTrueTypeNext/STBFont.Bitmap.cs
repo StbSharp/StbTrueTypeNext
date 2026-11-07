@@ -20,7 +20,7 @@ namespace StbTrueTypeNext
 		public void GetCodepointBitmapBoxSubpixel(int codepoint, float scale_x,
 			float scale_y, float shift_x, float shift_y, out int ix0, out int iy0, out int ix1, out int iy1)
 		{
-			GetGlyphBitmapBoxSubpixel(stbtt_FindGlyphIndex(codepoint), scale_x, scale_y, shift_x,
+			GetGlyphBitmapBoxSubpixel(FindGlyphIndex(codepoint), scale_x, scale_y, shift_x,
 				shift_y, out ix0, out iy0, out ix1, out iy1);
 		}
 
@@ -28,7 +28,7 @@ namespace StbTrueTypeNext
 			float shift_x, float shift_y, int codepoint, out int width, out int height, out int xoff, out int yoff)
 		{
 			return GetGlyphBitmapSubpixel(scale_x, scale_y, shift_x, shift_y,
-				stbtt_FindGlyphIndex(codepoint), out width, out height, out xoff, out yoff);
+				FindGlyphIndex(codepoint), out width, out height, out xoff, out yoff);
 		}
 
 		public byte[] GetGlyphBitmap(float scale_x, float scale_y, int glyph,
@@ -116,7 +116,7 @@ namespace StbTrueTypeNext
 			int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int codepoint)
 		{
 			MakeGlyphBitmapSubpixel(new FakePtr<byte>(output), out_w, out_h, out_stride,
-				scale_x, scale_y, shift_x, shift_y, stbtt_FindGlyphIndex(codepoint));
+				scale_x, scale_y, shift_x, shift_y, FindGlyphIndex(codepoint));
 		}
 
 		public void MakeCodepointBitmapSubpixelPrefilter(byte[] output, int out_w,
@@ -124,7 +124,7 @@ namespace StbTrueTypeNext
 			int oversample_y, out float sub_x, out float sub_y, int codepoint)
 		{
 			MakeGlyphBitmapSubpixelPrefilter(output, out_w, out_h, out_stride, scale_x, scale_y, shift_x,
-				shift_y, oversample_x, oversample_y, out sub_x, out sub_y, stbtt_FindGlyphIndex(codepoint));
+				shift_y, oversample_x, oversample_y, out sub_x, out sub_y, FindGlyphIndex(codepoint));
 		}
 
 		public void MakeGlyphBitmap(byte[] output, int out_w, int out_h, int out_stride,
@@ -185,7 +185,7 @@ namespace StbTrueTypeNext
 
 		public int GetCodepointShape(int unicode_codepoint, out STBVertex[] vertices)
 		{
-			return GetGlyphShape(stbtt_FindGlyphIndex(unicode_codepoint), out vertices);
+			return GetGlyphShape(FindGlyphIndex(unicode_codepoint), out vertices);
 		}
 
 		public int GetGlyphShape(int glyph_index, out STBVertex[] pvertices)
@@ -200,7 +200,7 @@ namespace StbTrueTypeNext
 
 		public int GetCodepointBox(int codepoint, out int x0, out int y0, out int x1, out int y1)
 		{
-			return GetGlyphBox(stbtt_FindGlyphIndex(codepoint), out x0, out y0, out x1, out y1);
+			return GetGlyphBox(FindGlyphIndex(codepoint), out x0, out y0, out x1, out y1);
 		}
 
 		public int GetGlyphBox(int glyph_index, out int x0, out int y0, out int x1, out int y1)

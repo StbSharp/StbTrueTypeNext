@@ -27,7 +27,7 @@ class Program
 		info.stbtt_GetFontVMetrics(out ascent, out descent, out lineGap);
 		var lineHeight = ascent - descent + lineGap;
 
-		var scale = info.stbtt_ScaleForPixelHeight(fontSize);
+		var scale = info.ScaleForPixelHeight(fontSize);
 
 		ascent = (int)(ascent * scale + 0.5f);
 		descent = (int)(descent * scale - 0.5f);
@@ -38,7 +38,7 @@ class Program
 		for (var i = 0; i < s.Length; ++i)
 		{
 			var c = s[i];
-			var glyphId = info.stbtt_FindGlyphIndex(c);
+			var glyphId = info.FindGlyphIndex(c);
 			if (glyphId == 0)
 			{
 				continue;

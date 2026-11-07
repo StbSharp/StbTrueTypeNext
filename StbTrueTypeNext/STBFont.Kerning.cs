@@ -6,7 +6,7 @@
 		{
 			if (_kern == 0 && _gpos == 0)
 				return 0;
-			return stbtt_GetGlyphKernAdvance(stbtt_FindGlyphIndex(ch1), stbtt_FindGlyphIndex(ch2));
+			return stbtt_GetGlyphKernAdvance(FindGlyphIndex(ch1), FindGlyphIndex(ch2));
 		}
 
 		public int stbtt_GetGlyphKernAdvance(int g1, int g2)

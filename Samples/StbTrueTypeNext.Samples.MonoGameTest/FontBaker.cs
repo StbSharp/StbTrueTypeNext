@@ -40,7 +40,7 @@ public class FontBaker
 			throw new ArgumentException("characterRanges must have a least one value.");
 
 		var font = new STBFont(ttf);
-		var scaleFactor = font.stbtt_ScaleForPixelHeight(fontPixelHeight);
+		var scaleFactor = font.ScaleForPixelHeight(fontPixelHeight);
 
 		int ascent, descent, lineGap;
 		font.stbtt_GetFontVMetrics(out ascent, out descent, out lineGap);

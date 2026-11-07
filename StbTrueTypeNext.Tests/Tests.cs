@@ -78,7 +78,7 @@ namespace StbTrueTypeNext.Tests
 			int iascent, idescent, ilineGap;
 			fontInfo.stbtt_GetFontVMetrics(out iascent, out idescent, out ilineGap);
 
-			var scale = fontInfo.stbtt_ScaleForPixelHeight(32.0f);
+			var scale = fontInfo.ScaleForPixelHeight(32.0f);
 			var ascent = iascent * scale;
 			var descent = idescent * scale;
 			var lineGap = ilineGap * scale;
@@ -96,7 +96,7 @@ namespace StbTrueTypeNext.Tests
 					continue;
 				}
 
-				var glyphId = fontInfo.stbtt_FindGlyphIndex(c);
+				var glyphId = fontInfo.FindGlyphIndex(c);
 				Assert.NotEqual(0, glyphId);
 
 				int advanceWidth, leftSideBearing;

@@ -4,7 +4,7 @@
 	{
 		public void stbtt_GetCodepointHMetrics(int codepoint, out int advanceWidth, out int leftSideBearing)
 		{
-			stbtt_GetGlyphHMetrics(stbtt_FindGlyphIndex(codepoint), out advanceWidth, out leftSideBearing);
+			stbtt_GetGlyphHMetrics(FindGlyphIndex(codepoint), out advanceWidth, out leftSideBearing);
 		}
 
 		public void stbtt_GetFontBoundingBox(out int x0, out int y0, out int x1, out int y1)
@@ -62,7 +62,7 @@
 			var i_descent = 0;
 			var i_lineGap = 0;
 			float scale = 0;
-			scale = size > 0 ? stbtt_ScaleForPixelHeight(size) : stbtt_ScaleForMappingEmToPixels(-size);
+			scale = size > 0 ? ScaleForPixelHeight(size) : ScaleForMappingEmToPixels(-size);
 			stbtt_GetFontVMetrics(out i_ascent, out i_descent, out i_lineGap);
 
 			ascent = i_ascent * scale;

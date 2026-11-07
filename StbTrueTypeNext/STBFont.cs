@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Text;
 
 namespace StbTrueTypeNext
@@ -170,7 +169,7 @@ namespace StbTrueTypeNext
 			_indexToLocFormat = Utility.ttUSHORT(dataPtr + _head + 50);
 		}
 
-		public int stbtt_FindGlyphIndex(int unicode_codepoint)
+		public int FindGlyphIndex(int unicode_codepoint)
 		{
 			var data = new FakePtr<byte>(_data);
 			var index_map = (uint)_indexMap;
@@ -271,7 +270,7 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		public string stbtt_GetFontNameString(int platformID, int encodingID, int languageID, int nameID)
+		public string GetFontNameString(int platformID, int encodingID, int languageID, int nameID)
 		{
 			var i = 0;
 			var count = 0;
@@ -308,21 +307,21 @@ namespace StbTrueTypeNext
 			return null;
 		}
 
-		public float stbtt_ScaleForMappingEmToPixels(float pixels)
+		public float ScaleForMappingEmToPixels(float pixels)
 		{
 			var dataPtr = new FakePtr<byte>(_data);
 			int unitsPerEm = Utility.ttUSHORT(dataPtr + _head + 18);
 			return pixels / unitsPerEm;
 		}
 
-		public float stbtt_ScaleForPixelHeight(float height)
+		public float ScaleForPixelHeight(float height)
 		{
 			var dataPtr = new FakePtr<byte>(_data);
 			var fheight = Utility.ttSHORT(dataPtr + _hhea + 4) - Utility.ttSHORT(dataPtr + _hhea + 6);
 			return height / fheight;
 		}
 
-		public int stbtt_BakeFontBitmap(float pixel_height, byte[] pixels, int pw, int ph, int first_char, int num_chars, STBBakedChar[] chardata)
+		public int BakeFontBitmap(float pixel_height, byte[] pixels, int pw, int ph, int first_char, int num_chars, STBBakedChar[] chardata)
 		{
 			float scale = 0;
 			var x = 0;
@@ -333,7 +332,7 @@ namespace StbTrueTypeNext
 			pixels.Set((byte)0, pw * ph);
 			x = y = 1;
 			bottom_y = 1;
-			scale = stbtt_ScaleForPixelHeight(pixel_height);
+			scale = ScaleForPixelHeight(pixel_height);
 			for (i = 0; i < num_chars; ++i)
 			{
 				var advance = 0;
@@ -344,7 +343,7 @@ namespace StbTrueTypeNext
 				var y1 = 0;
 				var gw = 0;
 				var gh = 0;
-				var g = stbtt_FindGlyphIndex(first_char + i);
+				var g = FindGlyphIndex(first_char + i);
 				stbtt_GetGlyphHMetrics(g, out advance, out lsb);
 				GetGlyphBitmapBox(g, scale, scale, out x0, out y0, out x1, out y1);
 				gw = x1 - x0;

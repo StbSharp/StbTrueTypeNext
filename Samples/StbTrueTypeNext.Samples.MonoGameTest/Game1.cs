@@ -12,8 +12,8 @@ namespace StbTrueTypeNext.Samples;
 /// </summary>
 public class Game1 : Game
 {
-	private const int FontBitmapWidth = 2048;
-	private const int FontBitmapHeight = 2048;
+	private const int FontBitmapWidth = 8192;
+	private const int FontBitmapHeight = 8192;
 
 	private SpriteFont _ttfFont;
 	private SpriteFont _otfFont;
