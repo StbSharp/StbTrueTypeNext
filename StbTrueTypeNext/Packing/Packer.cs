@@ -1,5 +1,9 @@
 ﻿namespace StbTrueTypeNext.Packing
 {
+	/// <summary>
+	/// Packs glyphs from a font into a single-channel (8-bit) font atlas bitmap and reports
+	/// each glyph's atlas rectangle and drawing metrics as <see cref="PackedChar" /> data.
+	/// </summary>
 	public class Packer
 	{
 		private uint _h_oversample;
@@ -9,11 +13,27 @@
 		private byte[] _pixels;
 		private int _stride_in_bytes;
 
+		/// <summary>
+		/// Gets or sets a value indicating whether glyphs missing from the font are skipped
+		/// instead of being replaced with the font's missing-glyph glyph.
+		/// </summary>
 		public bool SkipMissing { get; set; }
 
+		/// <summary>Gets the width of the atlas bitmap, in pixels.</summary>
 		public int Width { get; private set; }
+
+		/// <summary>Gets the height of the atlas bitmap, in pixels.</summary>
 		public int Height { get; private set; }
 
+		/// <summary>
+		/// Starts a packing session on the given atlas bitmap, clearing it and initializing the
+		/// packer's state. Call <see cref="End" /> when packing is complete.
+		/// </summary>
+		/// <param name="pixels">Destination atlas bitmap; must hold at least <paramref name="width" /> * <paramref name="height" /> bytes.</param>
+		/// <param name="width">Width of the atlas bitmap, in pixels.</param>
+		/// <param name="height">Height of the atlas bitmap, in pixels.</param>
+		/// <param name="stride_in_bytes">Distance between rows of the atlas, in bytes; pass 0 to use <paramref name="width" />.</param>
+		/// <param name="padding">Padding, in pixels, left around each packed glyph.</param>
 		public void Begin(byte[] pixels, int width, int height, int stride_in_bytes, int padding)
 		{
 			var context = new RectPackContext();
@@ -33,11 +53,22 @@
 			pixels.Set((byte)0, width * height);
 		}
 
+		/// <summary>Finishes the packing session started by <see cref="Begin" />.</summary>
 		public void End()
 		{
 		}
 
-		public int PackFontRange(STBFont font, float font_size,
+		/// <summary>
+		/// Packs a contiguous range of Unicode codepoints at a single font size into the atlas and
+		/// fills the supplied packed character data for the range.
+		/// </summary>
+		/// <param name="font">Font whose glyphs are packed.</param>
+		/// <param name="font_size">Font size in pixels; when negative, its absolute value is treated as a mapping from em to pixels.</param>
+		/// <param name="first_unicode_codepoint_in_range">Unicode codepoint of the first character in the range.</param>
+		/// <param name="num_chars_in_range">Number of consecutive codepoints in the range.</param>
+		/// <param name="chardata_for_range">Array that receives the packed quad data, one entry per character.</param>
+		/// <returns>True if every glyph was packed; false if any glyph could not be packed.</returns>
+		public bool PackFontRange(STBFont font, float font_size,
 			int first_unicode_codepoint_in_range, int num_chars_in_range, PackedChar[] chardata_for_range)
 		{
 			var range = new PackRange
@@ -54,7 +85,14 @@
 			return PackFontRanges(font, ranges);
 		}
 
-		public int PackFontRanges(STBFont font, PackRange[] ranges)
+		/// <summary>
+		/// Packs one or more character ranges into the atlas and fills each range's packed
+		/// character data.
+		/// </summary>
+		/// <param name="font">Font whose glyphs are packed.</param>
+		/// <param name="ranges">Ranges to pack; each range's character data array receives its results.</param>
+		/// <returns>True if every glyph was packed; false if any glyph could not be packed.</returns>
+		public bool PackFontRanges(STBFont font, PackRange[] ranges)
 		{
 			var i = 0;
 			var j = 0;
@@ -134,13 +172,13 @@
 
 		private void PackFontRangesPackRects(PackRect[] rects, int num_rects) => _pack_info.PackRects(rects, num_rects);
 
-		private int PackFontRangesRenderIntoRects(STBFont info, PackRange[] ranges, PackRect[] rects)
+		private bool PackFontRangesRenderIntoRects(STBFont info, PackRange[] ranges, PackRect[] rects)
 		{
 			var i = 0;
 			var j = 0;
 			var k = 0;
 			var missing_glyph = -1;
-			var return_value = 1;
+			var return_value = true;
 			var old_h_over = (int)_h_oversample;
 			var old_v_over = (int)_v_oversample;
 			k = 0;
@@ -209,7 +247,7 @@
 					}
 					else if (SkipMissing)
 					{
-						return_value = 0;
+						return_value = false;
 					}
 					else if (r.WasPacked != 0 && r.W == 0 && r.H == 0 && missing_glyph >= 0)
 					{
@@ -217,7 +255,7 @@
 					}
 					else
 					{
-						return_value = 0;
+						return_value = false;
 					}
 
 					rects[k] = r;
@@ -231,6 +269,9 @@
 			return return_value;
 		}
 
+		/// <summary>Sets the horizontal and vertical oversampling used when rasterizing glyphs.</summary>
+		/// <param name="h_oversample">Horizontal oversampling factor; values greater than 8 are ignored.</param>
+		/// <param name="v_oversample">Vertical oversampling factor; values greater than 8 are ignored.</param>
 		public void PackSetOversampling(uint h_oversample, uint v_oversample)
 		{
 			if (h_oversample <= 8)
