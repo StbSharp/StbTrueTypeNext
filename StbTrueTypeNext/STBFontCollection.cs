@@ -23,7 +23,7 @@
 				var off = GetFontOffsetForIndex(font_collection, i);
 				if (off < 0)
 					return off;
-				if (Matches(new FakePtr<byte>(font_collection), (uint)off, name_utf8, flags) != 0)
+				if (Matches(new FakePtr<byte>(font_collection), (uint)off, name_utf8, flags))
 					return off;
 			}
 		}
@@ -150,43 +150,43 @@
 			return false;
 		}
 
-		private static int Matches(FakePtr<byte> fc, uint offset, byte[] name, int flags)
+		private static bool Matches(FakePtr<byte> fc, uint offset, byte[] name, int flags)
 		{
 			var nlen = name.Length;
 			uint nm = 0;
 			uint hd = 0;
 			if (!IsFont(fc + offset))
-				return 0;
+				return false;
 			if (flags != 0)
 			{
 				hd = Utility.FindTable(fc, offset, "head");
 				if ((Utility.ttUSHORT(fc + hd + 44) & 7) != (flags & 7))
-					return 0;
+					return false;
 			}
 
 			nm = Utility.FindTable(fc, offset, "name");
 			if (nm == 0)
-				return 0;
+				return false;
 			if (flags != 0)
 			{
 				if (MatchPair(fc, nm, name, nlen, 16, -1))
-					return 1;
+					return true;
 				if (MatchPair(fc, nm, name, nlen, 1, -1))
-					return 1;
+					return true;
 				if (MatchPair(fc, nm, name, nlen, 3, -1))
-					return 1;
+					return true;
 			}
 			else
 			{
 				if (MatchPair(fc, nm, name, nlen, 16, 17))
-					return 1;
+					return true;
 				if (MatchPair(fc, nm, name, nlen, 1, 2))
-					return 1;
+					return true;
 				if (MatchPair(fc, nm, name, nlen, 3, -1))
-					return 1;
+					return true;
 			}
 
-			return 0;
+			return false;
 		}
 
 		private static bool MatchPair(FakePtr<byte> fc, uint nm, byte[] name, int nlen, int target_id, int next_id)
