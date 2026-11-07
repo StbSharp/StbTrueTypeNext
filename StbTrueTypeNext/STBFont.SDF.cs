@@ -4,6 +4,17 @@ namespace StbTrueTypeNext
 {
 	partial class STBFont
 	{
+		/// <summary>Renders the signed distance field bitmap of the glyph for a Unicode codepoint.</summary>
+		/// <param name="scale">Scale factor mapping font units to pixels, as returned by <see cref="ScaleForPixelHeight" />; must be non-zero.</param>
+		/// <param name="codepoint">Unicode codepoint of the glyph to render.</param>
+		/// <param name="padding">Padding, in pixels, added around the glyph's bounding box.</param>
+		/// <param name="onedge_value">Value stored where the distance to the outline is zero, typically 128.</param>
+		/// <param name="pixel_dist_scale">Multiplier applied to the signed distance to produce the stored value.</param>
+		/// <param name="width">Receives the bitmap width, in pixels.</param>
+		/// <param name="height">Receives the bitmap height, in pixels.</param>
+		/// <param name="xoff">Receives the horizontal offset of the bitmap from the glyph origin, in pixels.</param>
+		/// <param name="yoff">Receives the vertical offset of the bitmap from the glyph origin, in pixels.</param>
+		/// <returns>The distance field bitmap with one byte per pixel, or null if the glyph has no area or <paramref name="scale" /> is zero.</returns>
 		public byte[] GetCodepointSDF(float scale, int codepoint, int padding,
 			byte onedge_value, float pixel_dist_scale, out int width, out int height, out int xoff, out int yoff)
 		{
@@ -11,6 +22,20 @@ namespace StbTrueTypeNext
 				pixel_dist_scale, out width, out height, out xoff, out yoff);
 		}
 
+		/// <summary>
+		/// Renders a glyph's signed distance field bitmap: each byte is <paramref name="onedge_value" />
+		/// plus the signed distance to the outline times <paramref name="pixel_dist_scale" />, clamped to 0-255.
+		/// </summary>
+		/// <param name="scale">Scale factor mapping font units to pixels, as returned by <see cref="ScaleForPixelHeight" />; must be non-zero.</param>
+		/// <param name="glyph">Index of the glyph to render.</param>
+		/// <param name="padding">Padding, in pixels, added around the glyph's bounding box.</param>
+		/// <param name="onedge_value">Value stored where the distance to the outline is zero, typically 128.</param>
+		/// <param name="pixel_dist_scale">Multiplier applied to the signed distance to produce the stored value.</param>
+		/// <param name="width">Receives the bitmap width, in pixels.</param>
+		/// <param name="height">Receives the bitmap height, in pixels.</param>
+		/// <param name="xoff">Receives the horizontal offset of the bitmap from the glyph origin, in pixels.</param>
+		/// <param name="yoff">Receives the vertical offset of the bitmap from the glyph origin, in pixels.</param>
+		/// <returns>The distance field bitmap with one byte per pixel, or null if the glyph has no area or <paramref name="scale" /> is zero.</returns>
 		public byte[] GetGlyphSDF(float scale, int glyph, int padding, byte onedge_value, float pixel_dist_scale,
 			out int width, out int height, out int xoff, out int yoff)
 		{
