@@ -1,7 +1,20 @@
 ﻿namespace StbTrueTypeNext
 {
+	/// <summary>
+	/// Reads TrueType/OpenType font files and 'ttcf' collections: reports how many fonts they hold,
+	/// resolves a font's offset by index, and searches for a font by name.
+	/// </summary>
 	public static class STBFontCollection
 	{
+		/// <summary>Finds the first font in a file or collection whose name table matches a given name.</summary>
+		/// <param name="font_collection">Raw bytes of a font file or 'ttcf' collection.</param>
+		/// <param name="name_utf8">UTF-8 encoded font name to match against the font's name records.</param>
+		/// <param name="flags">
+		/// Matching flags. When non-zero, the low three bits are compared against the font's 'head' macStyle and
+		/// names are matched regardless of language; when zero, no style check is done and specific full-name and
+		/// version name pairs are required instead.
+		/// </param>
+		/// <returns>The byte offset of the first matching font within <paramref name="font_collection" />, or a negative value if none matches.</returns>
 		public static int FindMatchingFont(byte[] font_collection, byte[] name_utf8, int flags)
 		{
 			var i = 0;
@@ -15,6 +28,10 @@
 			}
 		}
 
+		/// <summary>Gets the byte offset of one font inside a font file or 'ttcf' collection.</summary>
+		/// <param name="data">Raw bytes of a font file or collection.</param>
+		/// <param name="index">Zero-based index of the font; only 0 is valid for a single font file.</param>
+		/// <returns>The offset of the requested font, or -1 if the index is out of range or the data is not a recognized font or collection.</returns>
 		public static int GetFontOffsetForIndex(byte[] data, int index)
 		{
 			var dataPtr = new FakePtr<byte>(data);
@@ -33,6 +50,9 @@
 			return -1;
 		}
 
+		/// <summary>Gets the number of fonts contained in a font file or 'ttcf' collection.</summary>
+		/// <param name="data">Raw bytes of a font file or collection.</param>
+		/// <returns>1 for a single font, the font count for a 'ttcf' collection, or 0 if the data is not recognized.</returns>
 		public static int GetNumberOfFonts(byte[] data)
 		{
 			var dataPtr = new FakePtr<byte>(data);
