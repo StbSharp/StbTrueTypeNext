@@ -98,17 +98,13 @@ namespace StbTrueTypeNext.Tests
 				int advanceWidth, leftSideBearing;
 				fontInfo.GetGlyphHMetrics(glyphId, out advanceWidth, out leftSideBearing);
 
-				int x0, y0, x1, y1;
-				fontInfo.GetGlyphBitmapBox(glyphId, scale, scale, out x0, out y0, out x1, out y1);
+				var box = fontInfo.GetGlyphBitmapBoxSubpixel(glyphId, scale, scale) ?? STBGlyphBitmapBox.Zero;
 
-				var width = x1 - x0;
-				var height = y1 - y0;
+				Assert.NotEqual(0, box.Width);
+				Assert.NotEqual(0, box.Height);
+				var data = new byte[box.Width * box.Height];
 
-				Assert.NotEqual(0, width);
-				Assert.NotEqual(0, height);
-				var data = new byte[width * height];
-
-				fontInfo.MakeGlyphBitmap(data, 0, width, height, width, scale, scale, glyphId);
+				fontInfo.MakeGlyphBitmap(data, 0, box.Width, box.Height, box.Width, scale, scale, glyphId);
 			}
 		}
 

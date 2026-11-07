@@ -48,11 +48,10 @@ class Program
 			info.GetGlyphHMetrics(glyphId, out advanceTemp, out lsbTemp);
 			var advance = (int)(advanceTemp * scale + 0.5f);
 
-			int x0, y0, x1, y1;
-			info.GetGlyphBitmapBox(glyphId, scale, scale, out x0, out y0, out x1, out y1);
+			var box = info.GetGlyphBitmapBoxSubpixel(glyphId, scale, scale) ?? STBGlyphBitmapBox.Zero;
 
-			posX += x0;
-			posY = ascent + y0;
+			posX += box.X0;
+			posY = ascent + box.Y0;
 
 			if (posY < 0)
 			{
@@ -62,8 +61,8 @@ class Program
 			info.MakeGlyphBitmap(
 				buffer,
 				posX + posY * bufferSize,
-				x1 - x0,
-				y1 - y0,
+				box.Width,
+				box.Height,
 				bufferSize,
 				scale,
 				scale,
