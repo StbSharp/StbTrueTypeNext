@@ -13,9 +13,6 @@ namespace StbTrueTypeNext.Tests
 	{
 		private static readonly Assembly _assembly = typeof(Tests).Assembly;
 
-		/// <summary>
-		///     Makes sure Exception is thrown if font file lacks index map
-		/// </summary>
 		[Fact]
 		public void TestNoIndexMap()
 		{

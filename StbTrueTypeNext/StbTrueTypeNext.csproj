@@ -3,6 +3,7 @@
     <TargetFrameworks>netstandard2.0;net471;net8.0</TargetFrameworks>
     <Description>Safe fork of StbTrueTypeSharp</Description>
     <RootNamespace>StbTrueTypeNext</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
