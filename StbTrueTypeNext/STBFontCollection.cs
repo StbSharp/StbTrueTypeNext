@@ -35,7 +35,7 @@
 		public static int GetFontOffsetForIndex(byte[] data, int index)
 		{
 			var dataPtr = new FakePtr<byte>(data);
-			if (IsFont(dataPtr) != 0)
+			if (IsFont(dataPtr))
 				return index == 0 ? 0 : -1;
 			if (dataPtr[0] == "ttcf"[0] && dataPtr[1] == "ttcf"[1] && dataPtr[2] == "ttcf"[2] &&
 				dataPtr[3] == "ttcf"[3])
@@ -56,7 +56,7 @@
 		public static int GetNumberOfFonts(byte[] data)
 		{
 			var dataPtr = new FakePtr<byte>(data);
-			if (IsFont(dataPtr) != 0)
+			if (IsFont(dataPtr))
 				return 1;
 			if (dataPtr[0] == "ttcf"[0] && dataPtr[1] == "ttcf"[1] && dataPtr[2] == "ttcf"[2] &&
 				dataPtr[3] == "ttcf"[3])
@@ -134,19 +134,20 @@
 			return i;
 		}
 
-		private static int IsFont(FakePtr<byte> font)
+		private static bool IsFont(FakePtr<byte> font)
 		{
 			if (font[0] == 49 && font[1] == 0 && font[2] == 0 && font[3] == 0)
-				return 1;
+				return true;
 			if (font[0] == "typ1"[0] && font[1] == "typ1"[1] && font[2] == "typ1"[2] && font[3] == "typ1"[3])
-				return 1;
+				return true;
 			if (font[0] == "OTTO"[0] && font[1] == "OTTO"[1] && font[2] == "OTTO"[2] && font[3] == "OTTO"[3])
-				return 1;
+				return true;
 			if (font[0] == 0 && font[1] == 1 && font[2] == 0 && font[3] == 0)
-				return 1;
+				return true;
 			if (font[0] == "true"[0] && font[1] == "true"[1] && font[2] == "true"[2] && font[3] == "true"[3])
-				return 1;
-			return 0;
+				return true;
+
+			return false;
 		}
 
 		private static int Matches(FakePtr<byte> fc, uint offset, byte[] name, int flags)
@@ -154,7 +155,7 @@
 			var nlen = name.Length;
 			uint nm = 0;
 			uint hd = 0;
-			if (IsFont(fc + offset) == 0)
+			if (!IsFont(fc + offset))
 				return 0;
 			if (flags != 0)
 			{
