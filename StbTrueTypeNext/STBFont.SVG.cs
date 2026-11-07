@@ -4,12 +4,12 @@ namespace StbTrueTypeNext
 {
 	partial class STBFont
 	{
-		public byte[] stbtt_GetCodepointSVG(int unicode_codepoint) => stbtt_GetGlyphSVG(FindGlyphIndex(unicode_codepoint));
+		public byte[] GetCodepointSVG(int unicode_codepoint) => GetGlyphSVG(FindGlyphIndex(unicode_codepoint));
 
-		public byte[] stbtt_GetGlyphSVG(int gl)
+		public byte[] GetGlyphSVG(int gl)
 		{
 			FakePtr<byte> svg;
-			var size = stbtt_GetGlyphSVGInternal(gl, out svg);
+			var size = GetGlyphSVGInternal(gl, out svg);
 			if (size == 0)
 			{
 				return null;
@@ -21,13 +21,13 @@ namespace StbTrueTypeNext
 			return result;
 		}
 
-		private int stbtt_GetGlyphSVGInternal(int gl, out FakePtr<byte> svg)
+		private int GetGlyphSVGInternal(int gl, out FakePtr<byte> svg)
 		{
 			svg = FakePtr<byte>.Null;
 			var data = new FakePtr<byte>(_data);
 			if (_svg == 0)
 				return 0;
-			var svg_doc = stbtt_FindSVGDoc(gl);
+			var svg_doc = FindSVGDoc(gl);
 			if (!svg_doc.IsNull)
 			{
 				svg = data + _svg + Utility.ttULONG(svg_doc + 4);
@@ -37,11 +37,11 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
-		private FakePtr<byte> stbtt_FindSVGDoc(int gl)
+		private FakePtr<byte> FindSVGDoc(int gl)
 		{
 			var i = 0;
 			var data = new FakePtr<byte>(_data);
-			var svg_doc_list = data + stbtt__get_svg();
+			var svg_doc_list = data + GetSvgAddress();
 			int numEntries = Utility.ttUSHORT(svg_doc_list);
 			var svg_docs = svg_doc_list + 2;
 			for (i = 0; i < numEntries; i++)
@@ -54,7 +54,7 @@ namespace StbTrueTypeNext
 			return FakePtr<byte>.Null;
 		}
 
-		private int stbtt__get_svg()
+		private int GetSvgAddress()
 		{
 			uint t = 0;
 
