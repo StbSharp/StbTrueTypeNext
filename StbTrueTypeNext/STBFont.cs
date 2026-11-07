@@ -3,6 +3,14 @@ using System.Text;
 
 namespace StbTrueTypeNext
 {
+	/// <summary>
+	/// Reads a TrueType or OpenType font and exposes its glyphs for measurement, rasterization,
+	/// atlas baking and packing, kerning, and name lookup.
+	/// </summary>
+	/// <remarks>
+	/// Parsing happens in the constructor: the 'cmap', 'head', 'hhea', and 'hmtx' tables are required,
+	/// and outlines are read from 'glyf'/'loca' for TrueType fonts or from 'CFF ' for CFF-based fonts.
+	/// </remarks>
 	public partial class STBFont
 	{
 		private Buffer _cff;
@@ -24,10 +32,28 @@ namespace StbTrueTypeNext
 		private int _numGlyphs;
 		private Buffer _subrs;
 		private int _svg;
+
+		/// <summary>Gets the raw font file data this font was created from.</summary>
 		public byte[] Data => _data;
 
+		/// <summary>
+		/// Gets or sets the rasterizer version used when generating glyph bitmaps.
+		/// Defaults to <see cref="STBRasterizerVersion.V2" />.
+		/// </summary>
 		public STBRasterizerVersion RasterizerVersion { get; set; } = STBRasterizerVersion.V2;
 
+		/// <summary>Creates a font from the raw bytes of a TrueType or OpenType font file.</summary>
+		/// <param name="data">
+		/// Complete contents of a font file, such as the bytes of a .ttf, .otf, or .ttc file. The array is
+		/// read in place, not copied, so it must remain unchanged while the font is in use. It must contain
+		/// the 'cmap', 'head', 'hhea', and 'hmtx' tables, plus either 'glyf' and 'loca' for TrueType outlines
+		/// or 'CFF ' for CFF outlines; 'maxp' is used for the glyph count when present.
+		/// </param>
+		/// <param name="offset">
+		/// Byte offset of the font within <paramref name="data" />; pass a non-zero value to select one font
+		/// from a TrueType/OpenType collection.
+		/// </param>
+		/// <exception cref="Exception">Thrown when a required font table, such as 'cmap', 'head', or 'hhea', is missing.</exception>
 		public STBFont(byte[] data, int offset = 0)
 		{
 			uint cmap = 0;
@@ -169,6 +195,9 @@ namespace StbTrueTypeNext
 			_indexToLocFormat = Utility.ttUSHORT(dataPtr + _head + 50);
 		}
 
+		/// <summary>Finds the glyph index that a Unicode codepoint maps to.</summary>
+		/// <param name="unicode_codepoint">Unicode codepoint to look up.</param>
+		/// <returns>The glyph index, or 0 if the codepoint is not mapped.</returns>
 		public int FindGlyphIndex(int unicode_codepoint)
 		{
 			var data = new FakePtr<byte>(_data);
@@ -270,6 +299,12 @@ namespace StbTrueTypeNext
 			return 0;
 		}
 
+		/// <summary>Reads a string from the font's name table.</summary>
+		/// <param name="platformID">Platform ID of the name record, such as <see cref="STBTT_PLATFORM_ID_MICROSOFT" />.</param>
+		/// <param name="encodingID">Encoding ID of the name record for that platform.</param>
+		/// <param name="languageID">Language ID of the name record for that platform and encoding.</param>
+		/// <param name="nameID">Name ID of the string, for example the family or full font name.</param>
+		/// <returns>The matching string, or null if the font has no such name record.</returns>
 		public string GetFontNameString(int platformID, int encodingID, int languageID, int nameID)
 		{
 			var i = 0;
@@ -307,6 +342,9 @@ namespace StbTrueTypeNext
 			return null;
 		}
 
+		/// <summary>Computes the scale that maps font units to pixels using the font's units-per-em value.</summary>
+		/// <param name="pixels">Desired size of one em, in pixels.</param>
+		/// <returns>The scale factor to pass to the glyph bitmap and box methods.</returns>
 		public float ScaleForMappingEmToPixels(float pixels)
 		{
 			var dataPtr = new FakePtr<byte>(_data);
@@ -314,6 +352,9 @@ namespace StbTrueTypeNext
 			return pixels / unitsPerEm;
 		}
 
+		/// <summary>Computes the scale that maps font units to pixels for a desired ascent-to-descent height.</summary>
+		/// <param name="height">Desired height of the font, in pixels.</param>
+		/// <returns>The scale factor to pass to the glyph bitmap and box methods.</returns>
 		public float ScaleForPixelHeight(float height)
 		{
 			var dataPtr = new FakePtr<byte>(_data);
@@ -321,6 +362,15 @@ namespace StbTrueTypeNext
 			return height / fheight;
 		}
 
+		/// <summary>Bakes a contiguous range of codepoints into an 8-bit font atlas bitmap.</summary>
+		/// <param name="pixel_height">Desired font height, in pixels.</param>
+		/// <param name="pixels">Destination atlas bitmap; must hold at least <paramref name="pw" /> * <paramref name="ph" /> bytes and is cleared first.</param>
+		/// <param name="pw">Width of the atlas bitmap, in pixels.</param>
+		/// <param name="ph">Height of the atlas bitmap, in pixels.</param>
+		/// <param name="first_char">First Unicode codepoint of the baked range.</param>
+		/// <param name="num_chars">Number of consecutive codepoints to bake.</param>
+		/// <param name="chardata">Receives the packed glyph data, one <see cref="STBBakedChar" /> per character.</param>
+		/// <returns>The height of the used atlas rows, or the negated index of the first character that did not fit.</returns>
 		public int BakeFontBitmap(float pixel_height, byte[] pixels, int pw, int ph, int first_char, int num_chars, STBBakedChar[] chardata)
 		{
 			float scale = 0;

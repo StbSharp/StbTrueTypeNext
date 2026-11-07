@@ -2,10 +2,6 @@
 
 namespace StbTrueTypeNext
 {
-	/// <summary>
-	/// Bitmap members of the font: rasterizing glyphs and codepoints into 8-bit alpha bitmaps,
-	/// computing their pixel bounding boxes, and extracting glyph outlines and font-unit boxes.
-	/// </summary>
 	partial class STBFont
 	{
 		/// <summary>Rasterizes the glyph for a Unicode codepoint into a new 8-bit alpha bitmap.</summary>
