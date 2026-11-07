@@ -169,27 +169,27 @@
 				return 0;
 			if (flags != 0)
 			{
-				if (MatchPair(fc, nm, name, nlen, 16, -1) != 0)
+				if (MatchPair(fc, nm, name, nlen, 16, -1))
 					return 1;
-				if (MatchPair(fc, nm, name, nlen, 1, -1) != 0)
+				if (MatchPair(fc, nm, name, nlen, 1, -1))
 					return 1;
-				if (MatchPair(fc, nm, name, nlen, 3, -1) != 0)
+				if (MatchPair(fc, nm, name, nlen, 3, -1))
 					return 1;
 			}
 			else
 			{
-				if (MatchPair(fc, nm, name, nlen, 16, 17) != 0)
+				if (MatchPair(fc, nm, name, nlen, 16, 17))
 					return 1;
-				if (MatchPair(fc, nm, name, nlen, 1, 2) != 0)
+				if (MatchPair(fc, nm, name, nlen, 1, 2))
 					return 1;
-				if (MatchPair(fc, nm, name, nlen, 3, -1) != 0)
+				if (MatchPair(fc, nm, name, nlen, 3, -1))
 					return 1;
 			}
 
 			return 0;
 		}
 
-		private static int MatchPair(FakePtr<byte> fc, uint nm, byte[] name, int nlen, int target_id, int next_id)
+		private static bool MatchPair(FakePtr<byte> fc, uint nm, byte[] name, int nlen, int target_id, int next_id)
 		{
 			var i = 0;
 			int count = Utility.ttUSHORT(fc + nm + 2);
@@ -220,27 +220,27 @@
 								if (slen == 0)
 								{
 									if (matchlen == nlen)
-										return 1;
+										return true;
 								}
 								else if (matchlen < nlen && name[matchlen] == 32)
 								{
 									++matchlen;
 									if (CompareUTF8toUTF16BigEndianInternal(new FakePtr<byte>(name, matchlen),
 										nlen - matchlen, fc + stringOffset + off, slen))
-										return 1;
+										return true;
 								}
 							}
 							else
 							{
 								if (matchlen == nlen)
-									return 1;
+									return true;
 							}
 						}
 					}
 				}
 			}
 
-			return 0;
+			return false;
 		}
 	}
 }
