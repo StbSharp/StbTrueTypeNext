@@ -315,9 +315,9 @@ namespace StbTrueTypeNext
 
 		private static int RayIntersectBezier(float[] orig, float[] ray, Vector2 q0, Vector2 q1, Vector2 q2, float[] hits)
 		{
-			var q0perp = q0.y * ray[0] - q0.x * ray[1];
-			var q1perp = q1.y * ray[0] - q1.x * ray[1];
-			var q2perp = q2.y * ray[0] - q2.x * ray[1];
+			var q0perp = q0.Y * ray[0] - q0.X * ray[1];
+			var q1perp = q1.Y * ray[0] - q1.X * ray[1];
+			var q2perp = q2.Y * ray[0] - q2.X * ray[1];
 			var roperp = orig[1] * ray[0] - orig[0] * ray[1];
 			var a = q0perp - 2 * q1perp + q2perp;
 			var b = q1perp - q0perp;
@@ -356,9 +356,9 @@ namespace StbTrueTypeNext
 			var rcp_len2 = 1 / (ray[0] * ray[0] + ray[1] * ray[1]);
 			var rayn_x = ray[0] * rcp_len2;
 			var rayn_y = ray[1] * rcp_len2;
-			var q0d = q0.x * rayn_x + q0.y * rayn_y;
-			var q1d = q1.x * rayn_x + q1.y * rayn_y;
-			var q2d = q2.x * rayn_x + q2.y * rayn_y;
+			var q0d = q0.X * rayn_x + q0.Y * rayn_y;
+			var q1d = q1.X * rayn_x + q1.Y * rayn_y;
+			var q2d = q2.X * rayn_x + q2.Y * rayn_y;
 			var rod = orig[0] * rayn_x + orig[1] * rayn_y;
 			var q10d = q1d - q0d;
 			var q20d = q2d - q0d;

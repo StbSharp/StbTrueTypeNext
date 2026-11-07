@@ -2,18 +2,18 @@
 {
 	internal struct Vector2
 	{
-		public float x;
-		public float y;
+		public float X;
+		public float Y;
 
-		public Vector2(float _x, float _y)
+		public Vector2(float x, float y)
 		{
-			x = _x;
-			y = _y;
+			X = x;
+			Y = y;
 		}
 
 		public bool Equals(Vector2 other)
 		{
-			return x == other.x && y == other.y;
+			return X == other.X && Y == other.Y;
 		}
 	}
 }

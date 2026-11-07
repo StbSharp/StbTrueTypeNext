@@ -106,23 +106,23 @@ namespace StbTrueTypeNext
 				{
 					var a = k;
 					var b = j;
-					if (p[j].y == p[k].y)
+					if (p[j].Y == p[k].Y)
 						continue;
 
 					var e = new Edge();
 					e.Invert = false;
-					if (invert != 0 && p[j].y > p[k].y ||
-						invert == 0 && p[j].y < p[k].y)
+					if (invert != 0 && p[j].Y > p[k].Y ||
+						invert == 0 && p[j].Y < p[k].Y)
 					{
 						e.Invert = true;
 						a = j;
 						b = k;
 					}
 
-					e.X0 = p[a].x * scale_x + shift_x;
-					e.Y0 = (p[a].y * y_scale_inv + shift_y) * vsubsample;
-					e.X1 = p[b].x * scale_x + shift_x;
-					e.Y1 = (p[b].y * y_scale_inv + shift_y) * vsubsample;
+					e.X0 = p[a].X * scale_x + shift_x;
+					e.Y0 = (p[a].Y * y_scale_inv + shift_y) * vsubsample;
+					e.X1 = p[b].X * scale_x + shift_x;
+					e.Y1 = (p[b].Y * y_scale_inv + shift_y) * vsubsample;
 					es.Add(e);
 				}
 			}
@@ -215,8 +215,8 @@ namespace StbTrueTypeNext
 		{
 			if (points == null)
 				return;
-			points[n].x = x;
-			points[n].y = y;
+			points[n].X = x;
+			points[n].Y = y;
 		}
 
 		private static void TesselateCubic(Vector2[] points, ref int num_points, float x0, float y0, float x1,
