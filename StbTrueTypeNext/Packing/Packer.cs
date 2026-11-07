@@ -158,8 +158,8 @@
 				_v_oversample = ranges[i].VOversample;
 				recip_h = 1.0f / _h_oversample;
 				recip_v = 1.0f / _v_oversample;
-				sub_x = Utility.stbtt__oversample_shift((int)_h_oversample);
-				sub_y = Utility.stbtt__oversample_shift((int)_v_oversample);
+				sub_x = Utility.OversampleShift((int)_h_oversample);
+				sub_y = Utility.OversampleShift((int)_v_oversample);
 				for (j = 0; j < ranges[i].NumChars; ++j)
 				{
 					var r = rects[k];
@@ -187,10 +187,10 @@
 							(int)(r.W - _h_oversample + 1), (int)(r.H - _v_oversample + 1),
 							_stride_in_bytes, scale * _h_oversample, scale * _v_oversample, 0, 0, glyph);
 						if (_h_oversample > 1)
-							Utility.stbtt__h_prefilter(new FakePtr<byte>(_pixels, r.X + r.Y * _stride_in_bytes), r.W, r.H,
+							Utility.HorizontalPrefilter(new FakePtr<byte>(_pixels, r.X + r.Y * _stride_in_bytes), r.W, r.H,
 								_stride_in_bytes, _h_oversample);
 						if (_v_oversample > 1)
-							Utility.stbtt__v_prefilter(new FakePtr<byte>(_pixels, r.X + r.Y * _stride_in_bytes), r.W, r.H,
+							Utility.VerticalPrefilter(new FakePtr<byte>(_pixels, r.X + r.Y * _stride_in_bytes), r.W, r.H,
 								_stride_in_bytes, _v_oversample);
 
 						var bc = ranges[i].ChardataForRange[j];

@@ -29,7 +29,7 @@
 		{
 			typoAscent = typoDescent = typoLineGap = 0;
 			var dataPtr = new FakePtr<byte>(_data);
-			var tab = (int)Utility.stbtt__find_table(dataPtr, (uint)_fontstart, "OS/2");
+			var tab = (int)Utility.FindTable(dataPtr, (uint)_fontstart, "OS/2");
 			if (tab == 0)
 				return 0;
 

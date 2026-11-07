@@ -61,7 +61,7 @@ namespace StbTrueTypeNext
 			var dataPtr = new FakePtr<byte>(_data);
 			if (_svg < 0)
 			{
-				t = Utility.stbtt__find_table(dataPtr, (uint)_fontstart, "SVG ");
+				t = Utility.FindTable(dataPtr, (uint)_fontstart, "SVG ");
 				if (t != 0)
 				{
 					var offset = Utility.ttULONG(dataPtr + t + 2);

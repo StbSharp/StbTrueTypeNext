@@ -176,11 +176,11 @@ namespace StbTrueTypeNext
 			MakeGlyphBitmapSubpixel(output, out_w - (prefilter_x - 1), out_h - (prefilter_y - 1),
 				out_stride, scale_x, scale_y, shift_x, shift_y, glyph);
 			if (prefilter_x > 1)
-				Utility.stbtt__h_prefilter(output, out_w, out_h, out_stride, (uint)prefilter_x);
+				Utility.HorizontalPrefilter(output, out_w, out_h, out_stride, (uint)prefilter_x);
 			if (prefilter_y > 1)
-				Utility.stbtt__v_prefilter(output, out_w, out_h, out_stride, (uint)prefilter_y);
-			sub_x = Utility.stbtt__oversample_shift(prefilter_x);
-			sub_y = Utility.stbtt__oversample_shift(prefilter_y);
+				Utility.VerticalPrefilter(output, out_w, out_h, out_stride, (uint)prefilter_y);
+			sub_x = Utility.OversampleShift(prefilter_x);
+			sub_y = Utility.OversampleShift(prefilter_y);
 		}
 
 		public int GetCodepointShape(int unicode_codepoint, out STBVertex[] vertices)

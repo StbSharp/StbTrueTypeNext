@@ -12,19 +12,19 @@
 
 		public static void Set<T>(this T[] ptr, T value) where T : unmanaged => Set(ptr, value, ptr.Length);
 
-		public static float stbtt__oversample_shift(int oversample)
+		public static float OversampleShift(int oversample)
 		{
 			if (oversample == 0)
 				return 0.0f;
 			return -(oversample - 1) / (2.0f * oversample);
 		}
 
-		public static void stbtt__h_prefilter(byte[] pixels, int w, int h, int stride_in_bytes, uint kernel_width)
+		public static void HorizontalPrefilter(byte[] pixels, int w, int h, int stride_in_bytes, uint kernel_width)
 		{
-			stbtt__h_prefilter(new FakePtr<byte>(pixels), w, h, stride_in_bytes, kernel_width);
+			HorizontalPrefilter(new FakePtr<byte>(pixels), w, h, stride_in_bytes, kernel_width);
 		}
 
-		public static void stbtt__h_prefilter(FakePtr<byte> pixels, int w, int h, int stride_in_bytes, uint kernel_width)
+		public static void HorizontalPrefilter(FakePtr<byte> pixels, int w, int h, int stride_in_bytes, uint kernel_width)
 		{
 			var buffer = new byte[8];
 			var safe_w = (int)(w - kernel_width);
@@ -94,12 +94,12 @@
 			}
 		}
 
-		public static void stbtt__v_prefilter(byte[] pixels, int w, int h, int stride_in_bytes, uint kernel_width)
+		public static void VerticalPrefilter(byte[] pixels, int w, int h, int stride_in_bytes, uint kernel_width)
 		{
-			stbtt__v_prefilter(new FakePtr<byte>(pixels), w, h, stride_in_bytes, kernel_width);
+			VerticalPrefilter(new FakePtr<byte>(pixels), w, h, stride_in_bytes, kernel_width);
 		}
 
-		public static void stbtt__v_prefilter(FakePtr<byte> pixels, int w, int h, int stride_in_bytes, uint kernel_width)
+		public static void VerticalPrefilter(FakePtr<byte> pixels, int w, int h, int stride_in_bytes, uint kernel_width)
 		{
 			var buffer = new byte[8];
 			var safe_h = (int)(h - kernel_width);
@@ -189,7 +189,7 @@
 			return (ushort)(p[0] * 256 + p[1]);
 		}
 
-		public static uint stbtt__find_table(FakePtr<byte> data, uint fontstart, string tag)
+		public static uint FindTable(FakePtr<byte> data, uint fontstart, string tag)
 		{
 			int num_tables = ttUSHORT(data + fontstart + 4);
 			var tabledir = fontstart + 12;

@@ -138,12 +138,12 @@
 				return 0;
 			if (flags != 0)
 			{
-				hd = Utility.stbtt__find_table(fc, offset, "head");
+				hd = Utility.FindTable(fc, offset, "head");
 				if ((Utility.ttUSHORT(fc + hd + 44) & 7) != (flags & 7))
 					return 0;
 			}
 
-			nm = Utility.stbtt__find_table(fc, offset, "name");
+			nm = Utility.FindTable(fc, offset, "name");
 			if (nm == 0)
 				return 0;
 			if (flags != 0)

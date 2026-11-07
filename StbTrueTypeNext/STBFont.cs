@@ -39,14 +39,14 @@ namespace StbTrueTypeNext
 			_cff = Buffer.Null;
 
 			var dataPtr = new FakePtr<byte>(data);
-			cmap = Utility.stbtt__find_table(dataPtr, (uint)offset, "cmap");
-			_loca = (int)Utility.stbtt__find_table(dataPtr, (uint)offset, "loca");
-			_head = (int)Utility.stbtt__find_table(dataPtr, (uint)offset, "head");
-			_glyf = (int)Utility.stbtt__find_table(dataPtr, (uint)offset, "glyf");
-			_hhea = (int)Utility.stbtt__find_table(dataPtr, (uint)offset, "hhea");
-			_hmtx = (int)Utility.stbtt__find_table(dataPtr, (uint)offset, "hmtx");
-			_kern = (int)Utility.stbtt__find_table(dataPtr, (uint)offset, "kern");
-			_gpos = (int)Utility.stbtt__find_table(dataPtr, (uint)offset, "GPOS");
+			cmap = Utility.FindTable(dataPtr, (uint)offset, "cmap");
+			_loca = (int)Utility.FindTable(dataPtr, (uint)offset, "loca");
+			_head = (int)Utility.FindTable(dataPtr, (uint)offset, "head");
+			_glyf = (int)Utility.FindTable(dataPtr, (uint)offset, "glyf");
+			_hhea = (int)Utility.FindTable(dataPtr, (uint)offset, "hhea");
+			_hmtx = (int)Utility.FindTable(dataPtr, (uint)offset, "hmtx");
+			_kern = (int)Utility.FindTable(dataPtr, (uint)offset, "kern");
+			_gpos = (int)Utility.FindTable(dataPtr, (uint)offset, "GPOS");
 
 			if (cmap == 0)
 			{
@@ -81,7 +81,7 @@ namespace StbTrueTypeNext
 				var topdict = new Buffer();
 				var topdictidx = new Buffer();
 				uint cff = 0;
-				cff = Utility.stbtt__find_table(dataPtr, (uint)offset, "CFF ");
+				cff = Utility.FindTable(dataPtr, (uint)offset, "CFF ");
 				if (cff == 0)
 				{
 					throw new Exception("Could not find 'CFF '");
@@ -135,7 +135,7 @@ namespace StbTrueTypeNext
 				_charstrings = b.ReadCffIndex();
 			}
 
-			t = Utility.stbtt__find_table(dataPtr, (uint)offset, "maxp");
+			t = Utility.FindTable(dataPtr, (uint)offset, "maxp");
 			if (t != 0)
 				_numGlyphs = Utility.ttUSHORT(dataPtr + t + 4);
 			else
@@ -277,7 +277,7 @@ namespace StbTrueTypeNext
 			var stringOffset = 0;
 			var fc = new FakePtr<byte>(_data);
 			var offset = (uint)_fontstart;
-			var nm = Utility.stbtt__find_table(fc, offset, "name");
+			var nm = Utility.FindTable(fc, offset, "name");
 			if (nm == 0)
 			{
 				return null;
