@@ -361,52 +361,5 @@ namespace StbTrueTypeNext
 			var fheight = Utility.ttSHORT(dataPtr + _hhea + 4) - Utility.ttSHORT(dataPtr + _hhea + 6);
 			return height / fheight;
 		}
-
-		public int BakeFontBitmap(float pixel_height, byte[] pixels, int pw, int ph, int first_char, int num_chars, STBBakedChar[] chardata)
-		{
-			float scale = 0;
-			var x = 0;
-			var y = 0;
-			var bottom_y = 0;
-			var i = 0;
-
-			pixels.Set((byte)0, pw * ph);
-			x = y = 1;
-			bottom_y = 1;
-			scale = ScaleForPixelHeight(pixel_height);
-			for (i = 0; i < num_chars; ++i)
-			{
-				var advance = 0;
-				var lsb = 0;
-				var gw = 0;
-				var gh = 0;
-				var g = FindGlyphIndex(first_char + i);
-				GetGlyphHMetrics(g, out advance, out lsb);
-				var box = GetGlyphBoxInPixels(g, scale, scale) ?? STBGlyphBitmapBox.Zero;
-				gw = box.Width;
-				gh = box.Height;
-				if (x + gw + 1 >= pw)
-				{
-					y = bottom_y;
-					x = 1;
-				}
-
-				if (y + gh + 1 >= ph)
-					return -i;
-				MakeGlyphBitmapSubpixel(g, pixels, x + y * pw, gw, gh, pw, scale, scale);
-				chardata[i].X0 = (ushort)(short)x;
-				chardata[i].Y0 = (ushort)(short)y;
-				chardata[i].X1 = (ushort)(short)(x + gw);
-				chardata[i].Y1 = (ushort)(short)(y + gh);
-				chardata[i].XAdvance = scale * advance;
-				chardata[i].XOff = box.X0;
-				chardata[i].YOff = box.Y0;
-				x = x + gw + 1;
-				if (y + gh + 1 > bottom_y)
-					bottom_y = y + gh + 1;
-			}
-
-			return bottom_y;
-		}
 	}
 }

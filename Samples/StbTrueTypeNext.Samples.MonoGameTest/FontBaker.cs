@@ -1,4 +1,4 @@
-﻿using StbTrueTypeNext.Packing;
+﻿using StbRectPackSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,25 +7,50 @@ namespace StbTrueTypeNext.Samples;
 
 public class FontBaker
 {
-	private byte[] _bitmap;
-	private Packer _context;
-	private Dictionary<int, GlyphInfo> _glyphs;
-	private int bitmapWidth, bitmapHeight;
-
-	public void Begin(int width, int height)
+	private class RectData
 	{
-		bitmapWidth = width;
-		bitmapHeight = height;
-		_bitmap = new byte[width * height];
-		_context = new Packer();
+		public STBFont Font;
+		public int Codepoint;
+		public int GlyphId;
+		public float Scale;
+		public int Ascent;
 
-		_context.Begin(_bitmap, width, height, width, 1);
-
-		_glyphs = new Dictionary<int, GlyphInfo>();
+		public RectData(STBFont font, int codepoint, int glyphId, float scale, int ascent)
+		{
+			Font = font;
+			Codepoint = codepoint;
+			GlyphId = glyphId;
+			Scale = scale;
+			Ascent = ascent;
+		}
 	}
 
-	public void Add(byte[] ttf, float fontPixelHeight,
-		IEnumerable<CharacterRange> characterRanges)
+	private readonly Dictionary<int, GlyphInfo> _glyphs = new Dictionary<int, GlyphInfo>();
+	private Packer _packer;
+	private int _padding = 1;
+
+	public int Padding
+	{
+		get => _padding;
+
+		set
+		{
+			if (value < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(value));
+			}
+
+			_padding = value;
+		}
+	}
+
+	public void Begin()
+	{
+		_glyphs.Clear();
+		_packer = new Packer(256, 256);
+	}
+
+	public void Add(byte[] ttf, float fontPixelHeight, IEnumerable<CharacterRange> characterRanges)
 	{
 		if (ttf == null || ttf.Length == 0)
 			throw new ArgumentNullException(nameof(ttf));
@@ -40,7 +65,7 @@ public class FontBaker
 			throw new ArgumentException("characterRanges must have a least one value.");
 
 		var font = new STBFont(ttf);
-		var scaleFactor = font.ScaleForPixelHeight(fontPixelHeight);
+		var scale = font.ScaleForPixelHeight(fontPixelHeight);
 
 		int ascent, descent, lineGap;
 		font.GetFontVMetrics(out ascent, out descent, out lineGap);
@@ -50,36 +75,90 @@ public class FontBaker
 			if (range.Start > range.End)
 				continue;
 
-			var cd = new PackedChar[range.End - range.Start + 1];
-			_context.PackFontRange(font, fontPixelHeight,
-				range.Start,
-				range.End - range.Start + 1,
-				cd);
-
-			for (var i = 0; i < cd.Length; ++i)
+			for (var i = range.Start; i < range.End; ++i)
 			{
-				var yOff = cd[i].YOff;
-				yOff += ascent * scaleFactor;
+				var glyph = font.FindGlyphIndex(i);
+				if (glyph == 0)
+				{
+					continue;
+				}
 
+				int advanceWidth, leftSideBearing;
+				font.GetGlyphHMetrics(glyph, out advanceWidth, out leftSideBearing);
 				var glyphInfo = new GlyphInfo
 				{
-					X = cd[i].X0,
-					Y = cd[i].Y0,
-					Width = cd[i].X1 - cd[i].X0,
-					Height = cd[i].Y1 - cd[i].Y0,
-					XOffset = (int)cd[i].XOff,
-					YOffset = (int)Math.Round(yOff),
-					XAdvance = (int)Math.Round(cd[i].XAdvance)
+					XAdvance = (int)Math.Round(advanceWidth * scale)
 				};
 
-				_glyphs[i + range.Start] = glyphInfo;
+				_glyphs[i] = glyphInfo;
+
+				var box = font.GetGlyphBoxInPixels(glyph, scale, scale);
+				if (box == null)
+				{
+					continue;
+				}
+
+				var v = box.Value;
+				if (v.Width <= 0 || v.Height <= 0)
+				{
+					continue;
+				}
+
+				var rd = new RectData(font, i, glyph, scale, ascent);
+				var pr = _packer.PackRect(v.Width + Padding * 2, v.Height + Padding * 2, rd);
+				while (pr == null)
+				{
+					// If pr is null, it means there's no place for the new rect
+					// Double the size of the packer until the new rectangle will fit
+					Packer newPacker = new Packer(_packer.Width * 2, _packer.Height * 2);
+
+					// Place existing rectangles
+					foreach (PackerRectangle existingRect in _packer.PackRectangles)
+					{
+						newPacker.PackRect(existingRect.Width, existingRect.Height, existingRect.Data);
+					}
+
+					// Now dispose old packer and assign new one
+					_packer.Dispose();
+					_packer = newPacker;
+
+					// Try to fit the rectangle again
+					pr = _packer.PackRect(v.Width, v.Height, rd);
+				}
 			}
 		}
 	}
 
 	public FontBakerResult End()
 	{
-		_context.End();
-		return new FontBakerResult(_glyphs, _bitmap, bitmapWidth, bitmapHeight);
+		var bitmap = new byte[_packer.Width * _packer.Height];
+		foreach (var pr in _packer.PackRectangles)
+		{
+			var rd = (RectData)pr.Data;
+
+			var bm = rd.Font.MakeGlyphBitmapSubpixel(rd.GlyphId, bitmap, pr.X + Padding + (pr.Y + Padding) * _packer.Width,
+				pr.Width - 2 * Padding, pr.Height - 2 * Padding, _packer.Width, rd.Scale, rd.Scale);
+			if (bm == null)
+			{
+				continue;
+			}
+
+			var v = bm.Value;
+
+			var yOff = (float)v.YOffset;
+			yOff += rd.Ascent * rd.Scale;
+
+			var glyphInfo = _glyphs[rd.Codepoint];
+			glyphInfo.X = pr.X + Padding;
+			glyphInfo.Y = pr.Y + Padding;
+			glyphInfo.Width = v.Width;
+			glyphInfo.Height = v.Height;
+			glyphInfo.XOffset = v.XOffset;
+			glyphInfo.YOffset = v.YOffset;
+
+			_glyphs[rd.Codepoint] = glyphInfo;
+		}
+
+		return new FontBakerResult(_glyphs, bitmap, _packer.Width, _packer.Height);
 	}
 }

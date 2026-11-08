@@ -104,7 +104,7 @@ namespace StbTrueTypeNext.Tests
 				Assert.NotEqual(0, box.Height);
 				var data = new byte[box.Width * box.Height];
 
-				fontInfo.MakeGlyphBitmap(data, 0, box.Width, box.Height, box.Width, scale, scale, glyphId);
+				fontInfo.MakeGlyphBitmapSubpixel(glyphId, data, 0, box.Width, box.Height, box.Width, scale, scale);
 			}
 		}
 

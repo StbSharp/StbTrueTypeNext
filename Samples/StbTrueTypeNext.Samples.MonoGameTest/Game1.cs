@@ -40,7 +40,7 @@ public class Game1 : Game
 	{
 		var fontBaker = new FontBaker();
 
-		fontBaker.Begin(FontBitmapWidth, FontBitmapHeight);
+		fontBaker.Begin();
 		fontBaker.Add(File.ReadAllBytes("Fonts/DroidSans.ttf"), 32, new[]
 		{
 			CharacterRange.BasicLatin,
@@ -76,7 +76,7 @@ public class Game1 : Game
 	{
 		var fontBaker = new FontBaker();
 
-		fontBaker.Begin(FontBitmapWidth, FontBitmapHeight);
+		fontBaker.Begin();
 		fontBaker.Add(File.ReadAllBytes("Fonts/SourceSansPro-Regular.otf"), 32, new[]
 		{
 			CharacterRange.BasicLatin,
@@ -178,8 +178,7 @@ public class Game1 : Game
 			"Otf Scandinavian: Å å, Ø ø, Æ æ, œ, þ Fra: â ç è é ê î ô û ë ï ù á í ì ó ò ú, Romana: ă â î ș ț",
 			new Vector2(0, 330), Color.Green);
 
-
-		// _spriteBatch.Draw(_font.Texture, new Vector2(0, 300));
+		// _spriteBatch.Draw(_ttfFont.Texture, new Vector2(0, 300), Color.White);
 
 		_spriteBatch.End();
 

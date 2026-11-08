@@ -49,6 +49,10 @@ class Program
 			var advance = (int)(advanceTemp * scale + 0.5f);
 
 			var box = info.GetGlyphBoxInPixels(glyphId, scale, scale) ?? STBGlyphBitmapBox.Zero;
+			if (box.Width == 0 || box.Height == 0)
+			{
+				continue;
+			}
 
 			posX += box.X0;
 			posY = ascent + box.Y0;
@@ -58,15 +62,15 @@ class Program
 				posY = 0;
 			}
 
-			info.MakeGlyphBitmap(
+			info.MakeGlyphBitmapSubpixel(
+				glyphId,
 				buffer,
 				posX + posY * bufferSize,
 				box.Width,
 				box.Height,
 				bufferSize,
 				scale,
-				scale,
-				glyphId
+				scale
 			);
 
 			posX += advance;
