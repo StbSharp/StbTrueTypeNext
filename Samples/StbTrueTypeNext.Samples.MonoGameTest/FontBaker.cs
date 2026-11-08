@@ -136,8 +136,7 @@ public class FontBaker
 		{
 			var rd = (RectData)pr.Data;
 
-			var bm = rd.Font.MakeGlyphBitmapSubpixel(rd.GlyphId, bitmap, pr.X + Padding + (pr.Y + Padding) * _packer.Width,
-				pr.Width - 2 * Padding, pr.Height - 2 * Padding, _packer.Width, rd.Scale, rd.Scale);
+			var bm = rd.Font.MakeGlyphBitmapSubpixel(rd.GlyphId, bitmap, pr.X + Padding + (pr.Y + Padding) * _packer.Width, _packer.Width, rd.Scale, rd.Scale);
 			if (bm == null)
 			{
 				continue;

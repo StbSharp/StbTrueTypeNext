@@ -66,8 +66,6 @@ class Program
 				glyphId,
 				buffer,
 				posX + posY * bufferSize,
-				box.Width,
-				box.Height,
 				bufferSize,
 				scale,
 				scale
