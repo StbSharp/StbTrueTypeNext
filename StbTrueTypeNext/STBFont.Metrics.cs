@@ -2,15 +2,6 @@
 {
 	partial class STBFont
 	{
-		/// <summary>Gets the horizontal metrics, in font units, of the glyph for a Unicode codepoint.</summary>
-		/// <param name="codepoint">Unicode codepoint of the glyph.</param>
-		/// <param name="advanceWidth">Receives the advance width of the glyph.</param>
-		/// <param name="leftSideBearing">Receives the left side bearing of the glyph.</param>
-		public void GetCodepointHMetrics(int codepoint, out int advanceWidth, out int leftSideBearing)
-		{
-			GetGlyphHMetrics(FindGlyphIndex(codepoint), out advanceWidth, out leftSideBearing);
-		}
-
 		/// <summary>Gets the font's bounding box, in font units.</summary>
 		/// <param name="x0">Receives the left edge of the box.</param>
 		/// <param name="y0">Receives the bottom edge of the box.</param>

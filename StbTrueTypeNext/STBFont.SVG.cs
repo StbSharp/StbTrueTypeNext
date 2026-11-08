@@ -4,11 +4,6 @@ namespace StbTrueTypeNext
 {
 	partial class STBFont
 	{
-		/// <summary>Gets the SVG document attached to the glyph of a Unicode codepoint.</summary>
-		/// <param name="unicode_codepoint">Unicode codepoint of the glyph.</param>
-		/// <returns>The raw SVG document bytes, or null if the font has no 'SVG ' table or the glyph has no SVG document.</returns>
-		public byte[] GetCodepointSVG(int unicode_codepoint) => GetGlyphSVG(FindGlyphIndex(unicode_codepoint));
-
 		/// <summary>Gets the SVG document attached to a glyph as a new byte array.</summary>
 		/// <param name="gl">Index of the glyph.</param>
 		/// <returns>The raw SVG document bytes, or null if the font has no 'SVG ' table or the glyph has no SVG document.</returns>

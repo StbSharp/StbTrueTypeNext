@@ -184,15 +184,6 @@ namespace StbTrueTypeNext
 			};
 		}
 
-		/// <summary>Gets the outline of the glyph for a Unicode codepoint as an array of vertices.</summary>
-		/// <param name="unicode_codepoint">Unicode codepoint of the glyph.</param>
-		/// <param name="vertices">Receives the outline vertices.</param>
-		/// <returns>The number of vertices, or 0 if the glyph has no outline.</returns>
-		public int GetCodepointShape(int unicode_codepoint, out STBVertex[] vertices)
-		{
-			return GetGlyphShape(FindGlyphIndex(unicode_codepoint), out vertices);
-		}
-
 		/// <summary>Gets a glyph's outline as an array of vertices, using either the TrueType or CFF loader.</summary>
 		/// <param name="glyph_index">Index of the glyph.</param>
 		/// <param name="pvertices">Receives the outline vertices.</param>

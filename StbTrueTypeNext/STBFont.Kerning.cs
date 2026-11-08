@@ -2,17 +2,6 @@
 {
 	partial class STBFont
 	{
-		/// <summary>Gets the horizontal kerning adjustment, in font units, between two Unicode codepoints.</summary>
-		/// <param name="ch1">Unicode codepoint of the first character.</param>
-		/// <param name="ch2">Unicode codepoint of the second character.</param>
-		/// <returns>The kerning advance to add between the characters, in font units; 0 if the font has no kerning data or the pair is not kerned.</returns>
-		public int GetCodepointKernAdvance(int ch1, int ch2)
-		{
-			if (_kern == 0 && _gpos == 0)
-				return 0;
-			return GetGlyphKernAdvance(FindGlyphIndex(ch1), FindGlyphIndex(ch2));
-		}
-
 		/// <summary>
 		/// Gets the horizontal kerning adjustment, in font units, between two glyphs. The 'GPOS' table
 		/// is used when present, otherwise the legacy 'kern' table.
