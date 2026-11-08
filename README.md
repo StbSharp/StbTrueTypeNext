@@ -10,15 +10,11 @@ In other words, StbTrueTypeNext is a pure managed C# font rasterizer for TrueTyp
 
 ## Install
 
-```
-dotnet add package StbTrueTypeNext
-```
-
-The library targets `netstandard2.0`, `net471` and `net8.0`; the `net8.0` build is AOT compatible.
+https://www.nuget.org/packages/StbTrueTypeNext/
 
 ## What the library does
 
-- Parses `.ttf` (TrueType, `glyf`/`loca`), `.otf` (CFF/OpenType, `CFF `) and `.ttc` collection files from a byte array, read in place without extra allocation.
+- Parses `.ttf` (TrueType, `glyf`/`loca`), `.otf` (CFF/OpenType, `CFF `) and `.ttc` collection files from a byte array.
 - Maps Unicode codepoints to glyph indices via the `cmap` table (formats 0, 4, 6, 12 and 13).
 - Rasterizes glyphs into 8-bit antialiased coverage bitmaps, with subpixel positioning through horizontal and vertical shifts.
 - Returns a newly allocated bitmap, or renders directly into a caller-supplied buffer at an arbitrary offset and row stride, so glyphs can be baked straight into an atlas.
@@ -45,18 +41,17 @@ var scale = font.ScaleForPixelHeight(32.0f);
 var glyph = font.FindGlyphIndex('A');
 
 // Let the library allocate the bitmap.
-var bitmap = font.GetGlyphBitmapSubpixel(glyph, scale, scale);
+var bitmap = font.CreateGlyphBitmap(glyph, scale, scale);
 if (bitmap != null)
 {
-    var g = bitmap.Value;
-    // Rows are g.Width bytes wide here and the bitmap starts at g.BitmapOffset.
-    Console.WriteLine($"{g.Width}x{g.Height} at ({g.XOffset}, {g.YOffset}), first coverage {g.Bitmap[g.BitmapOffset]}");
+    // Rows are bitmap.Width bytes wide here and the bitmap starts at bitmap.BitmapOffset.
+    Console.WriteLine($"{bitmap.Width}x{bitmap.Height} at ({bitmap.XOffset}, {bitmap.YOffset}), first coverage {bitmap.Bitmap[bitmap.BitmapOffset]}");
 }
 
 // Or render straight into your own atlas at a byte offset and row stride.
 const int atlasWidth = 512;
 var atlas = new byte[atlasWidth * atlasWidth];
-font.MakeGlyphBitmapSubpixel(glyph, atlas, 0, atlasWidth, scale, scale);
+font.DrawGlyphOnBitmap(glyph, atlas, 0, atlasWidth, scale, scale);
 
 // Advances, bearings and kerning.
 font.GetGlyphHMetrics(glyph, out var advanceWidth, out var leftSideBearing);
