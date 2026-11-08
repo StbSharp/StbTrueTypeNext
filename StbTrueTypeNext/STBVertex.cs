@@ -27,9 +27,6 @@
 		/// <summary>Vertex type marker, such as the move, line, or curve constants used by the outline loaders.</summary>
 		public byte Type;
 
-		/// <summary>Unused padding byte kept for layout compatibility with the native vertex structure.</summary>
-		public byte Padding;
-
 		/// <summary>Sets the vertex type and coordinates, narrowing the coordinates to 16-bit values.</summary>
 		/// <param name="type">Vertex type marker, such as the move, line, or curve constant.</param>
 		/// <param name="x">X coordinate of the end point, in font units.</param>
