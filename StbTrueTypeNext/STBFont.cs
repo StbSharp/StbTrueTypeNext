@@ -362,15 +362,6 @@ namespace StbTrueTypeNext
 			return height / fheight;
 		}
 
-		/// <summary>Bakes a contiguous range of codepoints into an 8-bit font atlas bitmap.</summary>
-		/// <param name="pixel_height">Desired font height, in pixels.</param>
-		/// <param name="pixels">Destination atlas bitmap; must hold at least <paramref name="pw" /> * <paramref name="ph" /> bytes and is cleared first.</param>
-		/// <param name="pw">Width of the atlas bitmap, in pixels.</param>
-		/// <param name="ph">Height of the atlas bitmap, in pixels.</param>
-		/// <param name="first_char">First Unicode codepoint of the baked range.</param>
-		/// <param name="num_chars">Number of consecutive codepoints to bake.</param>
-		/// <param name="chardata">Receives the packed glyph data, one <see cref="STBBakedChar" /> per character.</param>
-		/// <returns>The height of the used atlas rows, or the negated index of the first character that did not fit.</returns>
 		public int BakeFontBitmap(float pixel_height, byte[] pixels, int pw, int ph, int first_char, int num_chars, STBBakedChar[] chardata)
 		{
 			float scale = 0;
@@ -402,7 +393,7 @@ namespace StbTrueTypeNext
 
 				if (y + gh + 1 >= ph)
 					return -i;
-				MakeGlyphBitmap(new FakePtr<byte>(pixels, x + y * pw), gw, gh, pw, scale, scale, g);
+				MakeGlyphBitmapSubpixel(g, pixels, x + y * pw, gw, gh, pw, scale, scale);
 				chardata[i].X0 = (ushort)(short)x;
 				chardata[i].Y0 = (ushort)(short)y;
 				chardata[i].X1 = (ushort)(short)(x + gw);

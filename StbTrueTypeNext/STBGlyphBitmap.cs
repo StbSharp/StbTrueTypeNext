@@ -3,6 +3,7 @@
 	public struct STBGlyphBitmap
 	{
 		public byte[] Bitmap;
+		public int BitmapOffset;
 		public int XOffset;
 		public int YOffset;
 		public int Width;
