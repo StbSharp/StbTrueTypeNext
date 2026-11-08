@@ -62,7 +62,7 @@ class Program
 				posY = 0;
 			}
 
-			info.MakeGlyphBitmapSubpixel(
+			info.DrawGlyphOnBitmap(
 				glyphId,
 				buffer,
 				posX + posY * bufferSize,

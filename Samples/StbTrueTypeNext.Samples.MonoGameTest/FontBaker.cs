@@ -136,23 +136,21 @@ public class FontBaker
 		{
 			var rd = (RectData)pr.Data;
 
-			var bm = rd.Font.MakeGlyphBitmapSubpixel(rd.GlyphId, bitmap, pr.X + Padding + (pr.Y + Padding) * _packer.Width, _packer.Width, rd.Scale, rd.Scale);
+			var bm = rd.Font.DrawGlyphOnBitmap(rd.GlyphId, bitmap, pr.X + Padding + (pr.Y + Padding) * _packer.Width, _packer.Width, rd.Scale, rd.Scale);
 			if (bm == null)
 			{
 				continue;
 			}
 
-			var v = bm.Value;
-
-			var yOff = (float)v.YOffset;
+			var yOff = (float)bm.YOffset;
 			yOff += rd.Ascent * rd.Scale;
 
 			var glyphInfo = _glyphs[rd.Codepoint];
 			glyphInfo.X = pr.X + Padding;
 			glyphInfo.Y = pr.Y + Padding;
-			glyphInfo.Width = v.Width;
-			glyphInfo.Height = v.Height;
-			glyphInfo.XOffset = v.XOffset;
+			glyphInfo.Width = bm.Width;
+			glyphInfo.Height = bm.Height;
+			glyphInfo.XOffset = bm.XOffset;
 			glyphInfo.YOffset = (int)yOff;
 
 			_glyphs[rd.Codepoint] = glyphInfo;

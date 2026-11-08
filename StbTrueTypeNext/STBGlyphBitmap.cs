@@ -1,7 +1,7 @@
 ﻿namespace StbTrueTypeNext
 {
 	/// <summary>Describes a rasterized glyph bitmap produced by <see cref="STBFont" />.</summary>
-	public struct STBGlyphBitmap
+	public class STBGlyphBitmap
 	{
 		/// <summary>Buffer holding the rasterized pixels; the glyph bitmap starts at <see cref="BitmapOffset" />.</summary>
 		public byte[] Bitmap;

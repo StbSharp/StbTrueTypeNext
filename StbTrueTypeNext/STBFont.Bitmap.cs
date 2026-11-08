@@ -66,7 +66,7 @@ namespace StbTrueTypeNext
 		/// <param name="shift_y">Vertical subpixel shift, in pixels, applied before rasterizing.</param>
 		/// <returns>The rasterized bitmap, or null if the glyph is empty or has no area at the requested scale.</returns>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="scale_x" /> or <paramref name="scale_y" /> is zero or negative.</exception>
-		public STBGlyphBitmap? GetGlyphBitmapSubpixel(int glyph, float scale_x, float scale_y, float shift_x = 0, float shift_y = 0)
+		public STBGlyphBitmap CreateGlyphBitmap(int glyph, float scale_x, float scale_y, float shift_x = 0, float shift_y = 0)
 		{
 			if (scale_x <= 0)
 			{
@@ -127,7 +127,7 @@ namespace StbTrueTypeNext
 		/// <exception cref="ArgumentOutOfRangeException">
 		/// <paramref name="out_stride" />, <paramref name="scale_x" /> or <paramref name="scale_y" /> is zero or negative.
 		/// </exception>
-		public STBGlyphBitmap? MakeGlyphBitmapSubpixel(int glyph, byte[] buffer, int offset, int out_stride, float scale_x, float scale_y,
+		public STBGlyphBitmap DrawGlyphOnBitmap(int glyph, byte[] buffer, int offset, int out_stride, float scale_x, float scale_y,
 			float shift_x = 0, float shift_y = 0, int prefilter_x = 0, int prefilter_y = 0)
 		{
 			if (out_stride <= 0)

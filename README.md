@@ -18,29 +18,20 @@ The library targets `netstandard2.0`, `net471` and `net8.0`; the `net8.0` build 
 
 ## What the library does
 
-- **Loads fonts from bytes.** `new STBFont(byte[])` takes the contents of a `.ttf` or `.otf` font file; the
-  `(data, offset)` overload opens a single font inside a collection.
-- **Rasterizes glyphs** into 8-bit alpha bitmaps at any scale and subpixel shift. `GetGlyphBitmapSubpixel` allocates
-  the bitmap for you, while `MakeGlyphBitmapSubpixel` renders into your own buffer at a chosen byte offset and row
-  stride, with optional horizontal and vertical oversampling prefiltering. Both return an `STBGlyphBitmap` that
-  describes the buffer, the glyph's pixel offset from the origin and the subpixel offsets introduced by prefiltering.
-- **Reports metrics**: vertical metrics (`GetFontVMetrics`, `GetFontVMetricsOS2`, `GetScaledFontVMetrics`), the font
-  bounding box, per-glyph advance and left side bearing (`GetGlyphHMetrics`), and a glyph's bounding box in pixels or
-  font units (`GetGlyphBoxInPixels`, `GetGlyphBoxInFontUnits`, both returning `STBGlyphBitmapBox`).
-- **Applies kerning** from the modern `GPOS` table or the legacy `kern` table (`GetGlyphKernAdvance`,
-  `GetKerningTable`).
-- **Generates signed distance fields** for scalable, shader-friendly glyph rendering (`GetGlyphSDF`).
-- **Reads embedded SVG documents** from the OpenType `SVG ` table (`GetGlyphSVG`).
-- **Opens font collections**: `STBFontCollection` reports how many fonts a `.ttc` file holds
-  (`GetNumberOfFonts`), resolves a font's offset by index (`GetFontOffsetForIndex`) and finds a font by family name
-  (`FindMatchingFont`).
-- **Exposes outlines and glyph lookup**: `GetGlyphShape` returns a glyph's outline as `STBVertex` data,
-  `FindGlyphIndex` maps a Unicode codepoint to a glyph index, `IsGlyphEmpty` checks for empty glyphs, and
-  `RasterizerVersion` selects the V1 or V2 rasterizer (V2 is the default).
-
-The API is addressed by glyph index, so codepoint-based code maps its characters with `FindGlyphIndex` first.
-
-It does **not** shape text: no ligatures, no contextual or mark positioning, no bidirectional reordering.
+- Parses `.ttf` (TrueType, `glyf`/`loca`), `.otf` (CFF/OpenType, `CFF `) and `.ttc` collection files from a byte array, read in place without extra allocation.
+- Maps Unicode codepoints to glyph indices via the `cmap` table (formats 0, 4, 6, 12 and 13).
+- Rasterizes glyphs into 8-bit antialiased coverage bitmaps, with subpixel positioning through horizontal and vertical shifts.
+- Returns a newly allocated bitmap, or renders directly into a caller-supplied buffer at an arbitrary offset and row stride, so glyphs can be baked straight into an atlas.
+- Supports oversampling prefiltering when downscaling, and reports the subpixel offsets it introduces.
+- Provides two rasterizer implementations, selectable per font (`STBRasterizerVersion.V1` and `V2`, the default).
+- Computes glyph bounding boxes in font units or in pixels relative to the glyph origin.
+- Extracts glyph outlines as move/line/quadratic/cubic vertices, handling composite TrueType glyphs and CFF charstrings with subroutines.
+- Reports metrics: font bounding box, `hhea` ascent/descent/line gap, `OS/2` typographic metrics, per-glyph advance width and left side bearing, plus helpers for em-to-pixel and pixel-height scaling.
+- Applies kerning from the `GPOS` table (pair and class-based pair positioning) with a fallback to the legacy `kern` table, and can enumerate every `kern` pair.
+- Generates signed distance field bitmaps with configurable padding, on-edge value and pixel distance scale.
+- Returns embedded SVG documents from the `SVG ` table when a font provides them.
+- Reads font name strings (family name, style, and so on) by platform, encoding, language and name ID.
+- Reads `ttcf` font collections: reports the font count, resolves a font's offset by index, and finds a font by name.
 
 ## Quick start
 
