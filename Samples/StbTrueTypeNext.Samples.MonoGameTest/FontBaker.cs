@@ -75,7 +75,7 @@ public class FontBaker
 			if (range.Start > range.End)
 				continue;
 
-			for (var i = range.Start; i < range.End; ++i)
+			for (var i = range.Start; i <= range.End; ++i)
 			{
 				var glyph = font.FindGlyphIndex(i);
 				if (glyph == 0)
@@ -154,7 +154,7 @@ public class FontBaker
 			glyphInfo.Width = v.Width;
 			glyphInfo.Height = v.Height;
 			glyphInfo.XOffset = v.XOffset;
-			glyphInfo.YOffset = v.YOffset;
+			glyphInfo.YOffset = (int)yOff;
 
 			_glyphs[rd.Codepoint] = glyphInfo;
 		}
