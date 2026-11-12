@@ -69,7 +69,7 @@ namespace StbTrueTypeNext.Tests
 			Assert.Equal(numberOfFonts, fonts.Count);
 		}
 
-		private void TestRasterize(STBFont fontInfo, string text, float size)
+		private void TestRasterize(STBFont fontInfo, string text, float size, STBRasterizerVersion rasterizerVersion)
 		{
 			int iascent, idescent, ilineGap;
 			fontInfo.GetFontVMetrics(out iascent, out idescent, out ilineGap);
@@ -104,7 +104,7 @@ namespace StbTrueTypeNext.Tests
 				Assert.NotEqual(0, box.Height);
 				var data = new byte[box.Width * box.Height];
 
-				fontInfo.DrawGlyphOnBitmap(glyphId, data, 0, box.Width, scale, scale);
+				fontInfo.DrawGlyphOnBitmap(glyphId, data, 0, box.Width, scale, scale, rasterizerVersion: rasterizerVersion);
 			}
 		}
 
@@ -115,7 +115,7 @@ namespace StbTrueTypeNext.Tests
 			var fontInfo = new STBFont(ttfData);
 			Assert.NotNull(fontInfo);
 
-			TestRasterize(fontInfo, "Hello, World!", 32.0f);
+			TestRasterize(fontInfo, "Hello, World!", 32.0f, STBRasterizerVersion.V2);
 		}
 
 		[Fact]
@@ -125,9 +125,7 @@ namespace StbTrueTypeNext.Tests
 			var fontInfo = new STBFont(ttfData);
 			Assert.NotNull(fontInfo);
 
-			fontInfo.RasterizerVersion = STBRasterizerVersion.V1;
-
-			TestRasterize(fontInfo, "Hello, World!", 32.0f);
+			TestRasterize(fontInfo, "Hello, World!", 32.0f, STBRasterizerVersion.V1);
 		}
 	}
 }
