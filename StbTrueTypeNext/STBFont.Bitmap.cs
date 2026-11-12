@@ -64,9 +64,10 @@ namespace StbTrueTypeNext
 		/// <param name="scale_y">Vertical scale, as returned by <see cref="ScaleForPixelHeight" />.</param>
 		/// <param name="shift_x">Horizontal subpixel shift, in pixels, applied before rasterizing.</param>
 		/// <param name="shift_y">Vertical subpixel shift, in pixels, applied before rasterizing.</param>
+		/// <param name="rasterizerVersion">Rasterizer implementation to use; defaults to <see cref="STBRasterizerVersion.V2" />.</param>
 		/// <returns>The rasterized bitmap, or null if the glyph is empty or has no area at the requested scale.</returns>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="scale_x" /> or <paramref name="scale_y" /> is zero or negative.</exception>
-		public STBGlyphBitmap CreateGlyphBitmap(int glyph, float scale_x, float scale_y, float shift_x = 0, float shift_y = 0)
+		public STBGlyphBitmap CreateGlyphBitmap(int glyph, float scale_x, float scale_y, float shift_x = 0, float shift_y = 0, STBRasterizerVersion rasterizerVersion = STBRasterizerVersion.V2)
 		{
 			if (scale_x <= 0)
 			{
@@ -94,7 +95,7 @@ namespace StbTrueTypeNext
 			var num_verts = GetGlyphShape(glyph, out vertices);
 
 			var gbm = new Bitmap(v.Width, v.Height);
-			gbm.Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, v.X0, v.Y0, 1, RasterizerVersion);
+			gbm.Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, v.X0, v.Y0, 1, rasterizerVersion);
 
 			return new STBGlyphBitmap
 			{
@@ -120,6 +121,7 @@ namespace StbTrueTypeNext
 		/// <param name="shift_y">Vertical subpixel shift, in pixels, applied before rasterizing.</param>
 		/// <param name="prefilter_x">Horizontal oversampling factor used before downscaling; values below 2 disable it.</param>
 		/// <param name="prefilter_y">Vertical oversampling factor used before downscaling; values below 2 disable it.</param>
+		/// <param name="rasterizerVersion">Rasterizer implementation to use; defaults to <see cref="STBRasterizerVersion.V2" />.</param>
 		/// <returns>
 		/// Describes the rasterized bitmap in <paramref name="buffer" />, including the subpixel offsets introduced by
 		/// prefiltering, or null if the glyph has no bounding box.
@@ -128,7 +130,7 @@ namespace StbTrueTypeNext
 		/// <paramref name="out_stride" />, <paramref name="scale_x" /> or <paramref name="scale_y" /> is zero or negative.
 		/// </exception>
 		public STBGlyphBitmap DrawGlyphOnBitmap(int glyph, byte[] buffer, int offset, int out_stride, float scale_x, float scale_y,
-			float shift_x = 0, float shift_y = 0, int prefilter_x = 0, int prefilter_y = 0)
+			float shift_x = 0, float shift_y = 0, int prefilter_x = 0, int prefilter_y = 0, STBRasterizerVersion rasterizerVersion = STBRasterizerVersion.V2)
 		{
 			if (out_stride <= 0)
 			{
@@ -159,7 +161,7 @@ namespace StbTrueTypeNext
 			var gbm = new Bitmap(boxV.Width, boxV.Height, out_stride, output);
 
 			var v = box.Value;
-			gbm.Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, v.X0, v.Y0, 1, RasterizerVersion);
+			gbm.Rasterize(0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, v.X0, v.Y0, 1, rasterizerVersion);
 
 			if (prefilter_x > 1)
 			{

@@ -6,7 +6,7 @@
 		/// <summary>Uses the first rasterizer version.</summary>
 		V1,
 
-		/// <summary>Uses the second rasterizer version; this is the default, as set by <see cref="STBFont.RasterizerVersion" />.</summary>
+		/// <summary>Uses the second rasterizer version, which is the default when generating glyph bitmaps.</summary>
 		V2
 	}
 }

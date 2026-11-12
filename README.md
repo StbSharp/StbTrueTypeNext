@@ -19,7 +19,7 @@ https://www.nuget.org/packages/StbTrueTypeNext/
 - Rasterizes glyphs into 8-bit antialiased coverage bitmaps, with subpixel positioning through horizontal and vertical shifts.
 - Returns a newly allocated bitmap, or renders directly into a caller-supplied buffer at an arbitrary offset and row stride, so glyphs can be baked straight into an atlas.
 - Supports oversampling prefiltering when downscaling, and reports the subpixel offsets it introduces.
-- Provides two rasterizer implementations, selectable per font (`STBRasterizerVersion.V1` and `V2`, the default).
+- Provides two rasterizer implementations, selectable per glyph render (`STBRasterizerVersion.V1` and `V2`, the default).
 - Computes glyph bounding boxes in font units or in pixels relative to the glyph origin.
 - Extracts glyph outlines as move/line/quadratic/cubic vertices, handling composite TrueType glyphs and CFF charstrings with subroutines.
 - Reports metrics: font bounding box, `hhea` ascent/descent/line gap, `OS/2` typographic metrics, per-glyph advance width and left side bearing, plus helpers for em-to-pixel and pixel-height scaling.

@@ -36,12 +36,6 @@ namespace StbTrueTypeNext
 		/// <summary>Gets the raw font file data this font was created from.</summary>
 		public byte[] Data => _data;
 
-		/// <summary>
-		/// Gets or sets the rasterizer version used when generating glyph bitmaps.
-		/// Defaults to <see cref="STBRasterizerVersion.V2" />.
-		/// </summary>
-		public STBRasterizerVersion RasterizerVersion { get; set; } = STBRasterizerVersion.V2;
-
 		/// <summary>Creates a font from the raw bytes of a TrueType or OpenType font file.</summary>
 		/// <param name="data">
 		/// Complete contents of a font file, such as the bytes of a .ttf, .otf, or .ttc file. The array is
